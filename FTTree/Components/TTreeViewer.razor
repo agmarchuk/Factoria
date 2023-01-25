@@ -1,0 +1,75 @@
+﻿@*@using FactorgaphyTTree.Pages;
+@using Data;
+*@
+@using FactographData;
+@using FactorgaphyTTree.Data;
+@inject FactographData.IFDataService db
+@inject NavigationManager navigationManager
+
+ <table>
+@foreach(var ttree in ttrees)
+{
+    var texts = ttree.Groups.Where(gr => gr is Texts).ToArray();
+    var directs = ttree.Groups.Where(gr => gr is TDTree).ToArray();
+    var possibleDirects = db.ontology.GetDirectPropsByType(ttree.Tp).ToArray();
+
+    @if (firstRow)
+    {
+        firstRow = false;
+        <tr>
+            @foreach (var possibleDirect in possibleDirects)
+            {
+                <th>@Utils.GetOntLabel(possibleDirect)</th>
+
+            }
+        </tr>
+    }
+    <tr>
+
+        @foreach (var possibleDirect in possibleDirects)
+        {
+            var value = texts.FirstOrDefault(text => text.Pred == possibleDirect);
+            if (value != null)
+            {
+                <td>@Utils.GetLangText(value)</td>
+            }
+            else
+            {
+                value = directs.FirstOrDefault(text => text.Pred == possibleDirect);
+                if (value != null)
+                {
+                        <td><NavLink href="#" @onclick="@(arg => goToEntityUrl(((TDTree)value).Resource.Id))">@Utils.GetName(((TDTree)value).Resource)</NavLink></td>
+                }
+                else
+                {
+                    <td></td>
+                }
+            }
+        }
+    </tr>
+    
+}
+</table>
+
+
+@code {
+    [Parameter]
+    public TTree[] ttrees { get; set; }
+
+    private bool firstRow = true;
+
+    protected override void OnInitialized() // = On Page Load
+    {
+        Utils.InitUtils(db);
+    }
+
+    protected override void OnParametersSet()
+    {
+        OnInitialized();
+    }
+
+    private void goToEntityUrl(string id)
+    {
+        navigationManager.NavigateTo("/viewer/" + id, true);
+    }
+}
