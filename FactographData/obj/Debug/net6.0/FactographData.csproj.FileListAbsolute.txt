@@ -1,0 +1,17 @@
+D:\Home\dev2023\Factoria\FactographData\obj\Debug\net6.0\FactographData.csproj.AssemblyReference.cache
+D:\Home\dev2023\Factoria\FactographData\obj\Debug\net6.0\FactographData.GeneratedMSBuildEditorConfig.editorconfig
+D:\Home\dev2023\Factoria\FactographData\obj\Debug\net6.0\FactographData.AssemblyInfoInputs.cache
+D:\Home\dev2023\Factoria\FactographData\obj\Debug\net6.0\FactographData.AssemblyInfo.cs
+D:\Home\dev2023\Factoria\FactographData\obj\Debug\net6.0\FactographData.csproj.CoreCompileInputs.cache
+D:\Home\dev2023\Factoria\FactographData\bin\Debug\net6.0\FactographData.deps.json
+D:\Home\dev2023\Factoria\FactographData\bin\Debug\net6.0\FactographData.dll
+D:\Home\dev2023\Factoria\FactographData\bin\Debug\net6.0\FactographData.pdb
+D:\Home\dev2023\Factoria\FactographData\bin\Debug\net6.0\Polar.DB.dll
+D:\Home\dev2023\Factoria\FactographData\bin\Debug\net6.0\Polar.Universal.dll
+D:\Home\dev2023\Factoria\FactographData\bin\Debug\net6.0\Polar.Universal.pdb
+D:\Home\dev2023\Factoria\FactographData\bin\Debug\net6.0\Polar.DB.pdb
+D:\Home\dev2023\Factoria\FactographData\obj\Debug\net6.0\FactographData.csproj.CopyComplete
+D:\Home\dev2023\Factoria\FactographData\obj\Debug\net6.0\FactographData.dll
+D:\Home\dev2023\Factoria\FactographData\obj\Debug\net6.0\refint\FactographData.dll
+D:\Home\dev2023\Factoria\FactographData\obj\Debug\net6.0\FactographData.pdb
+D:\Home\dev2023\Factoria\FactographData\obj\Debug\net6.0\ref\FactographData.dll

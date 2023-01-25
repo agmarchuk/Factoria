@@ -1,0 +1,85 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\Home\\dev2023\\Factoria\\FTTree\\obj\\Debug\\net7.0\\scopedcss\\projectbundle\\FTTree.bundle.scp.css",
+      "PackagePath": "staticwebassets\\FTTree.bundle.scp.css"
+    },
+    {
+      "Id": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\config.xml",
+      "PackagePath": "staticwebassets\\config.xml"
+    },
+    {
+      "Id": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\bootstrap\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap\\bootstrap.min.css"
+    },
+    {
+      "Id": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\bootstrap\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\css\\bootstrap\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\FONT-LICENSE",
+      "PackagePath": "staticwebassets\\css\\open-iconic"
+    },
+    {
+      "Id": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\ICON-LICENSE",
+      "PackagePath": "staticwebassets\\css\\open-iconic"
+    },
+    {
+      "Id": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\README.md",
+      "PackagePath": "staticwebassets\\css\\open-iconic\\README.md"
+    },
+    {
+      "Id": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\font\\css\\open-iconic-bootstrap.min.css",
+      "PackagePath": "staticwebassets\\css\\open-iconic\\font\\css\\open-iconic-bootstrap.min.css"
+    },
+    {
+      "Id": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.eot",
+      "PackagePath": "staticwebassets\\css\\open-iconic\\font\\fonts\\open-iconic.eot"
+    },
+    {
+      "Id": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.otf",
+      "PackagePath": "staticwebassets\\css\\open-iconic\\font\\fonts\\open-iconic.otf"
+    },
+    {
+      "Id": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.svg",
+      "PackagePath": "staticwebassets\\css\\open-iconic\\font\\fonts\\open-iconic.svg"
+    },
+    {
+      "Id": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.ttf",
+      "PackagePath": "staticwebassets\\css\\open-iconic\\font\\fonts\\open-iconic.ttf"
+    },
+    {
+      "Id": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.woff",
+      "PackagePath": "staticwebassets\\css\\open-iconic\\font\\fonts\\open-iconic.woff"
+    },
+    {
+      "Id": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\site.css",
+      "PackagePath": "staticwebassets\\css\\site.css"
+    },
+    {
+      "Id": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\favicon.png",
+      "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\ontology_iis-v13.xml",
+      "PackagePath": "staticwebassets\\ontology_iis-v13.xml"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.FTTree.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.build.FTTree.props",
+      "PackagePath": "build\\FTTree.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildMultiTargeting.FTTree.props",
+      "PackagePath": "buildMultiTargeting\\FTTree.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildTransitive.FTTree.props",
+      "PackagePath": "buildTransitive\\FTTree.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
