@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "FLgZOVlxNxQc/ME57bRDtxihVh3m1VtPXu4nBdS4WRI=",
+  "Hash": "NDfr0nVeC5aiYf8IiS5dMgSkSx3tImGU6u8NFOFjnX8=",
   "Source": "FTTree",
   "BasePath": "_content/FTTree",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "FTTree\\wwwroot",
       "Source": "FTTree",
-      "ContentRoot": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\",
+      "ContentRoot": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\",
       "BasePath": "_content/FTTree",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "D:\\Home\\dev2023\\Factoria\\FTTree\\obj\\Debug\\net7.0\\scopedcss\\bundle\\FTTree.styles.css",
+      "Identity": "D:\\Home\\dev2022\\Factoria\\FTTree\\obj\\Debug\\net7.0\\scopedcss\\bundle\\FTTree.styles.css",
       "SourceId": "FTTree",
       "SourceType": "Computed",
-      "ContentRoot": "D:\\Home\\dev2023\\Factoria\\FTTree\\obj\\Debug\\net7.0\\scopedcss\\bundle\\",
+      "ContentRoot": "D:\\Home\\dev2022\\Factoria\\FTTree\\obj\\Debug\\net7.0\\scopedcss\\bundle\\",
       "BasePath": "_content/FTTree",
       "RelativePath": "FTTree.styles.css",
       "AssetKind": "All",
@@ -31,13 +31,13 @@
       "AssetTraitValue": "ApplicationBundle",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "D:\\Home\\dev2023\\Factoria\\FTTree\\obj\\Debug\\net7.0\\scopedcss\\bundle\\FTTree.styles.css"
+      "OriginalItemSpec": "D:\\Home\\dev2022\\Factoria\\FTTree\\obj\\Debug\\net7.0\\scopedcss\\bundle\\FTTree.styles.css"
     },
     {
-      "Identity": "D:\\Home\\dev2023\\Factoria\\FTTree\\obj\\Debug\\net7.0\\scopedcss\\projectbundle\\FTTree.bundle.scp.css",
+      "Identity": "D:\\Home\\dev2022\\Factoria\\FTTree\\obj\\Debug\\net7.0\\scopedcss\\projectbundle\\FTTree.bundle.scp.css",
       "SourceId": "FTTree",
       "SourceType": "Computed",
-      "ContentRoot": "D:\\Home\\dev2023\\Factoria\\FTTree\\obj\\Debug\\net7.0\\scopedcss\\projectbundle\\",
+      "ContentRoot": "D:\\Home\\dev2022\\Factoria\\FTTree\\obj\\Debug\\net7.0\\scopedcss\\projectbundle\\",
       "BasePath": "_content/FTTree",
       "RelativePath": "FTTree.bundle.scp.css",
       "AssetKind": "All",
@@ -48,13 +48,13 @@
       "AssetTraitValue": "ProjectBundle",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "D:\\Home\\dev2023\\Factoria\\FTTree\\obj\\Debug\\net7.0\\scopedcss\\projectbundle\\FTTree.bundle.scp.css"
+      "OriginalItemSpec": "D:\\Home\\dev2022\\Factoria\\FTTree\\obj\\Debug\\net7.0\\scopedcss\\projectbundle\\FTTree.bundle.scp.css"
     },
     {
-      "Identity": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\config.xml",
+      "Identity": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\config.xml",
       "SourceId": "FTTree",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\",
+      "ContentRoot": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\",
       "BasePath": "_content/FTTree",
       "RelativePath": "config.xml",
       "AssetKind": "All",
@@ -68,10 +68,10 @@
       "OriginalItemSpec": "wwwroot\\config.xml"
     },
     {
-      "Identity": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\bootstrap\\bootstrap.min.css",
+      "Identity": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\css\\bootstrap\\bootstrap.min.css",
       "SourceId": "FTTree",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\",
+      "ContentRoot": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\",
       "BasePath": "_content/FTTree",
       "RelativePath": "css/bootstrap/bootstrap.min.css",
       "AssetKind": "All",
@@ -85,10 +85,10 @@
       "OriginalItemSpec": "wwwroot\\css\\bootstrap\\bootstrap.min.css"
     },
     {
-      "Identity": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\bootstrap\\bootstrap.min.css.map",
+      "Identity": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\css\\bootstrap\\bootstrap.min.css.map",
       "SourceId": "FTTree",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\",
+      "ContentRoot": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\",
       "BasePath": "_content/FTTree",
       "RelativePath": "css/bootstrap/bootstrap.min.css.map",
       "AssetKind": "All",
@@ -102,10 +102,10 @@
       "OriginalItemSpec": "wwwroot\\css\\bootstrap\\bootstrap.min.css.map"
     },
     {
-      "Identity": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\font\\css\\open-iconic-bootstrap.min.css",
+      "Identity": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\font\\css\\open-iconic-bootstrap.min.css",
       "SourceId": "FTTree",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\",
+      "ContentRoot": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\",
       "BasePath": "_content/FTTree",
       "RelativePath": "css/open-iconic/font/css/open-iconic-bootstrap.min.css",
       "AssetKind": "All",
@@ -119,10 +119,10 @@
       "OriginalItemSpec": "wwwroot\\css\\open-iconic\\font\\css\\open-iconic-bootstrap.min.css"
     },
     {
-      "Identity": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.eot",
+      "Identity": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.eot",
       "SourceId": "FTTree",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\",
+      "ContentRoot": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\",
       "BasePath": "_content/FTTree",
       "RelativePath": "css/open-iconic/font/fonts/open-iconic.eot",
       "AssetKind": "All",
@@ -136,10 +136,10 @@
       "OriginalItemSpec": "wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.eot"
     },
     {
-      "Identity": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.otf",
+      "Identity": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.otf",
       "SourceId": "FTTree",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\",
+      "ContentRoot": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\",
       "BasePath": "_content/FTTree",
       "RelativePath": "css/open-iconic/font/fonts/open-iconic.otf",
       "AssetKind": "All",
@@ -153,10 +153,10 @@
       "OriginalItemSpec": "wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.otf"
     },
     {
-      "Identity": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.svg",
+      "Identity": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.svg",
       "SourceId": "FTTree",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\",
+      "ContentRoot": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\",
       "BasePath": "_content/FTTree",
       "RelativePath": "css/open-iconic/font/fonts/open-iconic.svg",
       "AssetKind": "All",
@@ -170,10 +170,10 @@
       "OriginalItemSpec": "wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.svg"
     },
     {
-      "Identity": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.ttf",
+      "Identity": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.ttf",
       "SourceId": "FTTree",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\",
+      "ContentRoot": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\",
       "BasePath": "_content/FTTree",
       "RelativePath": "css/open-iconic/font/fonts/open-iconic.ttf",
       "AssetKind": "All",
@@ -187,10 +187,10 @@
       "OriginalItemSpec": "wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.ttf"
     },
     {
-      "Identity": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.woff",
+      "Identity": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.woff",
       "SourceId": "FTTree",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\",
+      "ContentRoot": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\",
       "BasePath": "_content/FTTree",
       "RelativePath": "css/open-iconic/font/fonts/open-iconic.woff",
       "AssetKind": "All",
@@ -204,10 +204,10 @@
       "OriginalItemSpec": "wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.woff"
     },
     {
-      "Identity": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\FONT-LICENSE",
+      "Identity": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\FONT-LICENSE",
       "SourceId": "FTTree",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\",
+      "ContentRoot": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\",
       "BasePath": "_content/FTTree",
       "RelativePath": "css/open-iconic/FONT-LICENSE",
       "AssetKind": "All",
@@ -221,10 +221,10 @@
       "OriginalItemSpec": "wwwroot\\css\\open-iconic\\FONT-LICENSE"
     },
     {
-      "Identity": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\ICON-LICENSE",
+      "Identity": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\ICON-LICENSE",
       "SourceId": "FTTree",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\",
+      "ContentRoot": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\",
       "BasePath": "_content/FTTree",
       "RelativePath": "css/open-iconic/ICON-LICENSE",
       "AssetKind": "All",
@@ -238,10 +238,10 @@
       "OriginalItemSpec": "wwwroot\\css\\open-iconic\\ICON-LICENSE"
     },
     {
-      "Identity": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\README.md",
+      "Identity": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\css\\open-iconic\\README.md",
       "SourceId": "FTTree",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\",
+      "ContentRoot": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\",
       "BasePath": "_content/FTTree",
       "RelativePath": "css/open-iconic/README.md",
       "AssetKind": "All",
@@ -255,10 +255,10 @@
       "OriginalItemSpec": "wwwroot\\css\\open-iconic\\README.md"
     },
     {
-      "Identity": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\css\\site.css",
+      "Identity": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\css\\site.css",
       "SourceId": "FTTree",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\",
+      "ContentRoot": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\",
       "BasePath": "_content/FTTree",
       "RelativePath": "css/site.css",
       "AssetKind": "All",
@@ -272,10 +272,27 @@
       "OriginalItemSpec": "wwwroot\\css\\site.css"
     },
     {
-      "Identity": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\favicon.png",
+      "Identity": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\css\\site0.css",
       "SourceId": "FTTree",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\",
+      "ContentRoot": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\",
+      "BasePath": "_content/FTTree",
+      "RelativePath": "css/site0.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\site0.css"
+    },
+    {
+      "Identity": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\favicon.png",
+      "SourceId": "FTTree",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\",
       "BasePath": "_content/FTTree",
       "RelativePath": "favicon.png",
       "AssetKind": "All",
@@ -289,10 +306,10 @@
       "OriginalItemSpec": "wwwroot\\favicon.png"
     },
     {
-      "Identity": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\ontology_iis-v13.xml",
+      "Identity": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\ontology_iis-v13.xml",
       "SourceId": "FTTree",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\Home\\dev2023\\Factoria\\FTTree\\wwwroot\\",
+      "ContentRoot": "D:\\Home\\dev2022\\Factoria\\FTTree\\wwwroot\\",
       "BasePath": "_content/FTTree",
       "RelativePath": "ontology_iis-v13.xml",
       "AssetKind": "All",
