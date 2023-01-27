@@ -3,20 +3,20 @@
 <!--
   <database connectionstring="xml:"/>
   -->
-  <database connectionstring="upi:D:\Home\FactographDatabases\upi\"/>
+  <database connectionstring="upi:D:\Home\FactographDatabases\upi2\"/>
 
-  <LoadCassette  write="true">D:\Home\FactographProjects\Marchuk_cassettes\an_cass</LoadCassette>
-  <LoadCassette>D:\Home\FactographProjects\Marchuk_cassettes\GeneTreeCass</LoadCassette>
-  <LoadCassette>D:\Home\FactographProjects\Marchuk_cassettes\gi_pharchive</LoadCassette>
-  <LoadCassette>D:\Home\FactographProjects\Marchuk_cassettes\Ma_sbor</LoadCassette>
-  <LoadCassette>D:\Home\FactographProjects\Marchuk_cassettes\izbr_gi</LoadCassette>
+  <LoadCassette>C:\FactographProjects\gi_pharchive</LoadCassette>
+  <LoadCassette>C:\FactographProjects\gi_disks</LoadCassette>
+  <LoadCassette>C:\FactographProjects\gi_disk2</LoadCassette>
+  <LoadCassette>C:\FactographProjects\gi_disk3</LoadCassette>
+  <LoadCassette>C:\FactographProjects\Ma</LoadCassette>
+  <LoadCassette>C:\FactographProjects\an_cass</LoadCassette>
+  <LoadCassette>C:\FactographProjects\GeneTreeCass</LoadCassette>
+  <!--
+  -->
 
-  <LoadCassette write="true">D:\Home\FactographProjects\Marchuk_cassettes\Marchuk_common</LoadCassette>
-
-  <!--<LoadCassette>F:\FactographProjects\Marchuk_cassettes\gi_disks</LoadCassette>
-  <LoadCassette>F:\FactographProjects\Marchuk_cassettes\gi_disk2</LoadCassette>
-  <LoadCassette>F:\FactographProjects\Marchuk_cassettes\gi_disk3</LoadCassette>
-  <LoadCassette>F:\FactographProjects\Marchuk_cassettes\gi_users</LoadCassette>
-  <LoadCassette>F:\FactographProjects\Marchuk_cassettes\Ma</LoadCassette>-->
-
+  <LoadCassette write="true">C:\FactographProjects\Marchuk_common</LoadCassette>
+  <!--
+  <LoadCassette write="true">C:\FactographProjects\Ma_test</LoadCassette>
+-->
 </config>

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+<!--
+  <database connectionstring="xml:"/>
+  -->
+  <database connectionstring="upi:D:\Home\FactographDatabases\upi\"/>
+
+  <LoadCassette  write="true">D:\Home\FactographProjects\Marchuk_cassettes\an_cass</LoadCassette>
+  <LoadCassette>D:\Home\FactographProjects\Marchuk_cassettes\GeneTreeCass</LoadCassette>
+  <LoadCassette>D:\Home\FactographProjects\Marchuk_cassettes\gi_pharchive</LoadCassette>
+  <LoadCassette>D:\Home\FactographProjects\Marchuk_cassettes\Ma_sbor</LoadCassette>
+  <LoadCassette>D:\Home\FactographProjects\Marchuk_cassettes\izbr_gi</LoadCassette>
+
+  <LoadCassette write="true">D:\Home\FactographProjects\Marchuk_cassettes\Marchuk_common</LoadCassette>
+
+  <!--<LoadCassette>F:\FactographProjects\Marchuk_cassettes\gi_disks</LoadCassette>
+  <LoadCassette>F:\FactographProjects\Marchuk_cassettes\gi_disk2</LoadCassette>
+  <LoadCassette>F:\FactographProjects\Marchuk_cassettes\gi_disk3</LoadCassette>
+  <LoadCassette>F:\FactographProjects\Marchuk_cassettes\gi_users</LoadCassette>
+  <LoadCassette>F:\FactographProjects\Marchuk_cassettes\Ma</LoadCassette>-->
+
+</config>
