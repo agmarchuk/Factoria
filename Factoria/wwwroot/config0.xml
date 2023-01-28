@@ -3,7 +3,7 @@
 <!--
   <database connectionstring="xml:"/>
   -->
-  <database connectionstring="upi:D:\Home\FactographDatabases\upi\"/>
+  <database connectionstring="upi:D:\Home\FactographDatabases\upimain2\"/>
 
   <LoadCassette  write="true">D:\Home\FactographProjects\Marchuk_cassettes\an_cass</LoadCassette>
   <LoadCassette>D:\Home\FactographProjects\Marchuk_cassettes\GeneTreeCass</LoadCassette>

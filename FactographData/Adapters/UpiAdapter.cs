@@ -273,7 +273,7 @@ namespace OAData.Adapters
         }
         public override IEnumerable<XElement> SearchByWords(string line)
         {
-            string[] wrds = line.ToLower().Split(delimeters);
+            string[] wrds = line.ToUpper().Split(delimeters);
             var qqq = wrds.SelectMany(w =>
             {
                 string wrd = w;
