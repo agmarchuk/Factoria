@@ -1,10 +1,32 @@
 ﻿@page
+@using RazorPagesMovie.Pages.Movies;
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
+    string[] typs = new string[] { "http://fogid.net/o/person" };
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@inject FactographData.IFDataService db
+
+<h1>Hello, world!</h1>
+
+<div>
+    <form>
+        <select asp-for="Genre" asp-items="Model.Genres">
+            <option value=""></option>
+            <option value="http://fogid.net/o/person">Персона</option>
+            <option value="http://fogid.net/o/org-sys">Орг.сист</option>
+        </select>
+        <input type="text" asp-for="searchsample" style="height:24px; margin-top:10px;margin-bottom:10px;" />
+        <span>расш.<input type="checkbox" asp-for="extended" /></span>
+        <input type="submit" value="Search" />
+    </form>
 </div>
+
+@Model.Title
+@{
+    var qq = db.ontology.LabelOfOnto("http://fogid.net/o/name");
+    string result = $"result: {Model.Genre} {Model.searchsample} {Model.extended} ";
+    <div>@result</div>
+
+}
