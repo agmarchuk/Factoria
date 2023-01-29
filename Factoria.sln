@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Factoria", "Factoria\Factoria.csproj", "{0B77A390-511D-424C-A646-59573B97B90F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Factoria", "Factoria\Factoria.csproj", "{0B77A390-511D-424C-A646-59573B97B90F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FTTree", "FTTree\FTTree.csproj", "{A1B87C4A-B283-47D3-AD02-B00B9C25BE87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FactographData", "FactographData\FactographData.csproj", "{C47A8863-1935-45B3-89A8-B574F03C447D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FactographData", "FactographData\FactographData.csproj", "{C47A8863-1935-45B3-89A8-B574F03C447D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polar.DB", "..\PolarDB\src\Polar.DB\Polar.DB.csproj", "{7BC3A761-90AF-430B-90D9-93BD314B65EA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polar.Universal", "..\PolarDB\Polar.Universal\Polar.Universal.csproj", "{192DAD8C-35FE-4791-B084-510C48D99A09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Family", "Family\Family.csproj", "{B85B75E0-4F55-4E6E-9781-0D962E5FA780}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{192DAD8C-35FE-4791-B084-510C48D99A09}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{192DAD8C-35FE-4791-B084-510C48D99A09}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{192DAD8C-35FE-4791-B084-510C48D99A09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B85B75E0-4F55-4E6E-9781-0D962E5FA780}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B85B75E0-4F55-4E6E-9781-0D962E5FA780}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B85B75E0-4F55-4E6E-9781-0D962E5FA780}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B85B75E0-4F55-4E6E-9781-0D962E5FA780}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
