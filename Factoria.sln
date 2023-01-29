@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polar.DB", "..\PolarDB\src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polar.Universal", "..\PolarDB\Polar.Universal\Polar.Universal.csproj", "{192DAD8C-35FE-4791-B084-510C48D99A09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Family", "Family\Family.csproj", "{B85B75E0-4F55-4E6E-9781-0D962E5FA780}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Family", "Family\Family.csproj", "{B85B75E0-4F55-4E6E-9781-0D962E5FA780}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
