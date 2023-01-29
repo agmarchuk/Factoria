@@ -40,8 +40,8 @@
                 {
                     string lnk = "viewer/" + ((TDTree)value).Resource.Id;
                         <td>
-                            @* <NavLink href="#" @onclick="@(arg => goToEntityUrl(((TDTree)value).Resource.Id))">@Utils.GetName(((TDTree)value).Resource)</NavLink> *@
-                            <NavLink href="@lnk" >@Utils.GetName(((TDTree)value).Resource)</NavLink>
+                            <NavLink href="#" @onclick="@(arg => goToEntityUrl(((TDTree)value).Resource.Id))">@Utils.GetName(((TDTree)value).Resource)</NavLink> 
+                            @* <NavLink href="@lnk" >@Utils.GetName(((TDTree)value).Resource)</NavLink> *@
                         </td>
                 }
                 else

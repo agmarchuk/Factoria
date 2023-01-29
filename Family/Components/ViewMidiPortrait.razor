@@ -1,0 +1,57 @@
+﻿@using FactographData
+@using Family.Data;
+@inject FactographData.IFDataService db;
+
+@{
+    string sep = "";
+}
+<div style="display:inline-block;">
+    <a href="gene/@(record.Id)"> @(name) </a>
+    @if (!string.IsNullOrEmpty(dates))
+    {
+        <span>&nbsp;[@(dates)]&nbsp;</span>
+    }
+    @if (portrait != null)
+    {
+        <span><img src="Docs/GetImage?s=small&u=@(uri)" height="32" /></span>
+    }
+    @foreach (var title in titles)
+    {
+        @sep
+        ; sep = ", ";
+        <span>@(title.GetField("http://fogid.net/o/degree"))&nbsp;</span>
+        ;
+    }
+</div>
+
+@code {
+    [Parameter]
+    public RRecord record { get; set; }
+
+    private RRecordTree rtree;
+    private string name;
+    private string dates;
+    private RRecord[] reflections;
+    private RRecord portrait;
+    private string uri;
+    private RRecord[] titles;
+    //private RRecord title;
+
+    protected override void OnParametersSet()
+    {
+        rtree = new RRecordTree(record.Id, db.ontology, new RYEngine(db));
+
+        name = rtree.GetName();
+        dates = rtree.GetDates();
+        reflections = rtree.GetMultiInverse("http://fogid.net/o/reflected");
+        portrait = reflections.FirstOrDefault(re =>
+            re.GetField("http://fogid.net/o/ground") == "official" && re.GetDirect("http://fogid.net/o/in-doc")?.Tp == "http://fogid.net/o/photo-doc");
+        if (portrait != null) uri = portrait.GetDirect("http://fogid.net/o/in-doc")?.GetField("http://fogid.net/o/uri");
+        titles = rtree.GetMultiInverse("http://fogid.net/o/has-title");
+        titles = titles.Where(ti => ti.GetDirect("http://fogid.net/o/support-org") != null).ToArray();
+        if (titles.Length == 0)
+        {
+            titles = titles.OrderBy(ti => ti.GetField("http://fogid.net/o/from-date")).TakeLast(2).ToArray();
+        }
+    }
+}
