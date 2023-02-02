@@ -9,7 +9,7 @@
 
 <h1>Hello, world!</h1>
 
-<NavLink class="nav-link" href="viewer/syp2001-p-marchuk_a">
+<NavLink class="nav-link" href="portrait/syp2001-p-marchuk_a">
     <span class="oi" aria-hidden="true"></span> Mag
 </NavLink>
 
@@ -45,7 +45,7 @@
         string tp = item.Attribute("type").Value;
         string nm = item.Elements("field")
             .FirstOrDefault(f => f.Attribute("prop").Value == "http://fogid.net/o/name")?.Value;
-        <div>@tp <a href="viewer/@(idd)"> @(nm) </a></div>
+        <div>@tp <a href="portrait/@(idd)"> @(nm) </a></div>
     }
 @*    var q2 = db.GetItemByIdBasic("famwf1233_1001", false);
     <pre>@(q2.ToString())</pre>

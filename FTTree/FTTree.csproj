@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Components\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\PolarDB\src\Polar.DB\Polar.DB.csproj" />
     <ProjectReference Include="..\FactographData\FactographData.csproj" />
   </ItemGroup>

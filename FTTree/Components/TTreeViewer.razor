@@ -1,8 +1,6 @@
-﻿@*@using FactorgaphyTTree.Pages;
-@using Data;
-*@
-@using FactographData;
-@using FactorgaphyTTree.Data;
+﻿@using FTTree.Data
+@using FactographData
+@implements ITreeComponent
 @inject FactographData.IFDataService db
 @inject NavigationManager navigationManager
 
@@ -19,37 +17,43 @@
         <tr>
             @foreach (var possibleDirect in possibleDirects)
             {
-                <th>@Utils.GetOntLabel(possibleDirect)</th>
+                 <th>@db.GetOntLabel(possibleDirect)</th>
 
             }
         </tr>
     }
     <tr>
 
-        @foreach (var possibleDirect in possibleDirects)
-        {
-            var value = texts.FirstOrDefault(text => text.Pred == possibleDirect);
-            if (value != null)
+            @foreach (var possibleDirect in possibleDirects)
             {
-                <td>@Utils.GetLangText(value)</td>
-            }
-            else
-            {
-                value = directs.FirstOrDefault(text => text.Pred == possibleDirect);
+                var value = texts.FirstOrDefault(text => text.Pred == possibleDirect);
+
                 if (value != null)
                 {
-                    string lnk = "viewer/" + ((TDTree)value).Resource.Id;
-                        <td>
-                            <NavLink href="#" @onclick="@(arg => goToEntityUrl(((TDTree)value).Resource.Id))">@Utils.GetName(((TDTree)value).Resource)</NavLink> 
-                            @* <NavLink href="@lnk" >@Utils.GetName(((TDTree)value).Resource)</NavLink> *@
-                        </td>
+                    bool isEnum = db.ontology.IsEnumeration(value.Pred);
+                    if (isEnum)
+                    {
+                        <td>@db.GetLangText(value, value.Pred)</td>
+                    }
+                    else
+                    {
+                        <td>@db.GetLangText(value)</td>
+                    }
+
                 }
                 else
                 {
-                    <td></td>
+                    value = directs.FirstOrDefault(text => text.Pred == possibleDirect);
+                    if (value != null)
+                    {
+                        <td><NavLink href="@("/portrait/" + ((TDTree)value).Resource.Id)">@db.GetName(((TDTree)value).Resource)</NavLink></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
                 }
             }
-        }
     </tr>
     
 }
@@ -64,7 +68,7 @@
 
     protected override void OnInitialized() // = On Page Load
     {
-        Utils.InitUtils(db);
+        firstRow = true;
     }
 
     protected override void OnParametersSet()
