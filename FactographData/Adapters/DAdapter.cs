@@ -19,6 +19,7 @@ namespace OAData.Adapters
         public abstract XElement GetItemById(string id, XElement format);
         //public abstract XElement GetItemByIdSpecial(string id);
         public abstract IEnumerable<XElement> GetAll();
+        public abstract object GetRecord(string id);
 
         // ============== Загрузка базы данных ===============
         public abstract void StartFillDb(Action<string> turlog);

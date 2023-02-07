@@ -36,5 +36,8 @@ namespace FactographData
         string GetFilePath(string u, string s);
         bool HasWritabeFogForUser(string user);
         OAData.Adapters.CassInfo[] Cassettes { get; }
+
+        // ============ Билдеры =============
+        TRecordBuilder TBuilder { get; }
     }
 }

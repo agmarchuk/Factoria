@@ -1,12 +1,13 @@
 ﻿@page
 @using RazorPagesMovie.Pages.Movies;
+@inject FactographData.IFDataService db
+
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
     string[] typs = new string[] { "http://fogid.net/o/person" };
 }
 
-@inject FactographData.IFDataService db
 
 <h1>Hello, world!</h1>
 

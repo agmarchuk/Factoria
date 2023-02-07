@@ -307,7 +307,7 @@ namespace OAData.Adapters
 
             return xres;
         }
-        public object GetRecord(string id)
+        public override object GetRecord(string id)
         {
             object rec;
             rec = records.GetByKey(id);

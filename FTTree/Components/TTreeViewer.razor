@@ -9,7 +9,7 @@
  <table>
 @foreach(var ttree in ttrees)
 {
-    var texts = ttree.Groups.Where(gr => gr is Texts).ToArray();
+    var texts = ttree.Groups.Where(gr => gr is TTexts).ToArray();
     var directs = ttree.Groups.Where(gr => gr is TDTree).ToArray();
     var possibleDirects = db.ontology.GetDirectPropsByType(ttree.Tp).ToArray();
 

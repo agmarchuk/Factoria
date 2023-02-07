@@ -18,6 +18,10 @@ namespace FactographData
             path = "wwwroot/";
             Init(path);
             ontology = new RXOntology(path + "ontology_iis-v13.xml");
+            if (adapter is UpiAdapter)
+            {
+                _tbuilder = new TRecordBuilder((UpiAdapter)this.adapter, ontology);
+            }
         }
 
         public CassInfo[] Cassettes { get { return cassettes; } }
@@ -32,6 +36,9 @@ namespace FactographData
         public IOntology ontology { get; set; }
 
         CassInfo[] IFDataService.Cassettes => throw new NotImplementedException();
+
+        private TRecordBuilder _tbuilder;
+        public TRecordBuilder TBuilder { get { return _tbuilder; } }
 
         private bool directreload = false;
         private bool initiated = false;

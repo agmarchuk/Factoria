@@ -560,5 +560,10 @@ namespace OAData.Adapters
             }
 
         }
+
+        public override object GetRecord(string id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

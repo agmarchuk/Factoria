@@ -8,6 +8,8 @@ namespace FactographData
     public interface IOntology
     {
         // === Интерфейс, реализованный в ROntology ===
+        IEnumerable<string> GetAllClasses();
+        RRecord[] OntoSpec { get; } // Онтологические спецификации 
         IEnumerable<string> AncestorsAndSelf(string id);
         IEnumerable<string> DescendantsAndSelf(string id);
         int PropsTotal(string tp);

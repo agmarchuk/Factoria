@@ -17,7 +17,7 @@ namespace FactographData
 
             // ============== Вычисление таблицы перечислимых DatatypeProperty id -> XElement EnumerationType
 
-            // Сначала построим вспомогательную таблицу спецификаций пеерчислимых типов
+            // Сначала построим вспомогательную таблицу спецификаций перечислимых типов
             Dictionary<string, XElement> enumerationTypes = xontology.Elements("EnumerationType")
                 .ToDictionary(x => x.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about").Value);
 
@@ -84,6 +84,8 @@ namespace FactographData
                 .GroupBy(typr => typr.ty)
                 .ToDictionary(keypair => keypair.Key, keypair => keypair.Select(x => x.pr_id).Distinct().ToArray());
             // ОПределение функции. 
+
+
         }
 
         public IEnumerable<string> AncestorsAndSelf(string id)
@@ -185,7 +187,9 @@ namespace FactographData
 
         // Словарь родителей с именами родителей.
         private Dictionary<string, string[]> parentsDictionary = null;
-        public Dictionary<string, string[]> ParentsDictionary { get { return parentsDictionary; } } 
+        public Dictionary<string, string[]> ParentsDictionary { get { return parentsDictionary; } }
+
+        RRecord[] IOntology.OntoSpec { get { return rontology; } }
 
         private RRecord[] LoadROntology(string path)
         {
@@ -425,6 +429,15 @@ namespace FactographData
                 .Where(p => p is RField)
                 .Cast<RField>()
                 .FirstOrDefault(rl => rl.Prop == "InvLabel")?.Value;
+        }
+
+        public IEnumerable<string> GetAllClasses()
+        {
+            var res = rontology
+                .Where(definition => definition.Tp == "Class")
+                .Select(definition => definition.Id)
+                .ToArray();
+            return res;
         }
     }
 
