@@ -1,0 +1,99 @@
+﻿@using FactographData
+@using Family.Data
+@using Family.Models
+@inject FactographData.IFDataService db
+
+<div>
+    <input @bind="searchsample" style="height:24px; margin-top:10px;margin-bottom:10px;" />
+    <select @bind="searchtype" style="height: 24px; margin-top: 10px; margin-bottom: 10px; ">
+        <option value=""></option>
+        @foreach (var typ in typs.Where(t => db.ontology.LabelOfOnto(t) != null)) //TODO: Надо бы более корректно...
+        {
+            <option value="@typ">@(db.ontology.LabelOfOnto(typ))</option>
+        }
+    </select>
+    <span>расш.<input type="checkbox" @bind="extended" /></span>
+</div>
+@if (!string.IsNullOrEmpty(searchsample))
+{
+    IEnumerable<RRecord> query = null;
+    if (!extended)
+    {
+        query = (new RYEngine(db) { User = user }).RSearch(searchsample);
+    }
+    else
+    {
+        query = (new RYEngine(db) { User = user }).RSearchByWords(searchsample);
+    }
+
+
+    if (string.IsNullOrEmpty(searchtype)) { } // query = query.Where(r => typs.Contains(r.Tp));
+    else query = query.Where(r => r.Tp == searchtype);
+    if (!extended) { query = query.OrderBy(r => r.GetName()); }
+    foreach (RRecord rec in query)
+    {
+        string addrr = target + "/" + rec.Id;
+        TRecord trec = new TRecord(rec.Id, db);
+        string name = trec.GetName()?.Text;
+        var othernames = trec.GetNames().Where(n => n.Text != name)
+            .Select(t => t.Text)
+            .Concat(trec.GetMultiInverse("http://fogid.net/o/referred-sys")
+                .Select(na => na.GetText("http://fogid.net/o/alias").Text))
+            .Aggregate<string, string>("", (sum, t) => (sum == "" ? "" : sum + "; ") + t)
+            ;
+        string dates = trec.GetDates();
+        <div>
+            <span style="color:lightcoral;">@(db.ontology.LabelOfOnto(rec.Tp))</span>
+            @* Что входит: ФИО, (дополнительные имена), даты, степени *@
+            <a href="@(addrr)" title="Лучшее &lt;h1&gt; место &lt;/h1&gt; для подсказки">@(name)</a>
+            @if (!string.IsNullOrEmpty(othernames))
+            {
+                <span>&nbsp;(@(othernames)) </span>
+            }
+            @if (!string.IsNullOrEmpty(dates))
+            {
+                <span>&nbsp;@dates</span>
+            }
+
+        </div>
+    }
+    if (toedit && !string.IsNullOrEmpty(searchtype))
+    {
+        <div><a href="javascript:void(0)" @onclick="@(e =>NewItemClick(searchtype))">нов.</a></div>
+    }
+
+}
+
+@code {
+    [Parameter]
+    public EventCallback onSelected { get; set; }
+    [Parameter]
+    public string searchsample { get; set; }
+    [Parameter]
+    public string[] typs { get; set; }
+    [Parameter]
+    public string target { get; set; }
+    [Parameter]
+    public string user { get; set; }
+
+    private bool toedit { get { return !string.IsNullOrEmpty(user); } }
+    private bool extended = false;
+
+    private async Task SearchResultClick(RRecord rec)
+    {
+        searchsample = null;
+        extended = false;
+        await onSelected.InvokeAsync(rec.Id);
+    }
+    private async Task NewItemClick(string tp)
+    {
+        string nid = (new RYEngine(db) { User = user }).NewRecord(searchtype, searchsample);
+        searchsample = null;
+        await onSelected.InvokeAsync(nid);
+    }
+    private string searchtype;
+    protected override void OnParametersSet() // = On Page Load
+    {
+
+    }
+}

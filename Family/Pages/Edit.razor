@@ -1,0 +1,270 @@
+﻿@page "/edit/{entityId?}/{eid?}"
+
+@using FactographData
+@inject FactographData.IFDataService dba
+
+@{
+    string lnk = "view/" + entityId;
+    string lnk2 = "gene/" + entityId;
+    <div style="float:right;">
+        @if (_user != null)
+        {
+            <input @bind="newid" />
+            <button @onclick="Substitute">Нов.Id</button>
+        }
+        <span>ru </span>
+        User: <input type="text" @bind="_user" height="16" />
+        <NavLink href="@lnk">вид</NavLink>&nbsp;
+        <NavLink href="@lnk2">род</NavLink>&nbsp;
+    </div>
+}
+
+<div style="text-align:right;">
+    @*
+        <MagBlazor.Components.Upload user="@user" onFinish="(str) => Build(entityId)" />
+    *@
+</div>
+@*<MagBlazor.Components.Search onSelected="(rid) => UtilizeRecord((string)rid)" searchsample="@searchsample" typs="@tps" user="@user" />*@
+
+<Family.Components.ViewSearch onSelected="@((rid) => UtilizeRecord((string)rid))" searchsample="@searchsample" typs="@tps" target="edit" user="@user"  />
+
+
+@if (focusRec != null)
+{
+    // ========    Это вставка полоски пред. след. к документу =========
+    @if (externalId != null)
+    {
+        string pr = "edit/" + prev + "/" + externalId;
+        string d = "edit/" + externalId;
+        string nx = "edit/" + next + "/" + externalId;
+        <div style="text-align: center;">
+            <NavLink href="@d">к документу</NavLink>
+            &nbsp;
+            @if (prev == null)
+            {
+                <span>пред.</span>
+            }
+            else
+            {
+                <NavLink href="@pr"><span>пред.</span></NavLink>
+            }
+            &nbsp;
+            @if (next == null)
+            {
+                <span>след.</span>
+            }
+            else
+            {
+                <NavLink href="@nx"><span>след.</span></NavLink>
+            }
+        </div>
+    }
+
+    string uri = ((RField)focusRec.Props.FirstOrDefault(p => p.Prop == "http://fogid.net/o/uri"))?.Value;
+    if (focusRec.Tp == "http://fogid.net/o/photo-doc")
+    {
+        string sr = "docs/GetImage?u=" + uri + "&s=normal";
+        <img src="@sr" />
+
+    }
+    else if (focusRec.Tp == "http://fogid.net/o/video-doc")
+    {
+        string sr = "docs/GetVideo?u=" + uri + "&s=normal";
+        <video width="480" controls>
+            <source type="video/webm" src='@(sr + "&ext=webm")' />
+            <source type="video/mp4" src='@(sr + "&ext=mp4")' />
+            Your browser does not support the video tag.
+        </video>
+
+    }
+    else if (focusRec.Tp == "http://fogid.net/o/document")
+    {
+        string docmetainfo = ((RField)focusRec.Props.FirstOrDefault(p => p.Prop == "http://fogid.net/o/docmetainfo"))?.Value;
+        if (docmetainfo.Contains("application/pdf"))
+        {
+            string sr = "docs/GetPdf?u=" + uri;
+            <embed src="@sr" width="100%" height="800" />
+        }
+
+    }
+
+    try
+    {
+
+        <Family.Components.DrawTable focusId="@focusRec.Id" inverseTp="@focusRec.Tp" records="@(new RRecord[] { focusRec })" onGo="(id) => Build((string)id)" user="@user" />
+        var list2 = dba.ontology.AncestorsAndSelf(focusRec.Tp).SelectMany(t => dba.ontology.GetInversePropsByType(t)).Distinct();
+        foreach (var propName in list2)
+        {
+            var pr = focusInversePropTypes.FirstOrDefault(ipt => ipt.Prop == propName);
+            foreach (var typ in dba.ontology.DomainsOfProp(propName))
+            {
+                var it = pr == null ? null : pr.lists.FirstOrDefault(x => x.Tp == typ);
+                if (it == null)
+                {
+                    if (toedit)
+                    {
+                        <span>@(dba.ontology.InvLabelOfOnto(propName)) &nbsp;</span>
+                        <span>
+                            <a href="javascript:void(0)" @onclick="@(e => BuildInverseTable(propName, typ))">@(dba.ontology.LabelOfOnto(typ))</a> |
+                        </span>
+                    }
+                }
+                else
+                {
+                    <table border="1">
+                        <tr valign="top">
+                            <td>@(dba.ontology.InvLabelOfOnto(propName))</td>
+                            <td>
+                                <Family.Components.DrawTable focusId="@focusRec.Id" inverseProp="@propName" inverseTp="@typ" records="@(it==null?null:it.list)" onGo="(id) => Build((string)id)" user="@user" />
+                            </td>
+                        </tr>
+                    </table>
+                }
+            }
+        }
+    }
+    catch (Exception ex) { look = ex.Message; }
+}
+
+@code{
+    [Parameter] // Фокусная запись
+    public string entityId { get; set; }
+    [Parameter] // Внешная запись
+    public string eid { get; set; }
+
+    // Пользователь
+    private string _user
+    {
+        get { return user; }
+        set { if (!string.IsNullOrEmpty(value) && dba.HasWritabeFogForUser(value)) user = value; else user = null; }
+    }
+    private string user;
+    private string newid;
+    private void Substitute()
+    {
+        if (entityId != null && newid != null)
+        {
+            (new RYEngine(dba)).Substitute(entityId, newid, _user);
+            dba.Reload();
+            entityId = newid;
+            newid = null;
+            Build(entityId);
+        }
+    }
+
+    // Признак редактирования
+    private bool toedit { get { return !string.IsNullOrEmpty(user); } }
+
+    private string[] tps;
+
+    private string searchsample = "";
+    // Запись фокусного элемента и списки обратных свойств для него
+    private RRecord focusRec = null;
+    private Models.InversePropType[] focusInversePropTypes = null;
+
+    private void UtilizeRecord(string id)
+    {
+        Build(id);
+        searchsample = null;
+    }
+
+    // Построение фокусного элемента по его идентификатору
+    private string prev = null, next = null, externalId = null;
+    private void Build(string recId)
+    {
+        prev = null; next = null; externalId = null;
+        RRecord erec = (new RYEngine(dba) { User = user }).BuildPortrait(recId);
+        if (erec == null)
+        {
+            focusRec = null;
+            return;
+        }
+        var query = erec.Props.Where(p => p is RInverse && ((RInverse)p).IRec != null)
+    .Cast<RInverse>()
+    .GroupBy(d => d.Prop)
+    .Select(kd => new Models.InversePropType
+    {
+        Prop = kd.Key,
+        lists =
+        kd.GroupBy(d => d.IRec.Tp)
+            .Select(dd =>
+            {
+                var qu = dd.Select(x => x.IRec)
+                    .Select(rr => new RRecord { Id = rr.Id, Tp = rr.Tp, Props = dba.ontology.ReorderFieldsDirects(rr, "ru") })
+                    .ToArray();
+                return new Models.InverseType
+                {
+                    Tp = dd.Key,
+                    list = qu
+                };
+            }).ToArray()
+    }).ToArray();
+        focusInversePropTypes = query;
+        focusRec = new RRecord { Id = erec.Id, Tp = erec.Tp, Props = dba.ontology.ReorderFieldsDirects(erec, "ru") };
+        entityId = recId;
+
+        // ======== Вычисление полоски ==========
+        if (eid != null)
+        {
+            externalId = eid;
+            RRecord externalRec = (new RYEngine(dba)).GetRRecord(externalId, true);
+            var rxobj = new RYEngine(dba);
+            string[] docset = new string[0];
+            if (externalRec.Tp == "http://fogid.net/o/document")
+                docset = externalRec.Props
+                    .Where(p => p is RInverseLink && p.Prop == "http://fogid.net/o/inDocument").Cast<RInverseLink>()
+                    .Select(l =>
+                    {
+                        RRecord r = rxobj.GetRRecord(l.Source, false);
+                        return new { r = r, pg = r.GetField("http://fogid.net/o/pageNumbers") };
+                    })
+                    .OrderBy(rpg => rpg.pg)
+                    .Select(rpg => rpg.r.GetDirectResource("http://fogid.net/o/partItem"))
+                    .ToArray();
+            // Другой вариант
+            if (externalRec.Tp == "http://fogid.net/o/collection" ||
+                externalRec.Tp == "http://fogid.net/o/cassette")
+                docset = externalRec.Props
+                    .Where(p => p is RInverseLink && p.Prop == "http://fogid.net/o/in-collection").Cast<RInverseLink>()
+                    .Cast<RInverseLink>()
+                    .Select(ril => rxobj.GetRRecord(ril.Source, false).GetDirectResource("http://fogid.net/o/collection-item"))
+                    .ToArray();
+            int ind = Array.IndexOf(docset, erec.Id);
+            if (ind != -1 && ind - 1 >= 0)
+            {
+                prev = docset[ind - 1];
+            }
+            else prev = null;
+            if (ind != -1 && ind + 1 < docset.Length)
+            {
+                next = docset[ind + 1];
+            }
+            else next = null;
+        }
+
+
+    }
+
+    private void BuildInverseTable(string prop, string typ)
+    {
+        (new RYEngine(dba) { User = user }).NewRelation(typ, prop, focusRec.Id);
+        Build(focusRec.Id);
+        //look = $"run BuildInverseTable {prop} {typ}";
+    }
+
+    // Переменная для отладки-просмотра
+    private string look = "";
+
+    protected override void OnParametersSet()
+    {
+        if (tps == null) tps = dba.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj").ToArray();
+        if (entityId != null)
+        {
+            Build(entityId);
+        }
+    }
+}
+
+<hr />
+<div>@look</div>
+<div>@user</div>
