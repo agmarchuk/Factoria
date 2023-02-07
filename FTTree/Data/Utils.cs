@@ -40,14 +40,14 @@ namespace FactorgaphyTTree.Data
             {
                 return null;
             }
-            var langText = ((Texts)input).Values.FirstOrDefault(val => val.Lang == lang || val.Lang == "");
+            var langText = ((TTexts)input).Values.FirstOrDefault(val => val.Lang == lang || val.Lang == "");
             //if (langText == FALLBACKLANG)
             //{
             //    langText = ((Texts)input).Values.FirstOrDefault();
             //}
             if (langText == null)
             {
-                langText = ((Texts)input).Values.FirstOrDefault();
+                langText = ((TTexts)input).Values.FirstOrDefault();
             }
             return langText?.Text;
         }

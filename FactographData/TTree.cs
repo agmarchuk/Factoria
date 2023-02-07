@@ -28,22 +28,22 @@ namespace FactographData
     public class TString : TGroup
     {
         public string Value { get; private set; }
-        public TString(string pred, string val) 
-        { 
+        public TString(string pred, string val)
+        {
             //this.Vid = TVid.fields; 
-            this.Pred = pred; 
-            this.Value = val; 
+            this.Pred = pred;
+            this.Value = val;
         }
     }
 
-    public class Texts : TGroup
+    public class TTexts : TGroup
     {
         public TextLan[] Values { get; private set; }
-        public Texts(string pred, TextLan[] vals) 
-        { 
+        public TTexts(string pred, TextLan[] vals)
+        {
             //this.Vid = TVid.fields; 
-            this.Pred = pred; 
-            this.Values = vals; 
+            this.Pred = pred;
+            this.Values = vals;
         }
     }
     public class TextLan
@@ -60,10 +60,10 @@ namespace FactographData
     public class TITree : TGroup
     {
         public TTree[] Sources { get; private set; }
-        public TITree(string pred, TTree[] sources) 
-        { 
-            this.Pred = pred; 
-            this.Sources = sources; 
+        public TITree(string pred, TTree[] sources)
+        {
+            this.Pred = pred;
+            this.Sources = sources;
         }
     }
     public class TRecordBuilder
@@ -91,7 +91,7 @@ namespace FactographData
             // Список, регулирующий входной набор
             Tuple<int, int>[] noutkingroup = new Tuple<int, int>[oprops.Length];
             // Заполним списки
-            for (int i = 0; i<oprops.Length; i++)
+            for (int i = 0; i < oprops.Length; i++)
             {
                 object[] oprop = (object[])oprops[i];
                 int tag = (int)oprop[0];
@@ -120,7 +120,7 @@ namespace FactographData
                     TGroup group = null;
                     if (vidpred.Item1 == 1)
                     {
-                        group = new Texts(vidpred.Item2, new TextLan[ningroup[i]]);
+                        group = new TTexts(vidpred.Item2, new TextLan[ningroup[i]]);
                     }
                     else if (vidpred.Item1 == 2 && level > 0)
                     {
@@ -149,7 +149,7 @@ namespace FactographData
                 TGroup group = groups[g];
                 if (vidpred_list[g].Item1 == 1)
                 {
-                    Texts txts = (Texts)group;
+                    TTexts txts = (TTexts)group;
                     txts.Values[k] = new TextLan((string)vprop[1], (string)vprop[2]);
                 }
                 else if (vidpred_list[g].Item1 == 2)
