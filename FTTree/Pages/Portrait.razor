@@ -1,0 +1,61 @@
+﻿@page "/portrait/{entityId?}/{mode?}"
+@using FTTree.Components
+@using FTTree.Data
+@using FactographData
+@using OAData.Adapters
+@inject IFDataService db
+
+
+
+<PageTitle>Portrait</PageTitle>
+
+<h1>Portrait</h1>
+@if (mode == "view")
+{
+    <NavLink href="@($"/portrait/{entityId}/edit")">Edit</NavLink>
+} 
+else
+{
+    <NavLink href="@($"/portrait/{entityId}")">View</NavLink>
+}
+<DynamicComponent Type="componentType" Parameters="@(new Dictionary<string, object>(){{"ttrees",new TTree[]{currentRecord} }})"> </DynamicComponent>
+@foreach (var inverse in inverses)
+{
+    <h3>@db.GetOntLabel(inverse.Pred)</h3>
+    var sources = ((TITree)inverse).Sources;
+    <DynamicComponent Type="componentType" Parameters="@(new Dictionary<string, object>(){{"ttrees",sources}})"></DynamicComponent>
+}
+
+
+
+@code {
+    [Parameter]
+    public string entityId { get; set; }
+
+    [Parameter]
+    public string mode { get; set; }
+
+    private Type componentType = typeof(TTreeViewer);
+
+    private TTree currentRecord;
+
+    private TGroup[] inverses = null;
+
+    protected override void OnInitialized() // = On Page Load
+    {
+        if (entityId != null)
+        {
+            TRecordBuilder recordBuilder = new TRecordBuilder((UpiAdapter)db.GetAdapter(), db.ontology);
+            currentRecord = recordBuilder.BuildTRecord(entityId);
+            inverses = currentRecord.Groups.Where(gr => gr is TITree).ToArray();
+            mode = mode != "edit" ? "view" : mode;
+            componentType = mode == "edit" ? typeof(TTreeEditor) : typeof(TTreeViewer);
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        OnInitialized();
+    }
+
+}
