@@ -16,8 +16,8 @@ namespace FTTree.Data
         {
             if (enumSpecificatior is not null && showLabels) // for enumerations
             {
-                var text = ((Texts)input).Values.FirstOrDefault()?.Text;
-                return String.IsNullOrEmpty(text) ? "" : db.ontology.EnumValue(enumSpecificatior, ((Texts)input).Values.FirstOrDefault()?.Text, lang);
+                var text = ((TTexts)input).Values.FirstOrDefault()?.Text;
+                return String.IsNullOrEmpty(text) ? "" : db.ontology.EnumValue(enumSpecificatior, ((TTexts)input).Values.FirstOrDefault()?.Text, lang);
             }
             if (input == null)
             {
@@ -27,10 +27,10 @@ namespace FTTree.Data
             //{
             //    langText = ((Texts)input).Values.FirstOrDefault(); // 1) Try default user lang
             //}
-            var langText = ((Texts)input).Values.FirstOrDefault(val => val.Lang == lang || String.IsNullOrEmpty(val.Lang)); // 2) Try default or empty lang
+            var langText = ((TTexts)input).Values.FirstOrDefault(val => val.Lang == lang || String.IsNullOrEmpty(val.Lang)); // 2) Try default or empty lang
             if (langText == null)
             {
-                langText = ((Texts)input).Values.FirstOrDefault(); // 3) First available lang
+                langText = ((TTexts)input).Values.FirstOrDefault(); // 3) First available lang
             }
             return langText?.Text;
         }

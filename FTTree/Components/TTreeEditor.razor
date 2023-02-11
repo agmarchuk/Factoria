@@ -8,7 +8,7 @@
     @for (int ttreeInd = 0; ttreeInd < ttrees.Count(); ttreeInd++)
     {
         var ttree = ttrees[ttreeInd];
-        var texts = ttree.Groups.Where(gr => gr is Texts).ToArray();
+        var texts = ttree.Groups.Where(gr => gr is TTexts).ToArray();
         var directs = ttree.Groups.Where(gr => gr is TDTree).ToArray();
         var possibleDirects = db.ontology.GetDirectPropsByType(ttree.Tp).ToArray();
 
@@ -41,7 +41,7 @@
                             var currValue = "null";
                             if (value != null)
                             {
-                                currValue = ((Texts)value).Values.FirstOrDefault()?.Text;
+                                currValue = ((TTexts)value).Values.FirstOrDefault()?.Text;
                             }
                             <td>
                                 <select>
@@ -91,7 +91,7 @@
                     value = directs.FirstOrDefault(text => text.Pred == possibleDirect);
                     if (editedRow == ttreeInd)
                     {
-                        
+                           <td></td>
                     }
                     else
                     {
