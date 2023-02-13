@@ -29,10 +29,40 @@ namespace RazorPagesMovie.Pages.Movies
 
         public string? Title { get; set; }
         //public IList<XElement> items { get; set; }
+        public string id { get; set; }
+        public string tp { get; set; }
+        public string[] table; // Первый ряд - заголовки, остальные - данные
 
         public void OnGet()
         {
-            if (!string.IsNullOrEmpty(searchsample))
+            if (string.IsNullOrEmpty(searchsample))
+            {
+                var tt = ((FDataService)_context).ttreebuilder.GetTTree("famwf1233_1001");
+                TTree tree;
+                if (tt != null)
+                {
+                    tree = (TTree)tt;
+                    id = tt.Id;
+                    tp = tt.Tp;
+                    table = tt.Groups
+                        .Where(g => g != null && (g is TString || g is TTexts || g is TDTree))
+                        .Select<TGroup, string>(g =>
+                        {
+                            if (g is TString) return ((TString)g).Value;
+                            if (g is TTexts) return ((TTexts)g).Values
+                                .Select<TextLan, string>(tl => tl.Text + "^" + tl.Lang)
+                                .Aggregate((s, t) => s + " " + t);
+                            if (g is TDTree) 
+                            {
+                                var tdt = (TDTree)g;
+                                return tdt.Resource.ToString();
+                            }
+                            return "uknown";
+                        }).ToArray();
+
+                }
+            }
+            else
             {
                 var query = _context.SearchByName(searchsample);
                 Title = "Hello from OnGetAsync: " + query.Count();

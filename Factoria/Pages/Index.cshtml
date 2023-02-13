@@ -24,6 +24,19 @@
     </form>
 </div>
 
+@if (Model.table != null)
+{
+    <div>
+        <table>
+            <tr>
+                @foreach (var cell in Model.table)
+                {
+                    <td>@cell</td>
+                }
+            </tr>
+        </table>
+    </div>
+}
 @Model.Title
 @{
     var qq = db.ontology.LabelOfOnto("http://fogid.net/o/name");

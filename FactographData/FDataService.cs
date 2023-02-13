@@ -12,6 +12,9 @@ namespace FactographData
 {
     public class FDataService : IFDataService
     {
+        public TTreeBuilder ttreebuilder;
+        public TTreeBuilder TreeBuilder { get { return ttreebuilder; } }
+        
         public FDataService()
         {
             Console.WriteLine("mag: FDataService Constructing " + DateTime.Now);
@@ -21,6 +24,8 @@ namespace FactographData
             if (adapter is UpiAdapter)
             {
                 _tbuilder = new TRecordBuilder((UpiAdapter)this.adapter, ontology);
+                ttreebuilder = new TTreeBuilder((UpiAdapter)this.adapter, ontology);
+                var qqq = ttreebuilder.GetTTree("famwf1233_1001");
             }
         }
 
