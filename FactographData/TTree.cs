@@ -76,6 +76,45 @@ namespace FactographData
             this.ontology = ontology;
         }
 
+        public TTree BuildTTree(string recId, int level = 2, string forbidden = null)
+        {
+            // Если level = 0 - только поля, 1 - поля и прямые ссылки,  2 - поля, прямые ссылки и обратные ссылки
+            object[] erec = (object[])adapter.GetRecord(recId); //(new RYEngine(db)).GetRRecord(recId, level > 1);
+            if (erec == null) return null;
+            string Id = (string)erec[0];
+            string Tp = (string)erec[1];
+            var oprops = ((object[])erec[2]).GroupBy(prop => ((object[])prop)[0]);
+            TGroup[] groups = null;
+
+            foreach (var oprop in oprops)
+            {
+                int tag = (int)(oprop.Key);
+                if (tag == 2 && level < 1 || tag == 3 && level < 2) continue;
+                if (tag == 1)
+                {
+                    IEnumerable<IGrouping<object, object>> pred_grouped_props = oprop.GroupBy(obj => ((object[])((object[])obj)[1])[0]);
+
+                    List<TTexts> tTexts = new List<TTexts>();
+                    foreach (var pred_group in pred_grouped_props)
+                    {
+                        
+                        List<TextLan> textLans = new List<TextLan>();
+                        foreach (var group in pred_group)
+                        {
+                            textLans.Add(new TextLan((string)((object[])((object[])group)[1])[1], (string)((object[])((object[])group)[1])[2]));
+                        }
+                        tTexts.Add(new TTexts((string)pred_group.Key, textLans.ToArray()));
+                    }
+                    groups = tTexts.ToArray();
+                }
+
+                //object[] vprop = (object[])oprop[1];
+                //if (tag == 2 && (string)vprop[0] == forbidden) continue;
+
+            }
+            return new TTree(Id, Tp, groups);
+        }
+
         public TTree BuildTRecord(string recId, int level = 2, string forbidden = null)
         {
             // Если level = 0 - только поля, 1 - поля и прямые ссылки,  2 - поля, прямые ссылки и обратные ссылки

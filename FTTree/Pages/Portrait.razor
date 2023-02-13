@@ -47,6 +47,7 @@ else
         {
             TRecordBuilder recordBuilder = new TRecordBuilder((UpiAdapter)db.GetAdapter(), db.ontology);
             currentRecord = recordBuilder.BuildTRecord(entityId);
+            recordBuilder.BuildTTree(entityId);
             inverses = currentRecord.Groups.Where(gr => gr is TITree).ToArray();
             mode = mode != "edit" ? "view" : mode;
             componentType = mode == "edit" ? typeof(TTreeEditor) : typeof(TTreeViewer);
