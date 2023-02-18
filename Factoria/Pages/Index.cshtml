@@ -1,4 +1,6 @@
 ﻿@page
+@using System.Xml.Linq;
+@using FactographData;
 @using RazorPagesMovie.Pages.Movies;
 @inject FactographData.IFDataService db
 
@@ -6,41 +8,172 @@
 @{
     ViewData["Title"] = "Home page";
     string[] typs = new string[] { "http://fogid.net/o/person" };
+    TTree? ttree = Model.tree;
+    string? ont(string? term) => term==null ? null : db.ontology.LabelOfOnto(term);
 }
-
-
-<h1>Hello, world!</h1>
-
-<div>
+@* ============= Раздел поиска =========== *@
+<div style="margin-bottom:20px;">
     <form>
         <select asp-for="Genre" asp-items="Model.Genres">
             <option value=""></option>
             <option value="http://fogid.net/o/person">Персона</option>
             <option value="http://fogid.net/o/org-sys">Орг.сист</option>
         </select>
-        <input type="text" asp-for="searchsample" style="height:24px; margin-top:10px;margin-bottom:10px;" />
+        <input type="text" asp-for="searchsample" />
         <span>расш.<input type="checkbox" asp-for="extended" /></span>
         <input type="submit" value="Search" />
     </form>
 </div>
-
-@if (Model.table != null)
+@if (Model.query != null)
 {
-    <div>
-        <table>
-            <tr>
-                @foreach (var cell in Model.table)
-                {
-                    <td>@cell</td>
-                }
-            </tr>
-        </table>
-    </div>
+    foreach (XElement x in Model.query)
+    {
+        string lnk = "/Index/" + x.Attribute("id")?.Value;
+        string? name = x.Elements("field").FirstOrDefault(f => 
+            f.Attribute("prop")?.Value == "http://fogid.net/o/name")?.Value;
+        <div>
+            <span style="color:red;">@(ont(x.Attribute("type")?.Value))</span>
+            <a href="@(lnk)">@name</a>
+        </div>
+    }
 }
-@Model.Title
-@{
-    var qq = db.ontology.LabelOfOnto("http://fogid.net/o/name");
-    string result = $"result: {Model.Genre} {Model.searchsample} {Model.extended} ";
-    <div>@result</div>
+@* ============= Раздел портрета =========== *@
 
+@if (ttree != null)
+{
+    TGroup[] fds = ttree.Groups.Where(g => g is TString || g is TTexts || g is TDTree).ToArray();
+    TITree[] tigs = ttree.Groups
+                    .Where(g => g is TITree)
+                    .Cast<TITree>()
+                    .ToArray();
+    <table border="1">
+        <tr><td colspan="@(fds.Count())"><span style="color:red;">@(ont(ttree.Tp))</span><span>&#xA0; @(ttree.Id)</span></td></tr>
+        <tr valign="top" style="background-color:lightgray; font-size:smaller; font-weight: bold;">
+            @foreach (var gr in fds)
+            {
+                <td>@(ont(gr.Pred))</td>
+            }
+        </tr>
+        <tr>
+            @foreach (var gr in fds)
+            {
+                if (gr is TString)
+                {
+                    TString str = (TString)gr;
+                    string val = str.Value;
+                    if (!string.IsNullOrEmpty(val) && db.ontology.IsEnumeration(gr.Pred)) { val = db.ontology.EnumValue(gr.Pred, val, "ru"); }
+                    <td>@(val)</td>
+                }
+                else if (gr is TTexts)
+                {
+                    TTexts txts = (TTexts)gr;
+                    string tresult = txts.Values.Length==0? "" : txts.Values[0].Text;
+                    <td>@(tresult)</td>
+                }
+                else if (gr is TDTree)
+                {
+                    var direct = ((TDTree)gr).Resource;
+                    if (direct != null)
+                    {
+                        var names = direct.GetTTexts("http://fogid.net/o/name"); //TODO: 
+                        string name = names == null ? "" : names[0].Text;
+                        string idd = direct.Id;
+                        <td><a href="/Index/@(idd)"> @name </a></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                }
+                else
+                {
+                    <td></td>
+                }
+            }
+        </tr>
+    </table>
+    <table border="1">
+        @foreach (var tig in tigs)
+        {
+            if (tig == null) { continue; }
+            var srces = tig.Sources
+                .GroupBy(s => s.Tp);
+            <tr valign="top">
+            <td>@(ont(tig.Pred))</td>
+            <td>
+                    @foreach (var pair in srces)
+                    {
+                        string tp = pair.Key;
+                        var sequ = pair.ToArray();
+                        if (sequ.Length == 0) { continue; }
+                        var first_row = sequ[0];
+                        <table border="1">
+                            <tr>
+                                <td colspan="6">
+                                    <span style="color:red;">@(ont(tp))</span>
+                                </td>
+                            </tr>
+
+
+                            <tr valign="top" style="background-color:lightgray; font-size:smaller; font-weight: bold;">
+                                @foreach (var gr1 in first_row.Groups
+                                    .Where(g => g is TString || g is TTexts || g is TDTree)
+                                    .Where(g => g.Pred != tig.Pred) // Отсечка запрещенных
+                                )
+                                {
+                                    <td>@(ont(gr1.Pred))</td>
+                                }
+                            </tr>
+                            @foreach (var tt in sequ)
+                            {
+                                TGroup[] fds1 = tt.Groups
+                                .Where(g => g is TString || g is TTexts || g is TDTree)
+                                .Where(g => g.Pred != tig.Pred) // Отсечка запрещенных
+                                .ToArray();
+                            <tr>
+                                @foreach (var gr1 in fds1)
+                                {
+                                    if (gr1 is TString)
+                                    {
+                                        TString str = (TString)gr1;
+                                        string val = str.Value;
+                                        if (!string.IsNullOrEmpty(val) && db.ontology.IsEnumeration(gr1.Pred)) { val = db.ontology.EnumValue(gr1.Pred, val, "ru"); }
+                                        <td>@(val)</td>
+                                    }
+                                    else if (gr1 is TTexts)
+                                    {
+                                        TTexts txts = (TTexts)gr1;
+                                        string tresult = txts.Values.Length == 0 ? "" : txts.Values[0].Text;
+                                            <td>@(tresult)</td>
+                                        }
+                                        else if (gr1 is TDTree)
+                                        {
+                                            var direct = ((TDTree)gr1).Resource;
+                                            if (direct != null)
+                                            {
+                                                var names = direct.GetTTexts("http://fogid.net/o/name");
+                                                string name = names == null ? "noname" : names[0].Text;
+                                                string idd = direct.Id;
+                                                <td><a href="/Index/@(idd)"> @name </a></td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                            }
+                                        }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+                                }
+                            </tr>
+                            }
+
+                        </table>
+                    }
+            </td>
+        </tr>
+        }
+    </table>
 }
+

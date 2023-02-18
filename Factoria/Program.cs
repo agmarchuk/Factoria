@@ -4,6 +4,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddSingleton<FactographData.IFDataService, FactographData.FDataService>();
 
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AddPageRoute(
+        "/Index", "Index/{Id?}");
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
