@@ -7,7 +7,7 @@
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
-    string[] typs = new string[] { "http://fogid.net/o/person" };
+    string[] typs = db.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj").ToArray();
     TTree? ttree = Model.tree;
     string? ont(string? term) => term==null ? null : db.ontology.LabelOfOnto(term);
 }
@@ -16,8 +16,12 @@
     <form>
         <select asp-for="Genre" asp-items="Model.Genres">
             <option value=""></option>
-            <option value="http://fogid.net/o/person">Персона</option>
-            <option value="http://fogid.net/o/org-sys">Орг.сист</option>
+            @foreach(string ttp in typs)
+            {
+                var label = db.ontology.LabelOfOnto(ttp);
+                if (string.IsNullOrEmpty(label)) { continue; }
+                <option value="@(ttp)">@(label)</option>
+            }
         </select>
         <input type="text" asp-for="searchsample" />
         <span>расш.<input type="checkbox" asp-for="extended" /></span>
@@ -26,7 +30,9 @@
 </div>
 @if (Model.query != null)
 {
-    foreach (XElement x in Model.query)
+    IEnumerable<XElement> qu = Model.query;
+    if (!string.IsNullOrEmpty(Model.Genre)) qu = qu.Where(q => q.Attribute("type")?.Value == Model.Genre);
+    foreach (XElement x in qu)
     {
         string lnk = "/Index/" + x.Attribute("id")?.Value;
         string? name = x.Elements("field").FirstOrDefault(f => 
@@ -152,7 +158,7 @@
                                             if (direct != null)
                                             {
                                                 var names = direct.GetTTexts("http://fogid.net/o/name");
-                                                string name = names == null ? "noname" : names[0].Text;
+                                                string name = names == null ? "" : names[0].Text;
                                                 string idd = direct.Id;
                                                 <td><a href="/Index/@(idd)"> @name </a></td>
                                             }

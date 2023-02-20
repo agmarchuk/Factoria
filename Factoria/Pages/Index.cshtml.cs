@@ -77,7 +77,15 @@ namespace RazorPagesMovie.Pages.Movies
             if (!string.IsNullOrEmpty(searchsample))
             {
                 tree = null;
-                query = _context.SearchByName(searchsample);
+                if (extended)
+                {
+                    query = _context.SearchByWords(searchsample);
+
+                }
+                else
+                {
+                    query = _context.SearchByName(searchsample);
+                }
             }
         }
     }
