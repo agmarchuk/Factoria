@@ -25,7 +25,7 @@ namespace FactographData
             {
                 _tbuilder = new TRecordBuilder((UpiAdapter)this.adapter, ontology);
                 ttreebuilder = new TTreeBuilder((UpiAdapter)this.adapter, ontology);
-                var qqq = ttreebuilder.GetTTree("famwf1233_1001");
+                // var qqq = ttreebuilder.GetTTree("famwf1233_1001");
             }
         }
 

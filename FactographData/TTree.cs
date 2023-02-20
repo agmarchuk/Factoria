@@ -210,7 +210,6 @@ namespace FactographData
                 {
                     foreach (var pred_group in pred_grouped_props)
                     {
-
                         IEnumerable<TTree> tTrees = pred_group
                             .Select(pg => BuildTRecord((string)((object[])((object[])pg)[1])[1], level - 1, (string)((object[])((object[])pg)[1])[0])); // All TTrees
                         IEnumerable<TTypedInv> typedInvs = tTrees.GroupBy(tree => tree.Tp).Select(x => new TTypedInv(x.Key, x.ToArray())); // TTrees grouped by type

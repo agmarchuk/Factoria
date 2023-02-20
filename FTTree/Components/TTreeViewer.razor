@@ -8,8 +8,8 @@
  <table>
 @foreach(var ttree in ttrees)
 {
-    var texts = ttree.Groups.Where(gr => gr is TTexts).ToArray();
-    var directs = ttree.Groups.Where(gr => gr is TDTree).ToArray();
+    var texts = ttree.Groups.Where(gr => gr is TTexts);
+    var directs = ttree.Groups.Where(gr => gr is TDTree);
     var possibleDirects = db.ontology.GetDirectPropsByType(ttree.Tp).ToArray();
 
     @if (firstRow)

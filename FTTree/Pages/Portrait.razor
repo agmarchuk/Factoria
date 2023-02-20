@@ -50,8 +50,7 @@ else
     {
         if (entityId != null)
         {
-            TRecordBuilder recordBuilder = new TRecordBuilder((UpiAdapter)db.GetAdapter(), db.ontology);
-            currentRecord = recordBuilder.BuildTTree(entityId);
+            currentRecord = db.TBuilder.BuildTTree(entityId);
             inverses = currentRecord.Groups.Where(gr => gr is TInvTree).ToArray();
             mode = mode != "edit" ? "view" : mode;
             componentType = mode == "edit" ? typeof(TTreeEditor) : typeof(TTreeViewer);
