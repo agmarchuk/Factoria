@@ -22,8 +22,13 @@ else
 @foreach (var inverse in inverses)
 {
     <h3>@db.GetOntLabel(inverse.Pred)</h3>
-    var sources = ((TITree)inverse).Sources;
-    <DynamicComponent Type="componentType" Parameters="@(new Dictionary<string, object>(){{"ttrees",sources}})"></DynamicComponent>
+    foreach(var typedInv in ((TInvTree)inverse).Sources)
+    {
+        <h4>@db.GetOntLabel(typedInv.Pred)</h4>
+        var sources = ((TTypedInv)typedInv).Sources;
+        <DynamicComponent Type="componentType" Parameters="@(new Dictionary<string, object>(){{"ttrees",sources}})"></DynamicComponent>
+
+    }
 }
 
 
@@ -46,9 +51,8 @@ else
         if (entityId != null)
         {
             TRecordBuilder recordBuilder = new TRecordBuilder((UpiAdapter)db.GetAdapter(), db.ontology);
-            currentRecord = recordBuilder.BuildTRecord(entityId);
-            recordBuilder.BuildTTree(entityId);
-            inverses = currentRecord.Groups.Where(gr => gr is TITree).ToArray();
+            currentRecord = recordBuilder.BuildTTree(entityId);
+            inverses = currentRecord.Groups.Where(gr => gr is TInvTree).ToArray();
             mode = mode != "edit" ? "view" : mode;
             componentType = mode == "edit" ? typeof(TTreeEditor) : typeof(TTreeViewer);
         }

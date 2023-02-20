@@ -103,6 +103,27 @@ namespace FactographData
             this.Sources = sources;
         }
     }
+
+    public class TInvTree : TGroup
+    {
+        public TTypedInv[] Sources { get; private set; }
+        public TInvTree(string pred, TTypedInv[] sources)
+        {
+            this.Pred = pred;
+            this.Sources = sources;
+        }
+    }
+
+    public class TTypedInv : TGroup
+    {
+        public TTree[] Sources { get; private set; }
+        public TTypedInv(string pred, TTree[] sources)
+        {
+            this.Pred = pred;
+            this.Sources = sources;
+        }
+    }
+
     // =========== Двухуровневое разбиение: =========
     /// Вспомогательный класс - группировка списков обратных свойств
     //public class InversePropType
@@ -159,27 +180,46 @@ namespace FactographData
             {
                 int tag = (int)(oprop.Key);
                 if (tag == 2 && level < 1 || tag == 3 && level < 2) continue;
-                if (tag == 1)
-                {
-                    IEnumerable<IGrouping<object, object>> pred_grouped_props = oprop.GroupBy(obj => ((object[])((object[])obj)[1])[0]);
 
-                    List<TTexts> tTexts = new List<TTexts>();
+                IEnumerable<IGrouping<object, object>> pred_grouped_props = oprop.GroupBy(obj => ((object[])((object[])obj)[1])[0]);
+                List<TGroup> resultGroups = new List<TGroup>();
+                if (tag == 1) // Fields
+                {
+                    foreach (var pred_group in pred_grouped_props)
+                    {
+                        IEnumerable<TextLan> textLans = pred_group
+                            .Select(pg => new TextLan((string)((object[])((object[])pg)[1])[1], (string)((object[])((object[])pg)[1])[2]));
+                        resultGroups.Add(new TTexts((string)pred_group.Key, textLans.ToArray()));
+                    }
+                    groups = resultGroups.ToArray();
+                }
+
+                if (tag == 2) // Directs
+                {
                     foreach (var pred_group in pred_grouped_props)
                     {
                         
-                        List<TextLan> textLans = new List<TextLan>();
-                        foreach (var group in pred_group)
-                        {
-                            textLans.Add(new TextLan((string)((object[])((object[])group)[1])[1], (string)((object[])((object[])group)[1])[2]));
-                        }
-                        tTexts.Add(new TTexts((string)pred_group.Key, textLans.ToArray()));
+                        TTree directTree = BuildTRecord((string)((object[])((object[])pred_group.First())[1])[1], level - 1);// First becasue direct supports only one link
+                        resultGroups.Add(new TDTree((string)pred_group.Key, directTree));
+                        
                     }
-                    groups = tTexts.ToArray();
                 }
 
-                //object[] vprop = (object[])oprop[1];
-                //if (tag == 2 && (string)vprop[0] == forbidden) continue;
 
+                if (tag == 3) // Inverses
+                {
+                    foreach (var pred_group in pred_grouped_props)
+                    {
+
+                        IEnumerable<TTree> tTrees = pred_group
+                            .Select(pg => BuildTRecord((string)((object[])((object[])pg)[1])[1], level - 1, (string)((object[])((object[])pg)[1])[0])); // All TTrees
+                        IEnumerable<TTypedInv> typedInvs = tTrees.GroupBy(tree => tree.Tp).Select(x => new TTypedInv(x.Key, x.ToArray())); // TTrees grouped by type
+                        resultGroups.Add(new TInvTree((string)pred_group.Key, typedInvs.ToArray()));
+
+                    }
+                }
+
+                groups = groups.Concat(resultGroups.ToArray()).ToArray();
             }
             return new TTree(Id, Tp, groups);
         }
