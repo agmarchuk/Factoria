@@ -43,6 +43,9 @@ namespace FactographData
             dicOnto = rontology
                .Select((rr, nom) => new { V = rr.Id, nom })
                .ToDictionary(pair => pair.V, pair => pair.nom);
+            priorityDictionary = 
+                rontology.Select(rr => new { V = rr.Id, pr =  rr.GetField("priority") })
+               .ToDictionary(pair => pair.V, pair => pair.pr);
 
 
             dicsProps = new Dictionary<string, int>[rontology.Length];
@@ -144,6 +147,7 @@ namespace FactographData
         private RRecord[] rontology = null;
         // Словарь онтологических объектов имя -> номер в массивах
         private Dictionary<string, int> dicOnto = null;
+        private Dictionary<string, string> priorityDictionary = null;
 
         /// <summary>
         /// Массив словарей свойств для записей. Элементы массива позиционно соответствуют массиву утверждений.
@@ -158,11 +162,11 @@ namespace FactographData
 
         public IEnumerable<string> GetInversePropsByType(string tp)
         {
-            return dicsInversePropsForType[tp];
+            return dicsInversePropsForType[tp].OrderBy(name => priorityDictionary[name]);
         }
         public IEnumerable<string> GetDirectPropsByType(string tp)
         {
-            return dicsDirectPropsForType[tp];
+            return dicsDirectPropsForType[tp].OrderBy(name => priorityDictionary[name]);
         }
         public int PropsTotal(string tp)
         {

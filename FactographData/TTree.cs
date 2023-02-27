@@ -174,7 +174,7 @@ namespace FactographData
             string Id = (string)erec[0];
             string Tp = (string)erec[1];
             var oprops = ((object[])erec[2]).GroupBy(prop => ((object[])prop)[0]);
-            TGroup[] groups = null;
+            TGroup[] groups = new List<TGroup>().ToArray();
 
             foreach (var oprop in oprops)
             {
@@ -191,17 +191,16 @@ namespace FactographData
                             .Select(pg => new TextLan((string)((object[])((object[])pg)[1])[1], (string)((object[])((object[])pg)[1])[2]));
                         resultGroups.Add(new TTexts((string)pred_group.Key, textLans.ToArray()));
                     }
-                    groups = resultGroups.ToArray();
                 }
 
                 if (tag == 2) // Directs
                 {
                     foreach (var pred_group in pred_grouped_props)
                     {
-                        
+
                         TTree directTree = BuildTRecord((string)((object[])((object[])pred_group.First())[1])[1], level - 1);// First becasue direct supports only one link
                         resultGroups.Add(new TDTree((string)pred_group.Key, directTree));
-                        
+
                     }
                 }
 
