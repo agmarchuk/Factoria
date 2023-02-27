@@ -1,0 +1,41 @@
+@using FactographData
+@using Family.Data
+@inject FactographData.IFDataService db
+
+<div style="border:thin solid;">
+    <span style="color:orangered;">@(db.ontology.LabelOfOnto(tree.Tp))</span>
+    <a href="">@(name)</a>
+    <span>@(totalline.Length > 100 ? totalline.Substring(0, 99) : totalline)</span>
+</div>
+
+@code {
+    [Parameter]
+    public string? treeId { get; set; }
+
+    private TTree? tree;
+    private string? name;
+    private string? fromdate;
+    private string? description;
+    private IEnumerable<TTree>? titles;
+    private IEnumerable<TTree>? reflected;
+    private string totalline = "";
+
+    protected override void OnParametersSet()
+    {
+        if (treeId != null)
+        {
+            tree = ((FDataService)db).ttreebuilder.GetTTree(treeId);
+            name = tree?.GetTTexts("http://fogid.net/o/name")?.FirstOrDefault()?.Text;
+            fromdate = tree?.GetTString("http://fogid.net/o/from-date");
+            description = tree?.GetTTexts("http://fogid.net/o/description")?.FirstOrDefault()?.Text;
+            titles = tree?.GetInverseItems("http://fogid.net/o/has-title");
+            reflected = tree?.GetInverseItems("http://fogid.net/o/reflected");
+            totalline += (fromdate == null ? "" : " " + fromdate) +
+                (description == null ? "" : " " + description) +
+                (titles==null?"" : $" {titles.Count()} титулов" ) +
+                (reflected == null ? "" : $" {reflected.Count()} отражений") +
+                "";
+
+        }
+    }
+}

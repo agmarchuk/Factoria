@@ -41,9 +41,32 @@
         </div>
     }
 }
-@if (recordlevels == null || recordlevels.Count() == 0) { return; }
+@if (recordlevels == null || recordlevels.Count() == 0)
+{
+    <div style="width: 400px; margin-bottom: 20px;">
+        <div style="margin-bottom:10px;">
+            Родовые и семейные отношения построены на основе двух генеалогических деревьев, 
+            построенных Марчук Ольгой Николаевной. 
+        </div>
+        <div>
+            В поле поиска надо набрать фамилию, имя, отчество или часть этой комбинации, напр. "Марчук Нат".
+            Или выбрать одного из предложенных персонажей, а потом двигаться по гиперссылкам:
+        </div>
+    </div>
+    <div></div>
+    <div><a href="/gene/famwf1233_1001">Марчук Гурий Иванович</a></div>
+    <div><a href="/gene/famwf1234_1120">Марчук Алексей Николаевич</a></div>
+    <div><a href="/gene/famwf1233_1005">Марчук Ольга Николаевна</a></div>
+    <div><a href="/gene/Mc2816_1009">Кириков Александр Васильевич</a></div>
+    <div><a href="/gene/famwf1234_1005">Марчук Савва Иванович</a></div>
+    <div><a href="/gene/svet_100616111408_20915">Петерсон Юрий Николаевич</a></div>
+
+}
+else
+{
 <p class="grad">
-    <a href="gene" class="nov"><img src="images/ico-home.gif" class="ico-home" alt="" />Родословная</a>
+        <a href="/" class="nov"><img src="images/ico-home.gif" class="ico-home" alt="" /></a>
+        <span>Родословная</span>
     &raquo;
     @if (fm != null)
     {
@@ -54,9 +77,9 @@
     @*&raquo;
         m.GetName()*@
 </p>
-
+}
 @{
-    foreach (var rl in recordlevels)
+    if (recordlevels != null) foreach (var rl in recordlevels)
     {
         int otstup = 80 * rl.level;
         <div style="margin-left:@(otstup)px;">

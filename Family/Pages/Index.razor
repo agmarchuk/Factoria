@@ -1,9 +1,92 @@
 ﻿@page "/"
-<h3>Index</h3>
-<div><NavLink href="gene">Родословная семьи Марчуков/Беляевых/Кириковых и др</NavLink></div>
-<div><NavLink href="gene/famwf1233_1001">Семейное дерево Марчука Г.И.</NavLink></div>
-<div><NavLink href="edit">Редактировать базу данных</NavLink></div>
+@using FactographData
+@using Family.Data;
+@using Family.Models
+@using Family.Pages
+@inject FactographData.IFDataService db
 
+@*@{
+    string id = "famwf1233_1021";
+}
+<Family.Components.InlinePortrait treeId="@id" />*@
+
+<h1>Электронный архив семьи Марчуков</h1>
+<p>
+    В электронном архиве размещены документы, публикации, фотографии и фильмы, 
+    относящиеся к семье Марчук Гурия Ивановича и Ольги Николаевны. 
+    К семье относятся многочисленные родственники, есть информация о друзьях, коллегах, знакомых. 
+    Кроме документов, в архиве имеется информация о персонажах, событиях, организациях, мероприятиях.
+    Документы взяты из различных источников, включая домашние архивы.    
+</p>
+<div class="portfolio-wrap">
+    <div class="portfolio-item">
+        <div class="portfolio-item-wrap" style="width:200px;">
+            <a href="/gene">
+                <img src="/Безымянный.jpg" style="float:left;">
+                <div class="portfolio-item-inner">
+                    Генеалогия Марчуков и родственных семей, созданная на основе 
+                    двух генеалогических деревьев, построенных Ольгой Николаевной
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="portfolio-item">
+        <div class="portfolio-item-wrap">
+            <a href="">
+                <img src="https://html5book.ru/wp-content/uploads/2018/12/natjurmort.jpg">
+                <div class="portfolio-item-inner">
+                    <div class="portfolio-heading">
+                        <h3>Услуги фотографа</h3>
+                    </div>
+                    <ul>
+                        <li>Праздники и корпоративы</li>
+                        <li>Свадебная фотография</li>
+                        <li>Интерьеры</li>
+                        <li>Фотосессия</li>
+                    </ul>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="portfolio-item">
+        <div class="portfolio-item-wrap">
+            <a href="">
+                <img src="https://html5book.ru/wp-content/uploads/2018/12/natjurmort.jpg">
+                <div class="portfolio-item-inner">
+                    <div class="portfolio-heading">
+                        <h3>Услуги фотографа</h3>
+                    </div>
+                    <ul>
+                        <li>Праздники и корпоративы</li>
+                        <li>Свадебная фотография</li>
+                        <li>Интерьеры</li>
+                        <li>Фотосессия</li>
+                    </ul>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="portfolio-item">
+        <div class="portfolio-item-wrap">
+            <a href="">
+                <img src="https://html5book.ru/wp-content/uploads/2018/12/natjurmort.jpg">
+                <div class="portfolio-item-inner">
+                    <div class="portfolio-heading">
+                        <h3>Услуги фотографа</h3>
+                    </div>
+                    <ul>
+                        <li>Праздники и корпоративы</li>
+                        <li>Свадебная фотография</li>
+                        <li>Интерьеры</li>
+                        <li>Фотосессия</li>
+                    </ul>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
 
 @code {
 

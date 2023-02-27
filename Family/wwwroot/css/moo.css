@@ -1,11 +1,12 @@
-body 
-	{
-	width: 100%;
-	margin: 0px;
-	padding: 0px;
-	background: #faf3dc url('/images/back.png') top left repeat-x;
-	font-family: arial, sans-serif; font-size: 14px;
-	}
+body {
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    background: #faf3dc;
+    //url('/images/back.png') top left repeat-x;
+    font-family: arial, sans-serif;
+    font-size: 14px;
+}
 a
 	{ color: #0370a7; }
 a:active, a:hover
@@ -18,9 +19,6 @@ p
 	{
 	min-width: 1000px;
 	max-width:1400px;
-	//width: expression(document.body.clientWidth > 1400? "1400px" : "auto" );
-	//width: expression( document.body.clientWidth < 991 ? "990px" : "auto" ); 
-
 	}
 #site div.pd
 	{ padding: 0px 20px; text-align: left; }
@@ -263,3 +261,49 @@ table.info-docs tr th.th-document-name
 	{ float: left; margin: 0px; padding: 0px; }
 .fund-descr
 	{ display: block; margin-left: 140px; }
+
+
+
+.portfolio-wrap {
+	max-width: 1120px;
+	margin: 0 auto;
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+.portfolio-item {
+	padding: 10px;
+}
+
+	.portfolio-item a {
+		display: block;
+		text-decoration: none;
+	}
+
+/*.portfolio-item-wrap {
+	position: relative;
+	overflow: hidden;
+	text-align: center;
+	box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+	background: black;
+	color: white;
+}
+
+.portfolio-item img {
+	display: block;
+	width: 100%;
+	opacity: .75;
+	transition: .5s ease-in-out;
+}
+
+.portfolio-item-inner {
+	position: absolute;
+	top: 45%;
+	left: 7%;
+	right: 7%;
+	bottom: 45%;
+	border: 1px solid white;
+	border-width: 0 1px 1px;
+	transition: .4s ease-in-out;
+}
+*/

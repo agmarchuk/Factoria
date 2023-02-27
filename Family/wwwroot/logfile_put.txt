@@ -1,0 +1,79 @@
+﻿<person rdf:about="Mc2816_1001" mT="2023-02-20 17:15:22Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <name xml:lang="ru">Пупкин Вася</name>
+  <from-date>2022-09-25</from-date>
+  <description>Юмористический персонаж периода 1970-х</description>
+  <comment>Это комментарий к Васе Пупкину</comment>
+  <name xml:lang="en">Pupkin, Vasily</name>
+</person>
+<titled rdf:about="Mc2816_2225" mT="2023-02-20 17:15:33Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <has-title rdf:resource="Mc2816_1001" />
+</titled>
+<titled rdf:about="Mc2816_2225" mT="2023-02-20 17:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <has-title rdf:resource="Mc2816_1001" />
+  <degree>Тот самый</degree>
+</titled>
+<titled rdf:about="Mc2816_2225" mT="2023-02-21 02:56:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <has-title rdf:resource="Mc2816_1001" />
+  <degree>Тот самый</degree>
+  <from-date>2021-02-21</from-date>
+  <comment>К</comment>
+</titled>
+<titled rdf:about="Mc2816_2225" mT="2023-02-21 03:42:31Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <has-title rdf:resource="Mc2816_1001" />
+  <degree>Тот самый</degree>
+  <from-date>2021-02-21</from-date>
+  <comment>Ко</comment>
+</titled>
+<titled rdf:about="Mc2816_2225" mT="2023-02-21 03:49:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <has-title rdf:resource="Mc2816_1001" />
+  <degree>Тот самый</degree>
+  <from-date>2021-02-21</from-date>
+  <comment>Ком</comment>
+</titled>
+<titled rdf:about="Mc2816_2225" mT="2023-02-21 05:01:48Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <has-title rdf:resource="Mc2816_1001" />
+  <degree>Тот самый</degree>
+  <from-date>2021-02-21</from-date>
+  <comment>Комм</comment>
+</titled>
+<titled rdf:about="Mc2816_2226" mT="2023-02-21 05:03:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <has-title rdf:resource="Mc2816_1001" />
+</titled>
+<titled rdf:about="Mc2816_2226" mT="2023-02-21 05:03:37Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <has-title rdf:resource="Mc2816_1001" />
+  <degree>Наичеснейший</degree>
+</titled>
+<org-sys rdf:about="Mc2816_2227" mT="2023-02-21 06:14:56Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <name>Тестовая организация</name>
+</org-sys>
+<org-sys rdf:about="Mc2816_2227" mT="2023-02-21 06:15:19Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <name>Тестовая организация</name>
+  <org-classification>organization</org-classification>
+  <org-category>Контора</org-category>
+</org-sys>
+<reflection rdf:about="Mc2816_2228" mT="2023-02-21 13:00:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <reflected rdf:resource="Mc2816_1001" />
+</reflection>
+<reflection rdf:about="Mc2816_2228" mT="2023-02-21 13:04:54Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <reflected rdf:resource="Mc2816_1001" />
+  <in-doc rdf:resource="izbr_gi_0001_0013" />
+  <ground>casual</ground>
+</reflection>
+<person rdf:about="famwf1234_1066" mT="2023-02-25 03:33:05Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <name xml:lang="ru">Гребенник Лев Григорьевич</name>
+  <from-date>1996-10-21</from-date>
+  <father rdf:resource="famwf1234_1065" />
+  <mother rdf:resource="famwf1234_1063" />
+</person>
+<person rdf:about="famwf1234_1067" mT="2023-02-25 03:33:51Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <name xml:lang="ru">Гребенник Мира Григорьевна</name>
+  <from-date>1998-03-17</from-date>
+  <father rdf:resource="famwf1234_1065" />
+  <mother rdf:resource="famwf1234_1063" />
+</person>
+<person rdf:about="famwf1234_1062" mT="2023-02-25 03:35:16Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <name xml:lang="ru">Марчук Александра Гурьевна</name>
+  <from-date>1997-11-07</from-date>
+  <father rdf:resource="famwf1234_1058" />
+  <mother rdf:resource="famwf1234_1060" />
+</person>

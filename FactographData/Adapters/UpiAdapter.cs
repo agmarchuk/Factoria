@@ -580,7 +580,7 @@ namespace OAData.Adapters
                     records.AppendElement(node);
                 }
             }
-
+            records.Flush();
             return null;
         }
         private class DirectPropComparer : IEqualityComparer<object>

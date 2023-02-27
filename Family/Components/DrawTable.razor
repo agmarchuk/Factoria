@@ -96,7 +96,7 @@ else
                                                     .SelectMany(t => db.ontology.DescendantsAndSelf(t))
                                                     .Distinct();
                                                 <td style="background-color: antiquewhite;">
-                                                    <MagBlazor.Components.Search onSelected="(rid) => LinkRecord((string)rid)"
+                                                    <Family.Components.Search onSelected="(rid) => LinkRecord((string)rid)"
                                                                                  typs="@(typps.ToArray())" user="@user" />
                                                 </td>
                                             }

@@ -42,7 +42,7 @@ namespace FactographData
                 .FirstOrDefault();
         }
 
-        public IEnumerable<TTree> GetInverseItem(string propId)
+        public IEnumerable<TTree> GetInverseItems(string propId)
         {
             var r = Groups.Where(g => g is TITree && g.Pred == propId)
                 .Cast<TITree>()

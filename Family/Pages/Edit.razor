@@ -19,15 +19,11 @@
     </div>
 }
 
-<div style="text-align:right;">
-    @*
+@*<div style="text-align:right;">
         <MagBlazor.Components.Upload user="@user" onFinish="(str) => Build(entityId)" />
-    *@
-</div>
-@*<MagBlazor.Components.Search onSelected="(rid) => UtilizeRecord((string)rid)" searchsample="@searchsample" typs="@tps" user="@user" />*@
+</div>*@
 
 <Family.Components.ViewSearch onSelected="@((rid) => UtilizeRecord((string)rid))" searchsample="@searchsample" typs="@tps" target="edit" user="@user"  />
-
 
 @if (focusRec != null)
 {
