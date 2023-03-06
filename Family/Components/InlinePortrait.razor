@@ -33,7 +33,7 @@
             totalline += (fromdate == null ? "" : " " + fromdate) +
                 (description == null ? "" : " " + description) +
                 (titles==null?"" : $" {titles.Count()} титулов" ) +
-                (reflected == null ? "" : $" {reflected.Count()} отражений") +
+                (reflected == null || reflected.Count() == 0 ? "" : $" {reflected.Count()} отражений") +
                 "";
 
         }

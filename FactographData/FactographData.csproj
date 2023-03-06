@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="TRec.cs" />
     <Compile Remove="TTree1.cs" />
   </ItemGroup>
 
