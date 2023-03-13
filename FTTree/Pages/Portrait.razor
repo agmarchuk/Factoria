@@ -3,12 +3,15 @@
 @using FTTree.Data
 @using FactographData
 @using OAData.Adapters
-@inject IFDataService db
-
-
+@inject FactographData.IFDataService db
 
 <PageTitle>Portrait</PageTitle>
-
+<AuthorizeView>
+    <Authorized>
+<div>Auth: @context.User.Claims.FirstOrDefault().Type</div>
+ <div>Name: @context.User.Identity.Name</div>
+</Authorized>
+</AuthorizeView>
 <h1>Portrait</h1>
 @if (mode == "view")
 {
@@ -61,5 +64,4 @@ else
     {
         OnInitialized();
     }
-
 }

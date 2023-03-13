@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using FactographData;
 using Polar.DB;
 using Polar.Universal;
 
@@ -313,7 +314,7 @@ namespace OAData.Adapters
             rec = records.GetByKey(id);
             return rec;
         }
-        private XElement ORecToXRec(object[] ob, bool addinverse)
+        public XElement ORecToXRec(object[] ob, bool addinverse)
         {
             return new XElement("record",
                 new XAttribute("id", ob[0]), new XAttribute("type", ob[1]),
@@ -341,7 +342,7 @@ namespace OAData.Adapters
                     return null;
                 }));
         }
-        private object XRecToORec(XElement xrec)
+        private object[] XRecToORec(XElement xrec)
         {
             object[] orec = new object[]
             {
@@ -443,32 +444,15 @@ namespace OAData.Adapters
             throw new NotImplementedException();
         }
 
-        public override XElement PutItem(XElement record)
+        public XElement PutItem(object[] nrec)
         {
             DirectPropComparer pcomparer = new DirectPropComparer();
-            // Вычисляем идентификатор
-            string id = record.Attribute(ONames.rdfabout)?.Value;
-
-            // Вычисляем новую запись в объектном представлении
-            object nrec;
-            if (record.Name == "delete")
-            {
-                nrec = new object[] { id, "delete", new object[0] };
-            }
-            else if (record.Name.LocalName == "substitute")
-            {
-                return null;
-            }
-            else
-            {
-                nrec = XRecToORec(record);
-            }
 
             // Вычисляем старую запись в объектном представлении. Ее или нет, или она в динамическом наборе или она в статическом
             // Дополнительно устанавливаем признак isindyndic
             //bool isindyndic = false;
             object orec = null;
-            orec = records.GetByKey(id);
+            orec = GetRecord(nrec[0].ToString());
             //if (dyndic.TryGetValue(id, out orec)) { isindyndic = true; }
             //else
             //{  // или объект или null
@@ -536,7 +520,7 @@ namespace OAData.Adapters
                 if (node != null)
                 {
                     ((object[])node)[2] = ((object[])((object[])node)[2]).Cast<object[]>()
-                        .Where(x => (int)x[0] != 3 || (string)((object[])x[1])[1] != id || (string)((object[])x[1])[0] != prop)
+                        .Where(x => (int)x[0] != 3 || (string)((object[])x[1])[1] != nrec[0] || (string)((object[])x[1])[0] != prop)
                         .ToArray();
                     //if (indyn)
                     //{
@@ -567,7 +551,7 @@ namespace OAData.Adapters
                 if (node != null)
                 {
                     ((object[])node)[2] = ((object[])((object[])node)[2]).Cast<object[]>()
-                        .Concat(new object[] { new object[] { 3, new object[] { prop, id } } })
+                        .Concat(new object[] { new object[] { 3, new object[] { prop, nrec[0] } } })
                         .ToArray();
                     //if (indyn)
                     //{
@@ -580,6 +564,30 @@ namespace OAData.Adapters
                     records.AppendElement(node);
                 }
             }
+            records.Flush();
+            return null;
+        }
+
+        public override XElement PutItem(XElement record)
+        {
+            // Вычисляем идентификатор
+            string id = record.Attribute(ONames.rdfabout)?.Value;
+
+            // Вычисляем новую запись в объектном представлении
+            object[] nrec;
+            if (record.Name == "delete")
+            {
+                nrec = new object[] { id, "delete", new object[0] };
+            }
+            else if (record.Name.LocalName == "substitute")
+            {
+                return null;
+            }
+            else
+            {
+                nrec = XRecToORec(record);
+            }
+            PutItem(nrec);
             records.Flush();
             return null;
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace FactographData
 {
@@ -9,7 +10,7 @@ namespace FactographData
     {
         public string Id { get; private set; }
         public string Tp { get; private set; }
-        public TGroup[] Groups { get; private set; }
+        public TGroup[] Groups { get; set; }
         public TTree(string id, string tp, TGroup[] groups)
         {
             this.Id = id;
@@ -82,8 +83,8 @@ namespace FactographData
     }
     public class TextLan
     {
-        public string Text { get; private set; }
-        public string Lang { get; private set; }
+        public string Text { get; set; }
+        public string Lang { get; set; }
         public TextLan(string text, string lang) { this.Text = text; this.Lang = lang; }
     }
     public class TDTree : TGroup
@@ -164,6 +165,78 @@ namespace FactographData
         {
             this.adapter = adapter;
             this.ontology = ontology;
+        }
+
+        public void SaveTTree(TTree ttree, IFDataService db)
+        {
+            adapter.PutItem(TTreeToORec(ttree));
+            // TTree to XML преобразовать
+            var xres = new XElement(ToXName(ttree.Tp),
+                   (ttree.Id == null ? null : new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", ttree.Id)),
+                   ttree.Groups.Select(p =>
+                   {
+                       if (p is TTexts)
+                       {
+                           return new XElement(ToXName(p.Pred), ((TTexts)p).Values.First().Text,
+                               ((TTexts)p).Values.First().Lang == null ? null : new XAttribute("{http://www.w3.org/XML/1998/namespace}lang", ((TTexts)p).Values.First().Lang));
+                       }
+                       //else if (p is RLink)
+                       //{
+                       //    return new XElement(ToXName(p.Prop),
+                       //        new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", ((RLink)p).Resource));
+                       //}
+                       //else if (p is RDirect)
+                       //{
+                       //    if (((RDirect)p).DRec == null) return null;
+                       //    return new XElement(ToXName(p.Prop),
+                       //        new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", ((RDirect)p).DRec.Id));
+                       //}
+                       return null;
+                   }).Where(x => x != null),
+                   new XAttribute("owner", "Sergey"));
+            db.UpdateItem(xres);
+
+        }
+
+        private XName ToXName(string name)
+        {
+            int pos = name.LastIndexOf('/'); //TODO: Наверное, нужны еще другие окончания пространств имен
+            string localName = name.Substring(pos + 1);
+            string namespaceName = pos >= 0 ? name.Substring(0, pos + 1) : "";
+            return XName.Get(localName, namespaceName);
+        }
+
+        public object[] TTreeToORec(TTree ttree)
+        {
+            object[] orec = new object[3];
+            orec[0] = ttree.Id;
+            orec[1] = ttree.Tp;
+            List<object> fields = new List<object>();
+            foreach (TTexts ttext in ttree.Groups.Where(gr => gr is TTexts)) {
+
+                foreach (var value in ttext.Values)
+                {
+                    if (value.Text == null || value.Text == "")
+                    {
+                        continue;
+                    }
+                    object[] group = new object[2];
+                    group[0] = 1;
+                    object[] field = new object[3];
+                    field[0] = ttext.Pred;
+                    field[1] = value.Text;// == null ? "" : value.Text;
+                    field[2] = value.Lang;// == null ? "" : value.Lang;
+                    group[1] = field;
+                    fields.Add(group);
+                }
+
+            }
+            foreach (TDTree tdtree in ttree.Groups.Where(gr => gr is TDTree))
+            {
+                fields.Add(new object[2] { 2, new object[2] { tdtree.Pred, tdtree.Resource.Id } });
+            }
+            orec[2] = fields.ToArray();
+            return orec;
         }
 
         public TTree BuildTTree(string recId, int level = 2, string forbidden = null)

@@ -1,8 +1,9 @@
 ﻿@using Data
 @using FactographData
+@using System.Net.Http.Json
+@using System.Net.Http
 @implements ITreeComponent
 @inject FactographData.IFDataService db
-@inject NavigationManager navigationManager
 
 <table>
     @for (int ttreeInd = 0; ttreeInd < ttrees.Count(); ttreeInd++)
@@ -44,7 +45,18 @@
                                 currValue = ((TTexts)value).Values.FirstOrDefault()?.Text;
                             }
                             <td>
-                                <select>
+                                <select @onchange="@(arg => {
+                                        if (value == null) {
+                                            var newTexts = new TGroup[ttree.Groups.Length + 1];
+                                            ttree.Groups.CopyTo(newTexts, 0);
+                                            var textLan = new TextLan(arg.Value.ToString(), "");
+                                            var textLanArr = new TextLan[1]{textLan};
+                                            newTexts[ttree.Groups.Length] = new TTexts(possibleDirect, textLanArr);
+                                            ttree.Groups = newTexts;
+                                        } else {
+                                            ((TTexts)value).Values[0].Text = arg.Value.ToString();
+                                        }
+                                    })">
                                     <option value="null"></option>
                                     @foreach (var option in options)
                                     {
@@ -78,7 +90,22 @@
                         var textVal = db.GetLangText(value);
                         if (editedRow == ttreeInd)
                         {
-                            <td><input type="text" @bind-value="@textVal" /></td>
+                            if (value == null)
+                            {
+                                var newTexts = new TGroup[ttree.Groups.Length + 1];
+                                ttree.Groups.CopyTo(newTexts, 0);
+                                var textLan = new TextLan("", MainLayout.defaultLanguage);
+                                var textLanArr = new TextLan[1]{textLan};
+                                newTexts[ttree.Groups.Length] = new TTexts(possibleDirect, textLanArr);
+                                ttree.Groups = newTexts;
+                                <td><input type="text" @bind-value="@textLan.Text" /></td>
+
+                            }
+                            else
+                            {
+                                var editIndex = GetLangIndex((TTexts)value, textVal);
+                                <td><input type="text" @bind-value="@(((TTexts)value).Values[editIndex].Text)" /></td>
+                            }
                         } else
                         {
                             <td>@textVal</td>
@@ -114,7 +141,7 @@
                     }
                     else
                     {
-                        <td><button @onclick="@(arg => {editedRow = -1;})">Сохранить</button></td>
+                        <td><button @onclick="@(arg => {editedRow = -1; db.TBuilder.SaveTTree(ttree, db); })">Сохранить</button></td>
                     }
 
                 }
@@ -133,10 +160,29 @@
 
     protected override void OnInitialized() // = On Page Load
     {
+
+    }
+    public int GetLangIndex(TTexts texts, string value)
+    {
+        return value == null ? 0 : Array.FindIndex(texts.Values, (t => t.Text == value));
+    }
+
+    public TGroup[] GetExpandedGroup(TTree ttree, string possibleDirect)
+    {
+        var newTexts = new TGroup[ttree.Groups.Length + 1];
+        ttree.Groups.CopyTo(newTexts, 0);
+        var textLan = new TextLan("", MainLayout.defaultLanguage);
+        var textLanArr = new TextLan[1] { textLan };
+        newTexts[ttree.Groups.Length] = new TTexts(possibleDirect, textLanArr);
+        return newTexts;
     }
 
     protected override void OnParametersSet()
     {
         OnInitialized();
     }
+
+    
+
+
 }
