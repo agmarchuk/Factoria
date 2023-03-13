@@ -10,6 +10,15 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<FactographData.IFDataService, FactographData.FDataService>();
 builder.Services.AddHttpClient();
 
+//builder.Services.AddDistributedMemoryCache();
+
+//builder.Services.AddSession(options =>
+//{
+//    options.IdleTimeout = TimeSpan.FromSeconds(10);
+//    options.Cookie.HttpOnly = true;
+//    options.Cookie.IsEssential = true;
+//});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -21,10 +30,10 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
-
 app.UseRouting();
+//app.UseAuthorization();
+//app.UseSession();
 
 //app.MapBlazorHub();
 //app.MapFallbackToPage("/_Host");
@@ -38,6 +47,9 @@ app.UseEndpoints(endpoints =>
        pattern: "{controller=Home}/{action=Index}/{id?}");
 
 });
-
+//app.Use((context, next) =>
+//{
+//    return next(context);
+//});
 
 app.Run();

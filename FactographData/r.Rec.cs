@@ -1,27 +1,31 @@
-﻿using FactographData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Resources;
-using System.Security;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
-namespace ConsoleTest
+namespace FactographData.r
 {
-    public class RecBuilder
+    // ========== Rec классы ==========
+    public class Rec
     {
-        private Func<string, RRecord?> getRecord;
-
-        public RecBuilder(Func<string, RRecord?> getRecord)
+        public string? Id { get; private set; }
+        public string Tp { get; private set; }
+        public Pro[] Props { get; internal set; }
+        public Rec(string? id, string tp, params Pro[] props)
         {
-            this.getRecord = getRecord;
+            this.Id = id;
+            this.Tp = tp;
+            this.Props = props;
         }
-
-        public Rec? ToRec(RRecord r, Rec shablon)
+        public override string ToString()
         {
-            if (r == null) return null;
-            Rec result = new Rec(r.Id, r.Tp);
+            StringBuilder sb = new StringBuilder($"r({Id}, {Tp}");
+            foreach (var p in Props) { sb.Append(", "); sb.Append(p.ToString()); }
+            sb.Append(')');
+            return sb.ToString();
+        }
+        // =================== Самое главное: генерация дерева по шаблону ==========
+        public static Rec Build(RRecord r, Rec shablon, Func<string, RRecord> getRecord)
+        {
+            //if (r == null) return null;
+            Rec result = new(r.Id, r.Tp);
             // Следуем шаблону. Подсчитаем количество стрелок
             int[] nprops = Enumerable.Repeat<int>(0, shablon.Props.Length)
                 .ToArray();
@@ -84,9 +88,9 @@ namespace ConsoleTest
                 // Выясняем какой тип у свойства и в зависимости от типа делаем пополнение
                 if (pros[nom] is Str)
                 {
-                    if (((Str)pros[i]).Value == null)
+                    if (((Str)pros[nom]).Value == null)
                     { // нормально
-                        ((Str)pros[i]).Value = ((RField)p).Value;
+                        ((Str)pros[nom]).Value = ((RField)p).Value;
                     }
                     else throw new Exception($"Err: too many string values for {((RField)p).Prop}");
                 }
@@ -102,9 +106,12 @@ namespace ConsoleTest
                     RRecord? r1 = getRecord(id1);
                     var shablon1 = ((Dir)shablon.Props[nom]).Resources
                         .FirstOrDefault(res => res.Tp == r1?.Tp);
-                    Rec r11 = ToRec(r1, shablon1);
-                    ((Dir)pros[nom]).Resources[pos[nom]] = r11;
-                    pos[nom]++;
+                    if (shablon1 != null)
+                    {
+                        Rec r11 = Rec.Build(r1, shablon1, getRecord);
+                        ((Dir)pros[nom]).Resources[pos[nom]] = r11;
+                        pos[nom]++;
+                    }
                 }
                 else if (pros[nom] is Inv)
                 {
@@ -112,36 +119,33 @@ namespace ConsoleTest
                     RRecord? r1 = getRecord(id1);
                     var shablon1 = ((Inv)shablon.Props[nom]).Sources
                         .FirstOrDefault(res => res.Tp == r1?.Tp);
-                    Rec r11 = ToRec(r1, shablon1);
-                    ((Inv)pros[nom]).Sources[pos[nom]] = r11;
-                    pos[nom]++;
+                    if (shablon1 != null)
+                    {
+                        Rec r11 = Rec.Build(r1, shablon1, getRecord);
+                        ((Inv)pros[nom]).Sources[pos[nom]] = r11;
+                        pos[nom]++;
+                    }
                 }
             }
             // Добавляем pros, устранив нулевые
             result.Props = pros.Where(p => p != null).ToArray();
             return result;
         }
-    }
+        // ======= Теперь доступы =======
+        public string? GetText(string pred)
+        {
+            var group = Props.FirstOrDefault(p => p.Pred == pred);
+            if (group == null || !(group is Tex) ) return null;
+            Tex texts = (Tex)group;
+            string? result = null;
+            foreach (var t in texts.Values) 
+            {
+                result = t.Text;
+                if (t.Lang == "ru") break;
+            }
+            return result;
+        }
 
-    // ========== Rec классы ==========
-    public class Rec
-    {
-        public string? Id { get; private set; }
-        public string Tp { get; private set; }
-        public Pro[] Props { get; internal set; }
-        public Rec(string? id, string tp, params Pro[] props)
-        {
-            this.Id = id;
-            this.Tp = tp;
-            this.Props = props;
-        }
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder($"r({Id}, {Tp}");
-            foreach (var p in Props) { sb.Append(", "); sb.Append(p.ToString()); }
-            sb.Append(')');
-            return sb.ToString();
-        }
     }
     public abstract class Pro
     {
@@ -190,7 +194,7 @@ namespace ConsoleTest
     public class Dir : Pro
     {
         public Rec[] Resources { get; internal set; }
-        public Dir(string pred, params Rec[] resources) 
+        public Dir(string pred, params Rec[] resources)
         {
             Pred = pred;
             Resources = resources;
@@ -231,5 +235,4 @@ namespace ConsoleTest
             return sb.ToString();
         }
     }
-
 }

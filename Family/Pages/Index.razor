@@ -1,22 +1,25 @@
 ﻿@page "/"
+@page "/index/{entityId?}"
+
+@using System.Collections.Generic;
+@using System.Linq;
+@using Microsoft.AspNetCore.Session;
+@using Microsoft.AspNetCore.Http;
 @using FactographData
+@using FactographData.r
+@using Family.Components 
 @using Family.Data;
 @using Family.Models
 @using Family.Pages
+
 @inject FactographData.IFDataService db
 
-@{
-    string id = "famwf1233_1021";
-}
-<Family.Components.InlinePortrait treeId="@id" />
+<Family.Components.Info onChange="(app) => Received((AppStateModel)app)"/>
 
-<h1>Электронный архив семьи Марчуков</h1>
+<div>@(look)</div>
+<h1>@(tree.GetText("http://fogid.net/o/name"))</h1>
 <p>
-    В электронном архиве размещены документы, публикации, фотографии и фильмы, 
-    относящиеся к семье Марчук Гурия Ивановича и Ольги Николаевны. 
-    К семье относятся многочисленные родственники, есть информация о друзьях, коллегах, знакомых. 
-    Кроме документов, в архиве имеется информация о персонажах, событиях, организациях, мероприятиях.
-    Документы взяты из различных источников, включая домашние архивы.    
+    @(tree.GetText("http://fogid.net/o/description"))
 </p>
 <div class="portfolio-wrap">
     <div class="portfolio-item">
@@ -89,5 +92,76 @@
 </div>
 
 @code {
+    [Parameter]
+    public string entityId { get; set; }
+
+    private Rec tree = new Rec(null, "http://fogid.net/o/person");
+
+    private AppStateModel as_model;
+    private string? look = "Hi!";
+    private void Received(AppStateModel model)
+    {
+        this.as_model = model;
+        look = "Hello! = " + model.Regime + " " + model.User;
+        StateHasChanged();
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (string.IsNullOrEmpty(entityId))
+        {
+            entityId = "start2023";
+            //entityId = "famwf1233_1001";
+        }
+
+        //if (HttpContext.Session.Get<)
+        //var s = HttpContext.Session.GetString("Proba"); 
+        var adapter = db.GetAdapter();
+        var r = adapter.GetRecord(entityId);
+        //Rec shablon = new Rec(null, "");
+
+        Func<object, RRecord> ObjToRRecord = obj =>
+        {
+            object[] ob = (object[])obj;
+            object[] props = (object[])ob[2];
+            RRecord res = new RRecord { Id = (string)ob[0], Tp = (string)ob[1] };
+            //res.Props 
+            var query = props.Cast<object[]>().Select<object[], RProperty>(p =>
+            {
+                int tag = (int)p[0];
+                object[] alt = (object[])p[1];
+                string pred = (string)alt[0];
+                if (tag == 1) return new RField
+                { Prop = pred, Value = (string)alt[1], Lang = (string)alt[2] };
+                else if (tag == 2) return new RLink()
+                { Prop = pred, Resource = (string)alt[1] };
+                else if (tag == 3) return new RInverseLink()
+                    { Prop = pred, Source = (string)alt[1] };
+                throw new Exception("Err: 398492");
+            }).ToArray();
+            res.Props = query;
+            return res;
+        };
+        var rrec = ObjToRRecord(r);
+
+        Rec shablon = new Rec(null, "http://fogid.net/o/person",
+            new Tex("http://fogid.net/o/name"),
+            new Tex("http://fogid.net/o/description"),
+            new Inv("http://fogid.net/o/reflected",
+            new Rec(null, "http://fogid.net/o/reflection",
+                new Dir("http://fogid.net/o/in-doc",
+                    new Rec(null, "http://fogid.net/o/document",
+                        new Tex("http://fogid.net/o/name"),
+                        new Str("http://fogid.net/o/from-date")),
+                    new Rec(null, "http://fogid.net/o/photo-doc",
+                        new Tex("http://fogid.net/o/name"),
+                        new Str("http://fogid.net/o/from-date"),
+                        new Str("http://fogid.net/o/uri"),
+                        new Str("http://fogid.net/o/docmetainfo"))))
+                ));
+
+        tree = Rec.Build(rrec, shablon, id => ObjToRRecord(adapter.GetRecord(id)));
+    }
 
 }
