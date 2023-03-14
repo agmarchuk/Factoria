@@ -15,8 +15,8 @@
 @inject FactographData.IFDataService db
 
 <Family.Components.Info onChange="(app) => Received((AppStateModel)app)"/>
-
 <div>@(look)</div>
+
 <h1>@(tree.GetText("http://fogid.net/o/name"))</h1>
 <p>
     @(tree.GetText("http://fogid.net/o/description"))
