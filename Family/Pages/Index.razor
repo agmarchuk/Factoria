@@ -24,10 +24,13 @@
 <div>After</div>
 <Family.Components.Info onChange="(app) => Received((AppStateModel)app)"/>
 <div>@(look)</div>
-<DynamicComponent Type="componentType"></DynamicComponent>
-
-@*<DynamicComponent Type="componentType" Parameters="@(new Dictionary<string, object>(){{"ttrees",new TTree[]{currentRecord} }})"> </DynamicComponent>
+@*<DynamicComponent Type="componentType"></DynamicComponent>
 *@
+<DynamicComponent Type="componentType" Parameters="@(new Dictionary<string, object>
+{
+{"appState", as_model }
+})" />
+
 @*
     <h1>@(tree.GetText("http://fogid.net/o/name"))</h1>
 <p>
@@ -141,5 +144,8 @@
 
         tree = Rec.Build(rrec, shablon, id => ObjToRRecord(adapter.GetRecord(id)));
     }
-
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
 }
