@@ -14,10 +14,22 @@
 
 @inject FactographData.IFDataService db
 
+<PageTitle>Portrait</PageTitle>
+<AuthorizeView>
+    <Authorized>
+<div>Auth: @context.User.Claims.FirstOrDefault()?.Type</div>
+<div>Name: @context.User.Identity?.Name</div>
+    </Authorized>
+</AuthorizeView>
+<div>After</div>
 <Family.Components.Info onChange="(app) => Received((AppStateModel)app)"/>
 <div>@(look)</div>
+<DynamicComponent Type="componentType"></DynamicComponent>
 
-<h1>@(tree.GetText("http://fogid.net/o/name"))</h1>
+@*<DynamicComponent Type="componentType" Parameters="@(new Dictionary<string, object>(){{"ttrees",new TTree[]{currentRecord} }})"> </DynamicComponent>
+*@
+@*
+    <h1>@(tree.GetText("http://fogid.net/o/name"))</h1>
 <p>
     @(tree.GetText("http://fogid.net/o/description"))
 </p>
@@ -52,48 +64,14 @@
             </a>
         </div>
     </div>
-
-    <div class="portfolio-item">
-        <div class="portfolio-item-wrap">
-            <a href="">
-                <img src="https://html5book.ru/wp-content/uploads/2018/12/natjurmort.jpg">
-                <div class="portfolio-item-inner">
-                    <div class="portfolio-heading">
-                        <h3>Услуги фотографа</h3>
-                    </div>
-                    <ul>
-                        <li>Праздники и корпоративы</li>
-                        <li>Свадебная фотография</li>
-                        <li>Интерьеры</li>
-                        <li>Фотосессия</li>
-                    </ul>
-                </div>
-            </a>
-        </div>
-    </div>
-    <div class="portfolio-item">
-        <div class="portfolio-item-wrap">
-            <a href="">
-                <img src="https://html5book.ru/wp-content/uploads/2018/12/natjurmort.jpg">
-                <div class="portfolio-item-inner">
-                    <div class="portfolio-heading">
-                        <h3>Услуги фотографа</h3>
-                    </div>
-                    <ul>
-                        <li>Праздники и корпоративы</li>
-                        <li>Свадебная фотография</li>
-                        <li>Интерьеры</li>
-                        <li>Фотосессия</li>
-                    </ul>
-                </div>
-            </a>
-        </div>
-    </div>
 </div>
+*@
 
 @code {
     [Parameter]
     public string entityId { get; set; }
+
+    private Type componentType = typeof(PortraitView);
 
     private Rec tree = new Rec(null, "http://fogid.net/o/person");
 

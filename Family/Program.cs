@@ -1,23 +1,39 @@
-using Family.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+// ****** BLAZOR COOKIE Auth Code (begin)
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
+using System.Net.Http;
+using System.Net;
+// ******
+using Family.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// ****** BLAZOR COOKIE Auth Code (begin)
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.CheckConsentNeeded = context => true;
+    options.MinimumSameSitePolicy = SameSiteMode.None;
+});
+builder.Services.AddAuthentication(
+    CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie();
+// ******
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<FactographData.IFDataService, FactographData.FDataService>();
 builder.Services.AddHttpClient();
-
-//builder.Services.AddDistributedMemoryCache();
-
-//builder.Services.AddSession(options =>
-//{
-//    options.IdleTimeout = TimeSpan.FromSeconds(10);
-//    options.Cookie.HttpOnly = true;
-//    options.Cookie.IsEssential = true;
-//});
+// ****** BLAZOR COOKIE Auth Code (begin)
+// From: https://github.com/aspnet/Blazor/issues/1554
+// HttpContextAccessor
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<HttpContextAccessor>();
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<HttpClient>();
+// ******
 
 var app = builder.Build();
 
@@ -33,10 +49,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 //app.UseAuthorization();
-//app.UseSession();
-
-//app.MapBlazorHub();
-//app.MapFallbackToPage("/_Host");
+// ****** BLAZOR COOKIE Auth Code (begin)
+app.UseCookiePolicy();
+app.UseAuthentication();
+// ******
 
 app.UseEndpoints(endpoints =>
 {

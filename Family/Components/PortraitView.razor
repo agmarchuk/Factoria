@@ -1,0 +1,13 @@
+﻿@using Family.Models;
+<h3>PortraitView</h3>
+<div>U:@(appState.User) R:@(appState.Regime)</div>
+
+@code {
+    [Parameter]
+    public AppStateModel appState { get; set; } = new AppStateModel();
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
+}
