@@ -25,12 +25,12 @@
 <Family.Components.Info onChange="(app) => Received((AppStateModel)app)"/>
 <div>@(look)</div>
 @*<DynamicComponent Type="componentType"></DynamicComponent>
-*@
 <DynamicComponent Type="componentType" Parameters="@(new Dictionary<string, object>
 {
 {"appState", as_model }
 })" />
-
+*@
+<PortraitView appState="as_model" />
 @*
     <h1>@(tree.GetText("http://fogid.net/o/name"))</h1>
 <p>
