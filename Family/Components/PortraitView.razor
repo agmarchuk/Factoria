@@ -1,10 +1,14 @@
-﻿@using Family.Models;
+﻿@using Family.Authentication;
+@using Family.Models;
 <h3>PortraitView</h3>
-<div>U:@(appState.User) R:@(appState.Regime)</div>
+@if (appState != null)
+{
+    <div>U:@(appState.UserName) R:@(appState.Regime)</div>
+}
 
 @code {
     [Parameter]
-    public AppStateModel appState { get; set; } = new AppStateModel();
+    public AuthState appState { get; set; } = new AuthState();
 
     protected override void OnParametersSet()
     {

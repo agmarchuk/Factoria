@@ -1,151 +1,21 @@
 ﻿@page "/"
 @page "/index/{entityId?}"
 
-@using System.Collections.Generic;
-@using System.Linq;
-@using Microsoft.AspNetCore.Session;
-@using Microsoft.AspNetCore.Http;
 @using FactographData
 @using FactographData.r
-@using Family.Components 
-@using Family.Data;
-@using Family.Models
-@using Family.Pages
 
 @inject FactographData.IFDataService db
+@inject NavigationManager navManager
 
-<PageTitle>Portrait</PageTitle>
-<AuthorizeView>
-    <Authorized>
-<div>Auth: @context.User.Claims.FirstOrDefault()?.Type</div>
-<div>Name: @context.User.Identity?.Name</div>
-    </Authorized>
-</AuthorizeView>
-<div>After</div>
-<Family.Components.Info onChange="(app) => Received((AppStateModel)app)"/>
-<div>@(look)</div>
-@*<DynamicComponent Type="componentType"></DynamicComponent>
-<DynamicComponent Type="componentType" Parameters="@(new Dictionary<string, object>
-{
-{"appState", as_model }
-})" />
-*@
-<PortraitView appState="as_model" />
-@*
-    <h1>@(tree.GetText("http://fogid.net/o/name"))</h1>
-<p>
-    @(tree.GetText("http://fogid.net/o/description"))
-</p>
-<div class="portfolio-wrap">
-    <div class="portfolio-item">
-        <div class="portfolio-item-wrap" style="width:200px;">
-            <a href="/gene">
-                <img src="/Безымянный.jpg" style="float:left;">
-                <div class="portfolio-item-inner">
-                    Генеалогия Марчуков и родственных семей, созданная на основе 
-                    двух генеалогических деревьев, построенных Ольгой Николаевной
-                </div>
-            </a>
-        </div>
-    </div>
-
-    <div class="portfolio-item">
-        <div class="portfolio-item-wrap">
-            <a href="">
-                <img src="https://html5book.ru/wp-content/uploads/2018/12/natjurmort.jpg">
-                <div class="portfolio-item-inner">
-                    <div class="portfolio-heading">
-                        <h3>Услуги фотографа</h3>
-                    </div>
-                    <ul>
-                        <li>Праздники и корпоративы</li>
-                        <li>Свадебная фотография</li>
-                        <li>Интерьеры</li>
-                        <li>Фотосессия</li>
-                    </ul>
-                </div>
-            </a>
-        </div>
-    </div>
-</div>
-*@
+<Family.Components.Info/>
 
 @code {
     [Parameter]
-    public string entityId { get; set; }
+    public string? entityId { get; set; }
 
-    private Type componentType = typeof(PortraitView);
-
-    private Rec tree = new Rec(null, "http://fogid.net/o/person");
-
-    private AppStateModel as_model;
-    private string? look = "Hi!";
-    private void Received(AppStateModel model)
-    {
-        this.as_model = model;
-        look = "Hello! = " + model.Regime + " " + model.User;
-        StateHasChanged();
-    }
-
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-        if (string.IsNullOrEmpty(entityId))
-        {
-            entityId = "start2023";
-            //entityId = "famwf1233_1001";
-        }
-
-        //if (HttpContext.Session.Get<)
-        //var s = HttpContext.Session.GetString("Proba"); 
-        var adapter = db.GetAdapter();
-        var r = adapter.GetRecord(entityId);
-        //Rec shablon = new Rec(null, "");
-
-        Func<object, RRecord> ObjToRRecord = obj =>
-        {
-            object[] ob = (object[])obj;
-            object[] props = (object[])ob[2];
-            RRecord res = new RRecord { Id = (string)ob[0], Tp = (string)ob[1] };
-            //res.Props 
-            var query = props.Cast<object[]>().Select<object[], RProperty>(p =>
-            {
-                int tag = (int)p[0];
-                object[] alt = (object[])p[1];
-                string pred = (string)alt[0];
-                if (tag == 1) return new RField
-                { Prop = pred, Value = (string)alt[1], Lang = (string)alt[2] };
-                else if (tag == 2) return new RLink()
-                { Prop = pred, Resource = (string)alt[1] };
-                else if (tag == 3) return new RInverseLink()
-                    { Prop = pred, Source = (string)alt[1] };
-                throw new Exception("Err: 398492");
-            }).ToArray();
-            res.Props = query;
-            return res;
-        };
-        var rrec = ObjToRRecord(r);
-
-        Rec shablon = new Rec(null, "http://fogid.net/o/person",
-            new Tex("http://fogid.net/o/name"),
-            new Tex("http://fogid.net/o/description"),
-            new Inv("http://fogid.net/o/reflected",
-            new Rec(null, "http://fogid.net/o/reflection",
-                new Dir("http://fogid.net/o/in-doc",
-                    new Rec(null, "http://fogid.net/o/document",
-                        new Tex("http://fogid.net/o/name"),
-                        new Str("http://fogid.net/o/from-date")),
-                    new Rec(null, "http://fogid.net/o/photo-doc",
-                        new Tex("http://fogid.net/o/name"),
-                        new Str("http://fogid.net/o/from-date"),
-                        new Str("http://fogid.net/o/uri"),
-                        new Str("http://fogid.net/o/docmetainfo"))))
-                ));
-
-        tree = Rec.Build(rrec, shablon, id => ObjToRRecord(adapter.GetRecord(id)));
-    }
     protected override void OnInitialized()
     {
         base.OnInitialized();
+        //navManager.NavigateTo("/view/", true);
     }
 }

@@ -7,14 +7,16 @@
 @inject NavigationManager NavManager
 @inject FactographData.IFDataService db
 
+<Family.Components.Info id="@entityId" />
+
 <div style="">
     <input @bind="searchsample" style="height:24px; margin-top:0px;margin-bottom:10px;" />
     <span>расш.<input type="checkbox" @bind="extended" /></span>
     <span> </span>
-    <div style="display: inline-block; float:right; ">
+@*    <div style="display: inline-block; float:right; ">
         <a href="edit/@(entityId)">ред</a> |
         <a href="gene/@(entityId)">род</a>
-    </div>
+    </div>*@
 </div>
 @if (!string.IsNullOrEmpty(searchsample))
 {
@@ -37,7 +39,7 @@
     foreach (RRecord rec in query)
     {
         <div>
-            <a href="javascript:void(0)" @onclick="@(e =>SearchResultClick(rec))">@rec.GetName()</a>
+            <a href="/gene/@(rec.Id)">@rec.GetName()</a>
         </div>
     }
 }
@@ -160,6 +162,7 @@ else
     {
         if (entityId != null)
         {
+            searchsample = null;
             Build(entityId);
         }
     }

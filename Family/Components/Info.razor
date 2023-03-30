@@ -1,73 +1,97 @@
-﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+﻿@using Family.Authentication;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @using Family.Models;
 
-@inject ProtectedSessionStorage ProtectedSessionStore
+@inject AuthenticationStateProvider authStateProvider
+@*@inject ProtectedSessionStorage ProtectedSessionStore*@
+@inject ProtectedSessionStorage storage
+@inject NavigationManager navManager
 
 <div>
-    <div style="float:right; ">
-        <input value="@as_model.User" @onchange="FixName" />           
-    </div>
-    <div>
-        <a href="/"><span class="oi oi-home" aria-hidden="true"></span> Home</a> &nbsp;
-        <select @onchange="FixView">
-            @if (as_model.Regime == "view")
+    <div class="px-4" style="float:right;">
+        <select @onchange='SelectRegime'>
+            @if (sessState.Regime == "view")
             {
-                <option selected value="view">БД</option>
+                <option value="view" selected>просмотр</option>
             }
             else
             {
-                <option value="view">БД</option>
+                <option value="view">просмотр</option>
             }
-            @if (as_model.Regime == "gene")
+            @if (sessState.Regime == "edit")
             {
-                <option selected value="gene">Дерево</option>
-            }
-            else
-            {
-                <option value="gene">Дерево</option>
-            }
-            @if (as_model.Regime == "edit")
-            {
-                <option selected value="edit">Редактирование</option>
+                <option value="edit" selected>редактир</option>
             }
             else
             {
-                <option value="edit">Редактирование</option>
+                <option value="edit">редактир</option>
+            }
+            @if (sessState.Regime == "gene")
+            {
+                <option value="gene" selected>семья</option>
+            }
+            else
+            {
+                <option value="gene">семья</option>
             }
         </select>
+        &nbsp;&nbsp;
+        <select>
+            <option>ru</option>
+            <option>en</option>
+        </select>
+        <AuthorizeView>
+            <Authorized>&nbsp;&nbsp;<span>@(context.User.Identity?.Name)</span> <a @onclick="Logout" href="javascript:voi(0)">Logout</a></Authorized>
+            <NotAuthorized><a href="/login">Login</a></NotAuthorized>
+        </AuthorizeView>
     </div>
+    <h1 style="text-decoration-line:underline;">Семья Марчуков</h1>
 </div>
+
 @code {
     [Parameter]
-    public EventCallback onChange { get; set; }
+    public string? id { get; set; } 
+    [Parameter]
+    public string? usr { get; set; }
 
-    public AppStateModel as_model { get; set; } = new AppStateModel();
+    private bool isConnected = false;
+    private SessionState sessState = new SessionState();
+    private async Task Logout()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        await customAuthStateProvider.UpdateAuthenticationState(null);
+        navManager.NavigateTo("/", true);
+    }
 
-    private async Task FixName(ChangeEventArgs args)
+    async Task SelectRegime(ChangeEventArgs e)
     {
-        as_model.User = args?.Value?.ToString(); 
-        await SaveUserState();
+        string? reg = e.Value?.ToString();
+        sessState.Regime = reg;
+        await SetSessionStateAsync();
+        //StateHasChanged();
+        navManager.NavigateTo("/" + reg + "/" + id??"", true);
     }
-    private async Task FixView(ChangeEventArgs args)
+    private async Task SetSessionStateAsync()
     {
-        as_model.Regime = args?.Value?.ToString() ?? "view";
-        await SaveUserState();
+        await storage.SetAsync("UserState", sessState);
     }
+
+    private async Task GetStateAsync()
+    {
+        var us = await storage.GetAsync<SessionState>("UserState");
+        if (us.Success) sessState = us.Value;
+        else sessState = new SessionState();
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
         if (firstRender)
         {
-            as_model = (await ProtectedSessionStore.GetAsync<AppStateModel>("UserState")).Value ?? new AppStateModel();
+            await GetStateAsync();
+            
             StateHasChanged();
         }
-    }
-
-
-    private async Task SaveUserState()
-    {
-        await ProtectedSessionStore.SetAsync("UserState", as_model);
-        await onChange.InvokeAsync(as_model);
     }
 }
 

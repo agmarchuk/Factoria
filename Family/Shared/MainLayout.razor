@@ -1,26 +1,98 @@
 ﻿@inherits LayoutComponentBase
+@using Family.Authentication;
+@using Family.Models;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@inject AuthenticationStateProvider authStateProvider
+@inject ProtectedSessionStorage storage
+@inject NavigationManager navManager
 
-@*<PageTitle>Family</PageTitle>
-*@
-<div class="">
-@*    <div>
-        <div style="float:right; width: 100px;">
-            <a href="/gene">Генеалогия</a> |
-            <a href="/edit">Редактирование</a> |
-            <a href="/edit"></a>
-            <a href="">Меню 4</a>
-        </div>
-        <div>
-            <a href="/"><span class="oi oi-home" aria-hidden="true"></span> Home</a> &nbsp;
+<PageTitle>BlazorAuthAuth</PageTitle>
 
+<div class="page">
+    <main>
+@*        <div>
+        <div class="px-4" style="float:right;">
+            <select @onchange='SelectRegime'>
+                @if (sessState.Regime == "view")
+                {
+                    <option value="view" selected>просмотр</option>
+                }
+                else
+                {
+                    <option value="view">просмотр</option>
+                }
+                @if (sessState.Regime == "edit")
+                {
+                    <option value="edit" selected>редактир</option>
+                }
+                else
+                {
+                    <option value="edit">редактир</option>
+                }
+                @if (sessState.Regime == "gene")
+                {
+                    <option value="gene" selected>семья</option>
+                }
+                else
+                {
+                    <option value="gene">семья</option>
+                }
+            </select>
+            &nbsp;&nbsp;
+            <select>
+                <option>ru</option>
+                <option>en</option>
+            </select>
+            <AuthorizeView>
+                <Authorized>&nbsp;&nbsp;<span>@(context.User.Identity?.Name)</span> <a @onclick="Logout" href="javascript:voi(0)">Logout</a></Authorized>
+                <NotAuthorized><a href="/login">Login</a></NotAuthorized>
+            </AuthorizeView>
         </div>
-    </div>
+        <h1 style="text-decoration-line:underline;">Семья Марчуков</h1>
+        </div>
 *@
-@*    <div class="">
-        <div class="content px-4">
+        <article class="content px-4">
             @Body
-        </div>
-    </div>
-*@
-    @Body
+        </article>
+    </main>
 </div>
+
+@code {
+    //private bool isConnected = false;
+    //private SessionState sessState = new SessionState();
+    //private async Task Logout()
+    //{
+    //    var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+    //    await customAuthStateProvider.UpdateAuthenticationState(null);
+    //    navManager.NavigateTo("/", true);
+    //}
+
+    //async Task SelectRegime(ChangeEventArgs e)
+    //{
+    //    string? reg = e.Value?.ToString();
+    //    sessState.Regime = reg;
+    //    await SetSessionStateAsync();
+    //    //StateHasChanged();
+    //}
+    //private async Task SetSessionStateAsync()
+    //{
+    //    await storage.SetAsync("UserState", sessState);
+    //}
+
+    //private async Task GetStateAsync()
+    //{
+    //    var us = await storage.GetAsync<SessionState>("UserState");
+    //    if (us.Success) sessState = us.Value;
+    //    else sessState = new SessionState();
+    //}
+
+    //protected override async Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    await base.OnAfterRenderAsync(firstRender);
+    //    if (firstRender)
+    //    {
+    //        await GetStateAsync();
+    //        StateHasChanged();
+    //    }
+    //}    
+}

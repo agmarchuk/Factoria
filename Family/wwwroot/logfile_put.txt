@@ -84,3 +84,33 @@
   <has-title rdf:resource="Mc2816_1001" />
   <degree>Ярчайший</degree>
 </titled>
+<person rdf:about="Mc2816_2206" mT="2023-03-28 10:13:33Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <name>Пупкин Зет Зетович</name>
+</person>
+<person rdf:about="Mc2816_2207" mT="2023-03-28 17:52:35Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <name>Пупкин Альфа</name>
+</person>
+<person rdf:about="Mc2816_2208" mT="2023-03-29 02:25:18Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <name>Пупкин Бет Бетович</name>
+</person>
+<person rdf:about="Mc2816_2210" mT="2023-03-29 03:14:21Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <name>Пупкин Гамма</name>
+</person>
+<person rdf:about="Mc2816_2210" mT="2023-03-29 03:14:45Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <name>Пупкин Гамма</name>
+  <from-date>2023-03-29</from-date>
+</person>
+<person rdf:about="Mc2816_2210" mT="2023-03-29 03:26:58Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <name>Пупкин Гамма</name>
+  <from-date>2023-03-29</from-date>
+  <father rdf:resource="Mc2816_2208" />
+</person>
+<delete rdf:about="Mc2816_2209" mT="2023-03-29 03:27:26Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2207" mT="2023-03-29 03:27:43Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<titled rdf:about="Mc2816_2211" mT="2023-03-29 03:28:07Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <has-title rdf:resource="Mc2816_2210" />
+</titled>
+<titled rdf:about="Mc2816_2211" mT="2023-03-29 03:28:29Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <has-title rdf:resource="Mc2816_2210" />
+  <degree>Могучий и ужасный</degree>
+</titled>
