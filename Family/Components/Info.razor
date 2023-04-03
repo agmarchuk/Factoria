@@ -10,6 +10,14 @@
 <div>
     <div class="px-4" style="float:right;">
         <select @onchange='SelectRegime'>
+            @if (sessState.Regime == "home")
+            {
+                <option value="home" selected></option>
+            }
+            else
+            {
+                <option value="home"></option>
+            }
             @if (sessState.Regime == "view")
             {
                 <option value="view" selected>просмотр</option>
@@ -46,6 +54,7 @@
         </AuthorizeView>
     </div>
     <h1 style="text-decoration-line:underline;">Семья Марчуков</h1>
+    
 </div>
 
 @code {

@@ -39,5 +39,44 @@ namespace FactographData
 
         // ============ Билдеры =============
         TRecordBuilder TBuilder { get; }
+
+        // ============ Работа с RRecord - могут (должны) быть переопределены ===========
+        RRecord? GetRRecord(string id, bool addinverse)
+        {
+            XElement xrec = GetItemByIdBasic(id, true);
+            if (xrec != null && xrec.Attribute("id")!= null && xrec.Attribute("type") != null)
+            {
+                RRecord rr = new RRecord
+                {
+                    Id = xrec.Attribute("id").Value,
+                    Tp = xrec.Attribute("type").Value,
+                    Props = xrec.Elements()
+                        .Select<XElement, RProperty?>(p =>
+                        {
+                            string? pred = p.Attribute("prop")?.Value;
+                            if (pred == null) return null;
+                            if (p.Name == "field")
+                            {
+                                return new RField { Prop = pred, Value = p.Value, Lang = "ru" };
+                            }
+                            else if (p.Name == "direct")
+                            {
+                                return new RLink { Prop = pred, Resource = p.Element("record").Attribute("id").Value };
+                                //return new RDirect { Prop = pred, DRec = }
+                            }
+                            if (p.Name == "inverse")
+                            {
+                                return new RInverseLink { Prop = pred, Source = p.Element("record").Attribute("id").Value };
+                            }
+                            else return null;
+                        })
+                        .Where(ob => ob != null)
+                        .Cast<RProperty>()
+                        .ToArray()
+                };
+                return rr;
+            };
+            return null;
+        } 
     }
 }

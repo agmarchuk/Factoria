@@ -150,6 +150,22 @@ namespace FactographData.r
     public abstract class Pro
     {
         public string Pred { get; internal set; } = "";
+        //public string? Val 
+        //{ 
+        //    get 
+        //    {
+        //        if ( this is Tex)
+        //        {
+        //            var tex = (Tex)this;
+        //            return tex.Values.FirstOrDefault(t => t.Lang == "ru")?.Text;
+        //        }
+        //        else if (this is Str)
+        //        {
+        //            return ((Str)this).Value;
+        //        }
+        //        else { return null; }
+        //    }
+        //}
     }
     public class Tex : Pro
     {

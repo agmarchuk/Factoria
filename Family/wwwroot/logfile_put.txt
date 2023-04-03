@@ -114,3 +114,10 @@
   <has-title rdf:resource="Mc2816_2210" />
   <degree>Могучий и ужасный</degree>
 </titled>
+<person rdf:about="Mc2816_2212" mT="2023-04-03 10:50:57Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <name>Пупкин Иностранный</name>
+</person>
+<person rdf:about="Mc2816_2212" mT="2023-04-03 10:51:31Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <name>Пупкин Иностранный</name>
+  <from-date>2023-04-03</from-date>
+</person>
