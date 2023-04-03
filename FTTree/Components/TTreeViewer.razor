@@ -10,7 +10,7 @@
 {
     var texts = ttree.Groups.Where(gr => gr is TTexts);
     var directs = ttree.Groups.Where(gr => gr is TDTree);
-    var possibleDirects = db.ontology.GetDirectPropsByType(ttree.Tp).ToArray();
+    var possibleDirects = db.ontology.GetDirectPropsByType(ttree.Tp).Where(type => type != forbidden).ToArray();
 
     @if (firstRow)
     {
@@ -64,6 +64,9 @@
 @code {
     [Parameter]
     public TTree[] ttrees { get; set; }
+
+    [Parameter]
+    public string forbidden { get; set; }
 
     private bool firstRow = true;
 

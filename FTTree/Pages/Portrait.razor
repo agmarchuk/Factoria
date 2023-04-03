@@ -10,7 +10,7 @@
     <Authorized>
 <div>Auth: @context.User.Claims.FirstOrDefault().Type</div>
  <div>Name: @context.User.Identity.Name</div>
-</Authorized>
+    </Authorized>
 </AuthorizeView>
 <h1>Portrait</h1>
 @if (mode == "view")
@@ -29,7 +29,7 @@ else
     {
         <h4>@db.GetOntLabel(typedInv.Pred)</h4>
         var sources = ((TTypedInv)typedInv).Sources;
-        <DynamicComponent Type="componentType" Parameters="@(new Dictionary<string, object>(){{"ttrees",sources}})"></DynamicComponent>
+        <DynamicComponent Type="componentType" Parameters="@(new Dictionary<string, object>(){{"ttrees",sources}, {"forbidden", inverse.Pred}})"></DynamicComponent>
 
     }
 }

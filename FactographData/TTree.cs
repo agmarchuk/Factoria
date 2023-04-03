@@ -108,10 +108,13 @@ namespace FactographData
     public class TInvTree : TGroup
     {
         public TTypedInv[] Sources { get; private set; }
-        public TInvTree(string pred, TTypedInv[] sources)
+
+        public string pointingPred;
+        public TInvTree(string pred, TTypedInv[] sources, string pointingPred)
         {
             this.Pred = pred;
             this.Sources = sources;
+            this.pointingPred = pointingPred;
         }
     }
 
@@ -179,6 +182,10 @@ namespace FactographData
                        {
                            return new XElement(ToXName(p.Pred), ((TTexts)p).Values.First().Text,
                                ((TTexts)p).Values.First().Lang == null ? null : new XAttribute("{http://www.w3.org/XML/1998/namespace}lang", ((TTexts)p).Values.First().Lang));
+                       } else if (p is TDTree)
+                       {
+                           return new XElement(ToXName(p.Pred), new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", ((TDTree)p).Resource.Id));
+
                        }
                        //else if (p is RLink)
                        //{
@@ -196,6 +203,23 @@ namespace FactographData
                    new XAttribute("owner", "Sergey"));
             db.UpdateItem(xres);
 
+        }
+
+        public IEnumerable<XElement> GroupsToXElement(TGroup[] tgroups)
+        {
+            return tgroups.Select(p =>
+            {
+                if (p is TTexts)
+                {
+                    return new XElement(ToXName(p.Pred), ((TTexts)p).Values.First().Text,
+                        ((TTexts)p).Values.First().Lang == null ? null : new XAttribute("{http://www.w3.org/XML/1998/namespace}lang", ((TTexts)p).Values.First().Lang));
+                }
+                else if (p is TDTree)
+                {
+                    
+                }
+                return null;
+            });
         }
 
         private XName ToXName(string name)
@@ -239,11 +263,13 @@ namespace FactographData
             return orec;
         }
 
-        public TTree BuildTTree(string recId, int level = 2, string forbidden = null)
+        public TTree BuildTTree(string recId, int level = 2)
         {
             // Если level = 0 - только поля, 1 - поля и прямые ссылки,  2 - поля, прямые ссылки и обратные ссылки
             object[] erec = (object[])adapter.GetRecord(recId); //(new RYEngine(db)).GetRRecord(recId, level > 1);
+            var pPred = "";
             if (erec == null) return null;
+            
             string Id = (string)erec[0];
             string Tp = (string)erec[1];
             var oprops = ((object[])erec[2]).GroupBy(prop => ((object[])prop)[0]);
@@ -270,8 +296,8 @@ namespace FactographData
                 {
                     foreach (var pred_group in pred_grouped_props)
                     {
-
-                        TTree directTree = BuildTRecord((string)((object[])((object[])pred_group.First())[1])[1], level - 1);// First becasue direct supports only one link
+                        var dir_id = (string)((object[])((object[])pred_group.First())[1])[1];
+                        TTree directTree = BuildTTree(dir_id, level - 1);// First becasue direct supports only one link
                         resultGroups.Add(new TDTree((string)pred_group.Key, directTree));
 
                     }
@@ -282,10 +308,12 @@ namespace FactographData
                 {
                     foreach (var pred_group in pred_grouped_props)
                     {
+                        pPred = Id;
                         IEnumerable<TTree> tTrees = pred_group
-                            .Select(pg => BuildTRecord((string)((object[])((object[])pg)[1])[1], level - 1, (string)((object[])((object[])pg)[1])[0])); // All TTrees
+                            .Select(pg => BuildTTree((string)((object[])((object[])pg)[1])[1], level - 1)); // All TTrees
+
                         IEnumerable<TTypedInv> typedInvs = tTrees.GroupBy(tree => tree.Tp).Select(x => new TTypedInv(x.Key, x.ToArray())); // TTrees grouped by type
-                        resultGroups.Add(new TInvTree((string)pred_group.Key, typedInvs.ToArray()));
+                        resultGroups.Add(new TInvTree((string)pred_group.Key, typedInvs.ToArray(), pPred));
 
                     }
                 }

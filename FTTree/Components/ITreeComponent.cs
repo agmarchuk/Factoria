@@ -7,5 +7,8 @@ namespace FTTree.Components
     {
         [Parameter]
         public TTree[] ttrees { get; set; }
+
+        [Parameter]
+        public string forbidden { get; set; }
     }
 }

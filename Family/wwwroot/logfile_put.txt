@@ -121,3 +121,14 @@
   <name>Пупкин Иностранный</name>
   <from-date>2023-04-03</from-date>
 </person>
+<person rdf:about="syp2001-p-marchuk_a" mT="2023-04-03 11:35:05Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <name xml:lang="ru">Марчук Александр Гурьевич</name>
+  <from-date>1951-12-30</from-date>
+  <description xml:lang="ru">555</description>
+  <to-date>213</to-date>
+  <sex>m</sex>
+  <comment xml:lang="ru">comm123</comment>
+  <description xml:lang="en">123</description>
+  <comment xml:lang="en">test</comment>
+  <name xml:lang="en">Marchuk Alexander</name>
+</person>

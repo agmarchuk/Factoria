@@ -11,7 +11,7 @@
         var ttree = ttrees[ttreeInd];
         var texts = ttree.Groups.Where(gr => gr is TTexts).ToArray();
         var directs = ttree.Groups.Where(gr => gr is TDTree).ToArray();
-        var possibleDirects = db.ontology.GetDirectPropsByType(ttree.Tp).ToArray();
+        var possibleDirects = db.ontology.GetDirectPropsByType(ttree.Tp).Where(type => type != forbidden).ToArray();
 
         @if (ttreeInd == 0)
         {
@@ -118,7 +118,14 @@
                     value = directs.FirstOrDefault(text => text.Pred == possibleDirect);
                     if (editedRow == ttreeInd)
                     {
-                           <td></td>
+                        if (value != null)
+                        {
+                            <td>@db.GetName(((TDTree)value).Resource)</td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
                     }
                     else
                     {
@@ -155,6 +162,9 @@
 @code {
     [Parameter]
     public TTree[] ttrees { get; set; }
+
+    [Parameter]
+    public string forbidden { get; set; }
 
     private int editedRow = -1;
 
