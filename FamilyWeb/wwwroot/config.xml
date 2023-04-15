@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+  <!--
+  <database connectionstring="xml:"/>
+  -->
+  <database connectionstring="upi:D:\Home\FactographDatabases\upimain2\"/>
+
+  <LoadCassette>C:\FactographProjects\gi_pharchive</LoadCassette>
+  <LoadCassette>C:\FactographProjects\gi_disks</LoadCassette>
+  <LoadCassette>C:\FactographProjects\gi_disk2</LoadCassette>
+  <LoadCassette>C:\FactographProjects\gi_disk3</LoadCassette>
+  <LoadCassette>C:\FactographProjects\Ma</LoadCassette>
+  <LoadCassette>C:\FactographProjects\an_cass</LoadCassette>
+  <LoadCassette>C:\FactographProjects\GeneTreeCass</LoadCassette>
+
+  <LoadCassette write="true">C:\FactographProjects\Marchuk_common</LoadCassette>
+
+</config>

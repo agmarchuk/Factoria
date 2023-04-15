@@ -7,13 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!--<Compile Remove="Authentication\**" />
-    <Content Remove="Authentication\**" />
-    <EmbeddedResource Remove="Authentication\**" />
-    <None Remove="Authentication\**" />-->
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\FactographData\FactographData.csproj" />
   </ItemGroup>
 

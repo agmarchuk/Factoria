@@ -292,7 +292,7 @@ namespace FactographData
         public bool IsEnumeration(string prop) => enufildspecs.ContainsKey(prop);
         public string EnumValue(string prop, string val, string lang)
         {
-            if (!enufildspecs.ContainsKey(prop)) return null;
+            if (val == null || !enufildspecs.ContainsKey(prop)) return null;
             XElement spec = enufildspecs[prop];
             var state = spec.Elements("state")
                 .Where(s => s.Attribute("value").Value == val)

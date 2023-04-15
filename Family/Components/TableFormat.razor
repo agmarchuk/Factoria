@@ -1,0 +1,96 @@
+﻿@using FactographData;
+@using FactographData.r;
+@using Family.Data;
+@inject IFDataService db
+
+@*
+    Компонент создает одну таблицу, построенную из рядков записей одного типа, сформированных 
+    одним шаблоном. Первый рядок формирует набор столбцов. Перед заголовками делается полоска с типом записей
+*@
+
+<table border="1">
+    <tr>
+        <td colspan="@(records[0].Props.Where(v => v is Tex || v is Str || v is Dir).Count())">
+            <span style="color:coral;">@(db.ontology.LabelOfOnto(records[0].Tp))</span>
+            @if (records[0].Id == recordId)
+            {
+                <span>&nbsp; @(recordId)</span>
+            }
+        </td>
+    </tr>
+    <tr>
+        @foreach (var v in records[0].Props.Where(v => v is Tex || v is Str || v is Dir))
+        {
+            string label = db.ontology.LabelOfOnto(v.Pred);
+            <th>@(label)</th>
+        }
+    </tr>
+    @foreach (var tree in records)
+    {
+        <tr>
+            @foreach (var v in tree.Props.Where(v => v is Tex || v is Str || v is Dir))
+            {
+                <td>
+                    @if (v is Tex)
+                    {
+                        var tx = Family.Data.Utils.OneText((Tex)v);
+                        <span>@(tx)</span>
+                    }
+                    else if (v is Str)
+                    {
+                        string? s = ((Str)v).Value;
+                        @if (v.Pred == "http://fogid.net/o/from-date")
+                        {
+                            string d = Utils.DatePrinted(s);
+                            <span>@(d)</span>
+                        }
+                        else if (v.Pred == "http://fogid.net/o/to-date")
+                        {
+                            string d = Utils.DatePrinted(s);
+                            <span>@(d)</span>
+                        }
+                        else if (db.ontology.IsEnumeration(v.Pred))
+                        {
+                            <span>@(db.ontology.EnumValue(v.Pred, s, "ru"))</span>
+                        }
+                        else
+                        {
+                            <span>@(s)</span>
+                        }
+                    }
+                    else if (v is Dir)
+                    {
+                        if (((Dir)v).Resources.Length > 0)
+                        {
+                            Rec record = ((Dir)v).Resources[0];
+                            if (record != null && level > 0)
+                            {
+                                string? nm = record.GetText("http://fogid.net/o/name");
+                                string tit = Utils.Inline(record, db.ontology);
+                                <a href="/view/@(record.Id)" title="@(tit)">@(nm)</a>
+                            }
+                        }
+                    }
+                </td>
+            }
+        </tr>
+    }
+</table>
+
+@code {
+    [Parameter]
+    public string? recordId { get; set; } // Нужен для фиксации идентификатора главного идентификатора
+    [Parameter]
+    public Rec[] records { get; set; }
+    [Parameter]
+    public int level { get; set; } = 2;
+    [Parameter]
+    public string? forbidden { get; set; }
+    
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        //groupedRecs = records.GroupBy(r => r.Tp).Select(g => (g.Key, g.ToArray())).ToArray();
+    }
+
+}

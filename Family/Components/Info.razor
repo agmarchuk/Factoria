@@ -3,12 +3,12 @@
 @using Family.Models;
 
 @inject AuthenticationStateProvider authStateProvider
-@*@inject ProtectedSessionStorage ProtectedSessionStore*@
 @inject ProtectedSessionStorage storage
 @inject NavigationManager navManager
 
-<div>
+<div style="height:64px; background-image:url(/VertPoloska.jpg)">
     <div class="px-4" style="float:right;">
+        <div style="border: 1px solid; ">
         <select @onchange='SelectRegime'>
             @if (sessState.Regime == "home")
             {
@@ -52,9 +52,11 @@
             <Authorized>&nbsp;&nbsp;<span>@(context.User.Identity?.Name)</span> <a @onclick="Logout" href="javascript:voi(0)">Logout</a></Authorized>
             <NotAuthorized><a href="/login">Login</a></NotAuthorized>
         </AuthorizeView>
+        </div>
+        <div style="width: 200px;">Марчуки, Беляевы, Кириковы, Петерсоны и др.</div>
     </div>
-    <h1 style="text-decoration-line:underline;">Семья Марчуков</h1>
-    
+    <img src="/FlyingBirdsSmall.jpg"/>
+    <span style="font-size:large;font-weight:bold;">Семейный архив</span>
 </div>
 
 @code {

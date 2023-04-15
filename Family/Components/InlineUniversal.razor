@@ -1,33 +1,83 @@
 ﻿@using FactographData;
 @using FactographData.r;
+@using Family.Data;
 
 @inject IFDataService db
 
-<div>
-    @foreach (var v in tree.Props)
+
+@foreach (var v in tree.Props)
+{
+    if (v is Tex)
     {
-        if (v is Tex)
+        var tx = Family.Data.Utils.OneText((Tex)v);
+        <span>&nbsp; @(tx)</span>
+    }
+    else if (v is Str)
+    {
+        string? s = ((Str)v).Value;
+        @if (v.Pred == "http://fogid.net/o/from-date")
         {
-            var txts = (Tex)v;
-            string tx = txts.Values.Aggregate<TextLan>((t1, t2) =>
-            {
-                if (t1.Lang == "ru") return t1;
-                if (t2.Lang == "ru") return t2;
-                return t2;
-            }).Text;
-            <a href="">@(tx)</a>
-        } 
-        else if (v is Str)
+            string d = Utils.DatePrinted(s);
+            <span>&nbsp; @(d)</span>
+        }
+        else if (v.Pred == "http://fogid.net/o/to-date")
         {
-            string s = ((Str)v).Value;
+            string d = Utils.DatePrinted(s);
+            <span> -@(d)</span>
+        }
+        else if (db.ontology.IsEnumeration(v.Pred))
+        {
+            <span>&nbsp; @(db.ontology.EnumValue(v.Pred, s, "ru"))</span>
+        }
+        else
+        {
             <span>&nbsp; @(s)</span>
         }
     }
-</div>
+    else if (v is Dir)
+    {
+        Rec record = ((Dir)v).Resources[0];
+        if (level > 0)
+        {
+            string? nm = record.GetText("http://fogid.net/o/name");
+            string tit = Utils.Inline(record, db.ontology);
+            <span style="color:chocolate;">&nbsp; @(db.ontology.LabelOfOnto(v.Pred)): </span>
+            <a href="/view/@(record.Id)" title="@(tit)">@(nm)</a>
+        }
+    }
+    else if (v is Inv)
+    {
+        Rec[] records = ((Inv)v).Sources;
+        if ((v.Pred == "http://fogid.net/o/father" || v.Pred == "http://fogid.net/o/mother") && level > 0)
+        {
+            <span style="color:green;">&nbsp; дети: </span>
+            foreach (Rec rec in records)
+            {
+                string? nm = rec.GetText("http://fogid.net/o/name");
+                string tit = Utils.Inline(rec, db.ontology);
+                <span>&nbsp;</span>
+                <a href="/view/@(rec.Id)" title="@(tit)">@(nm)</a>
+            }
+        }
+        else
+        {
+            <span style="color:green;">&nbsp; @(db.ontology.InvLabelOfOnto(v.Pred)): </span>
+            foreach (Rec rec in records.Where(r => r != null))
+            {
+                <Family.Components.InlineUniversal entityId="@(rec.Id)" level="1" />
+            }
+        }
+    }
+}
+
 
 @code {
-        [Parameter]
-        public string? entityId { get; set; }
+    [Parameter]
+    public string? entityId { get; set; }
+    [Parameter]
+    public int level { get; set; } = 2; 
+    [Parameter]
+    public string? forbidden { get; set; }
 
     private RRecord? rRecord = null;
     private Rec? tree = null;

@@ -85,14 +85,15 @@ else
     {
         int otstup = 80 * rl.level;
         <div style="margin-left:@(otstup)px;">
-            <Family.Components.ViewMidiPortrait record="@(rl.node)" />
+        <Family.Components.ViewMidiPortrait record="@(rl.node)" />
 
-            @foreach (var sp in rl.spouse)
-            {
-                <img src="images/family.jpg" width="12" />
-                <Family.Components.ViewMidiPortrait record="@(sp)" />
-            }
-        </div>
+        @foreach (var sp in rl.spouse)
+        {
+            if (sp == null) { continue; }
+            <img src="images/family.jpg" width="12" />
+            <Family.Components.ViewMidiPortrait record="@(sp)" />
+        }
+    </div>
     }
 }
 

@@ -3,6 +3,7 @@
 @using Family.Models
 @inject FactographData.IFDataService db
 
+<h3>ViewSearch</h3>
 <div>
     <input @bind="searchsample" style="height:24px; margin-top:10px;margin-bottom:10px;" />
     <select @bind="searchtype" style="height: 24px; margin-top: 10px; margin-bottom: 10px; ">
@@ -92,8 +93,9 @@
         await onSelected.InvokeAsync(nid);
     }
     private string searchtype;
-    protected override void OnParametersSet() // = On Page Load
+    //protected override void OnParametersSet(){}
+    protected override void OnInitialized()
     {
-
+        base.OnInitialized();
     }
 }

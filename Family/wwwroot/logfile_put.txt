@@ -132,3 +132,8 @@
   <comment xml:lang="en">test</comment>
   <name xml:lang="en">Marchuk Alexander</name>
 </person>
+<participation rdf:about="famwf1233_1045" mT="2023-04-11 02:45:19Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <participant rdf:resource="famwf1233_1001" />
+  <in-org rdf:resource="famwf1233_1042" />
+  <to-date>1954-07-07</to-date>
+</participation>

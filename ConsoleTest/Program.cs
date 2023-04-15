@@ -1,14 +1,69 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using FactographData;
+﻿using FactographData;
 using ConsoleTest;
-using static System.Net.Mime.MediaTypeNames;
-using System.Reflection.Metadata;
-using System.Globalization;
 
+struct Person
+{
+    public int id;
+    public string name;
+    public int age;
+}
 partial class Program
 {
     public static void Main()
+    {
+        Console.WriteLine("Start serialization tests");
+        int npersons = 100_000_000;
+
+        IEnumerable<Person> persons = Enumerable.Range(0, npersons)
+            .Select(i => new Person { id = i, name = "" + i, age = 33 });
+
+        FileStream fs = new FileStream(@"D:\Home\data\serial1.bin", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+        BinaryReader br = new BinaryReader(fs);
+        BinaryWriter bw = new BinaryWriter(fs);
+
+        System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+        sw.Restart();
+        Dictionary<int, long> keyOffsets = new Dictionary<int, long>();
+        foreach (Person person in persons)
+        {
+            long offset = fs.Position;
+            keyOffsets.Add(person.id, offset);
+
+            bw.Write(person.id);
+            bw.Write(person.name);
+            bw.Write(person.age);
+        }
+        sw.Stop();
+        bw.Flush();
+        Console.WriteLine(sw.ElapsedMilliseconds + $" ms. for {npersons} records");
+        // 22 ms. for 100_000 records
+
+        int nprobes = 10_000;
+        Random rnd = new Random();
+
+
+        int key = npersons * 2 / 3;
+        sw.Restart();
+        for (int i = 0; i < nprobes; i++)
+        {
+            key = rnd.Next(npersons);
+            long off = keyOffsets[key];
+            fs.Position = off;
+            int id = br.ReadInt32();
+            string name = br.ReadString();
+            int age = br.ReadInt32();
+        }
+
+        sw.Stop();
+        Console.WriteLine(sw.ElapsedMilliseconds + $" ms. for {nprobes} access tests");
+        // 33 ms. for 10_000 access tests
+
+        // Для 100_000_000 записей (16 Гб ОЗУ, использовано 5.2 Гб):
+        // 21 сек. for 100_000_000 records
+        // 76 ms. for 10_000 access tests
+
+    }
+    public static void Main1()
     {
         // See https://aka.ms/new-console-template for more information
         Console.WriteLine("Start ConsoleTest");

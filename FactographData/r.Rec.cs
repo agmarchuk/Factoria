@@ -24,7 +24,7 @@ namespace FactographData.r
         // =================== Самое главное: генерация дерева по шаблону ==========
         public static Rec Build(RRecord r, Rec shablon, Func<string, RRecord> getRecord)
         {
-            //if (r == null) return null;
+            if (r == null) return new Rec("noname", "notype");
             Rec result = new(r.Id, r.Tp);
             // Следуем шаблону. Подсчитаем количество стрелок
             int[] nprops = Enumerable.Repeat<int>(0, shablon.Props.Length)
@@ -64,10 +64,10 @@ namespace FactographData.r
             }
             // Теперь заполним свойства для результата
             Pro[] pros = new Pro[nprops.Length];
-            // Обработаем только номера, которые не нулевые в nprops
+            // Обработаем все номера, и которые нулевые и которые не нулевые в nprops
             for (int j = 0; j < pros.Length; j++)
             {
-                if (nprops[j] == 0) continue;
+                //if (nprops[j] == 0) continue;
                 var p = shablon.Props[j];
                 if (p is Str) pros[j] = new Str(p.Pred, null);
                 else if (p is Tex) pros[j] = new Tex(p.Pred, new TextLan[nprops[j]]);

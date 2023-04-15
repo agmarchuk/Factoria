@@ -1,26 +1,24 @@
-﻿@page "/cascade-auth-state"
+﻿@page "/event-handler-example-3"
 
-<h1>Cascade Auth State</h1>
+@for (var i = 0; i < 4; i++)
+{
+    <p>
+        <button @onclick="ReportPointerLocation">
+            Where's my mouse pointer for this button?
+        </button>
+    </p>
+}
+<div>
 
-<p>@authMessage</p>
+</div>
+
+<p>@mousePointerMessage</p>
 
 @code {
-    private string authMessage = "The user is NOT authenticated.";
+    private string? mousePointerMessage;
 
-    [CascadingParameter]
-    private Task<AuthenticationState>? authenticationState { get; set; }
-
-    protected override async Task OnInitializedAsync()
+    private void ReportPointerLocation(MouseEventArgs e)
     {
-        if (authenticationState is not null)
-        {
-            var authState = await authenticationState;
-            var user = authState?.User;
-
-            if (user?.Identity is not null && user.Identity.IsAuthenticated)
-            {
-                authMessage = $"{user.Identity.Name} is authenticated.";
-            }
-        }
+        mousePointerMessage = $"Mouse coordinates: {e.ScreenX}:{e.ScreenY}";
     }
 }

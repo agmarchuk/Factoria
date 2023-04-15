@@ -4,8 +4,9 @@
 @inject FactographData.IFDataService db
 
 <Family.Components.Info id="@entityId" />
+<Family.Components.ViewSearch target="view" typs="@(tps)" searchsample=""/>
+<Family.Components.ViewFormat entityId="@(entityId)" />
 
-<Family.Components.InlineUniversal entityId="@entityId" />
 
 @code {
     [Parameter] // Фокусная запись
@@ -14,42 +15,28 @@
     public string eid { get; set; }
 
     private string Tp;
+    private string[] tps; 
     private Rec tree = null;
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
+        if (tps == null) tps = db.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj").ToArray();
+
         if (string.IsNullOrEmpty(entityId))
         {
-            //entityId = "start2023";
-            entityId = "famwf1233_1001";
+            entityId = "start2023";
+            //entityId = "famwf1233_1001";
         }
 
         var adapter = db.GetAdapter();
         var r = adapter.GetRecord(entityId);
 
-        Func<object, RRecord> ObjToRRecord = obj =>
+
+        if (r == null)
         {
-            object[] ob = (object[])obj;
-            object[] props = (object[])ob[2];
-            RRecord res = new RRecord { Id = (string)ob[0], Tp = (string)ob[1] };
-            //res.Props
-            var query = props.Cast<object[]>().Select<object[], RProperty>(p =>
-            {
-                int tag = (int)p[0];
-                object[] alt = (object[])p[1];
-                string pred = (string)alt[0];
-                if (tag == 1) return new RField
-                    { Prop = pred, Value = (string)alt[1], Lang = (string)alt[2] };
-                else if (tag == 2) return new RLink()
-                    { Prop = pred, Resource = (string)alt[1] };
-                else if (tag == 3) return new RInverseLink()
-                    { Prop = pred, Source = (string)alt[1] };
-                throw new Exception("Err: 398492");
-            }).ToArray();
-            res.Props = query;
-            return res;
-        };
-        var rrec = ObjToRRecord(r);
+            tree = new Rec("noname", "notype");
+        }
+        RRecord? rrec = ObjToRRecord(r);
 
         Rec shablon = new Rec(null, "http://fogid.net/o/person",
             new Tex("http://fogid.net/o/name"),
@@ -68,6 +55,30 @@
                 ));
 
         tree = Rec.Build(rrec, shablon, id => ObjToRRecord(adapter.GetRecord(id)));
+    }
+
+    private RRecord? ObjToRRecord(object obj)
+    {
+        if (obj == null) return null;
+        object[] ob = (object[])obj;
+        object[] props = (object[])ob[2];
+        RRecord res = new RRecord { Id = (string)ob[0], Tp = (string)ob[1] };
+        //res.Props
+        var query = props.Cast<object[]>().Select<object[], RProperty>(p =>
+        {
+            int tag = (int)p[0];
+            object[] alt = (object[])p[1];
+            string pred = (string)alt[0];
+            if (tag == 1) return new RField
+                { Prop = pred, Value = (string)alt[1], Lang = (string)alt[2] };
+            else if (tag == 2) return new RLink()
+                { Prop = pred, Resource = (string)alt[1] };
+            else if (tag == 3) return new RInverseLink()
+                { Prop = pred, Source = (string)alt[1] };
+            throw new Exception("Err: 398492");
+        }).ToArray();
+        res.Props = query;
+        return res;
     }
 
 }
