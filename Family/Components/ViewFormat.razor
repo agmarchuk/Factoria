@@ -50,6 +50,24 @@
         {
             string ty = rRecord.Tp;
             Rec shablon = (new Family.Models.Shablon(db)).GetUniShablon(ty, 2, null);
+            if (false && ty == "http://fogid.net/o/person")
+            {
+                shablon = new Rec(null, "http://fogid.net/o/person",
+                    new Tex("http://fogid.net/o/name"),
+                    new Tex("http://fogid.net/o/description"),
+                    new Inv("http://fogid.net/o/reflected",
+                        new Rec(null, "http://fogid.net/o/reflection",
+                            new Dir("http://fogid.net/o/in-doc",
+                                new Rec(null, "http://fogid.net/o/document",
+                                    new Tex("http://fogid.net/o/name"),
+                                    new Str("http://fogid.net/o/from-date")),
+                                new Rec(null, "http://fogid.net/o/photo-doc",
+                                    new Tex("http://fogid.net/o/name"),
+                                    new Str("http://fogid.net/o/from-date"),
+                                    new Str("http://fogid.net/o/uri"),
+                                    new Str("http://fogid.net/o/docmetainfo"))))
+                        ));
+            }
             tree = Rec.Build(rRecord, shablon, id => db.GetRRecord(id, true));
         }
     }

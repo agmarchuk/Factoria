@@ -30,7 +30,9 @@ namespace Family.Models
                 {
                     var tt = db.ontology.RangesOfProp(pid).FirstOrDefault();
                     if (tt == null) return null;
-                    return new Dir(pid, new Rec[] { GetUniShablon(tt, 0, null) }); // Укорачивает развертку шаблона
+                    return new Dir(pid, db.ontology.DescendantsAndSelf(tt)
+                        .Select(t => GetUniShablon(t, 0, null)).ToArray());
+                        //new Rec[] { GetUniShablon(tt, 0, null) }) ; // Укорачивает развертку шаблона
                 }
                 return null;
             }).ToArray();
