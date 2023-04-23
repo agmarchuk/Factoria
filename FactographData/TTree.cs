@@ -89,7 +89,7 @@ namespace FactographData
     }
     public class TDTree : TGroup
     {
-        public TTree Resource { get; private set; }
+        public TTree Resource { get; set; }
         public TDTree(string pred, TTree resource) { this.Pred = pred; this.Resource = resource; }
     }
 
@@ -170,9 +170,17 @@ namespace FactographData
             this.ontology = ontology;
         }
 
-        public void SaveTTree(TTree ttree, IFDataService db)
+        public void SaveTTree(TTree ttree, IFDataService db, bool delete = false)
         {
-            adapter.PutItem(TTreeToORec(ttree));
+            if (delete == false)
+            {
+                adapter.PutItem(TTreeToORec(ttree));
+            } else
+            {
+                adapter.PutItem(new object[] { ttree.Id, "delete", new object[0] });
+
+                return;
+            }
             // TTree to XML преобразовать
             var xres = new XElement(ToXName(ttree.Tp),
                    (ttree.Id == null ? null : new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", ttree.Id)),
@@ -181,7 +189,7 @@ namespace FactographData
                        if (p is TTexts)
                        {
                            return new XElement(ToXName(p.Pred), ((TTexts)p).Values.First().Text,
-                               ((TTexts)p).Values.First().Lang == null ? null : new XAttribute("{http://www.w3.org/XML/1998/namespace}lang", ((TTexts)p).Values.First().Lang));
+                               ((TTexts)p).Values.First().Lang == "" ? null : new XAttribute("{http://www.w3.org/XML/1998/namespace}lang", ((TTexts)p).Values.First().Lang));
                        } else if (p is TDTree)
                        {
                            return new XElement(ToXName(p.Pred), new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", ((TDTree)p).Resource.Id));

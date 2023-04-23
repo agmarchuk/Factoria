@@ -2,6 +2,7 @@
 @using FTTree.Components
 @using FTTree.Data
 @using FactographData
+@using FactographData.r;
 @using OAData.Adapters
 @inject FactographData.IFDataService db
 
@@ -28,7 +29,7 @@ else
     foreach(var typedInv in ((TInvTree)inverse).Sources)
     {
         <h4>@db.GetOntLabel(typedInv.Pred)</h4>
-        var sources = ((TTypedInv)typedInv).Sources;
+        var sources = ((TTypedInv)typedInv).Sources.OrderBy(el => el.Id).ToArray();
         <DynamicComponent Type="componentType" Parameters="@(new Dictionary<string, object>(){{"ttrees",sources}, {"forbidden", inverse.Pred}})"></DynamicComponent>
 
     }
@@ -54,6 +55,8 @@ else
         if (entityId != null)
         {
             currentRecord = db.TBuilder.BuildTTree(entityId);
+            object[] obj = (object[])db.GetAdapter().GetRecord(entityId);
+            Rec rec = Rec.BuildByObj(obj, db.GenereateTempalate(obj[1].ToString(), 2, entityId), db.GetAdapter().GetRecord);
             inverses = currentRecord.Groups.Where(gr => gr is TInvTree).ToArray();
             mode = mode != "edit" ? "view" : mode;
             componentType = mode == "edit" ? typeof(TTreeEditor) : typeof(TTreeViewer);

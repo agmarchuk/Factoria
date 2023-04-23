@@ -1,0 +1,96 @@
+﻿<reflection rdf:about="ref1586" mT="2023-03-20 10:21:43Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/" />
+<reflection rdf:about="ref1588" mT="2023-03-20 10:28:54Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-doc>syp2007_col_rabota_i_y4eba2007_pd_029</in-doc>
+  <reflected>syp2001-p-marchuk_a</reflected>
+</reflection>
+<reflection rdf:about="ref1449" mT="2023-03-20 10:29:29Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <reflected>syp2001-p-marchuk_a</reflected>
+  <in-doc>syp2007_col_otdyh2007_pd_101</in-doc>
+  <comment xml:lang="ru">комм2234</comment>
+  <comment xml:lang="en">comment 3123</comment>
+  <comment>комм2</comment>
+</reflection>
+<reflection rdf:about="ref1596" mT="2023-03-20 10:33:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-doc>syp2006_col_digest_pd_090</in-doc>
+  <reflected>syp2001-p-marchuk_a</reflected>
+</reflection>
+<person rdf:about="syp2001-p-marchuk_a" mT="2023-03-20 10:41:15Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <name xml:lang="ru">Марчук Александр Гурьевич</name>
+  <from-date xml:lang="">1951-12-30</from-date>
+  <to-date xml:lang="">213</to-date>
+  <sex xml:lang="">m</sex>
+  <description xml:lang="en">123</description>
+  <comment xml:lang="en">test</comment>
+  <name xml:lang="en">Marchuk Alexander</name>
+  <from-date>1951-12-30</from-date>
+  <from-date>1951-12-30</from-date>
+  <from-date>1951-12-30</from-date>
+  <from-date>1951-12-30</from-date>
+  <to-date>213</to-date>
+  <to-date>213</to-date>
+  <to-date>213</to-date>
+  <sex>m</sex>
+  <sex>m</sex>
+  <sex>m</sex>
+  <description xml:lang="ru">555</description>
+  <comment xml:lang="ru">5345435</comment>
+</person>
+<reflection rdf:about="ref1697" mT="2023-03-20 10:43:48Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-doc rdf:resource="syp2005_col_digest_pd_031" />
+  <reflected rdf:resource="syp2001-p-marchuk_a" />
+  <comment xml:lang="ru">test</comment>
+</reflection>
+<reflection rdf:about="ref1741" mT="2023-04-09 14:41:14Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-doc rdf:resource="syp2005_col_digest_pd_076" />
+  <reflected rdf:resource="syp2001-p-marchuk_a" />
+  <ground xml:lang="">portrait</ground>
+  <ground>portrait</ground>
+</reflection>
+<reflection rdf:about="ref1741" mT="2023-04-09 14:41:19Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-doc rdf:resource="syp2005_col_digest_pd_076" />
+  <reflected rdf:resource="syp2001-p-marchuk_a" />
+  <ground xml:lang="">null</ground>
+  <ground>null</ground>
+  <ground>portrait</ground>
+</reflection>
+<reflection rdf:about="ref1633" mT="2023-04-09 14:44:40Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-doc rdf:resource="syp2007_col_raznoe2007_pd_001" />
+  <reflected rdf:resource="syp2001-p-marchuk_a" />
+  <ground xml:lang="">background</ground>
+  <ground>background</ground>
+</reflection>
+<reflection rdf:about="syp2009_ref236" mT="2023-04-09 15:02:14Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-doc rdf:resource="syp2009_photodoc_mastersk2009_DSC03608.JPG" />
+  <reflected rdf:resource="syp2001-p-marchuk_a" />
+  <ground>foreground</ground>
+</reflection>
+<reflection rdf:about="ref1746" mT="2023-04-09 15:04:37Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-doc rdf:resource="syp2005_col_digest_pd_081" />
+  <reflected rdf:resource="syp2001-p-marchuk_a" />
+  <ground>place</ground>
+</reflection>
+<reflection rdf:about="ref1740" mT="2023-04-09 16:05:40Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-doc rdf:resource="syp2002-p-39" />
+  <reflected rdf:resource="syp2001-p-marchuk_a" />
+  <comment xml:lang="ru">testset</comment>
+</reflection>
+<reflection rdf:about="ref1485" mT="2023-04-10 11:32:44Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <reflected rdf:resource="syp2001-p-marchuk_a" />
+  <in-doc rdf:resource="syp2007_col_otdyh2007_pd_105" />
+  <ground>foreground</ground>
+</reflection>
+<reflection rdf:about="r6" mT="2023-04-17 10:47:31Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <reflected rdf:resource="syp2001-p-marchuk_a" />
+  <in-doc rdf:resource="pic1" />
+  <ground>background</ground>
+</reflection>
+<reflection rdf:about="r6" mT="2023-04-17 10:47:38Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <reflected rdf:resource="syp2001-p-marchuk_a" />
+  <in-doc rdf:resource="pic1" />
+  <ground>background</ground>
+</reflection>
+<reflection rdf:about="r6" mT="2023-04-17 10:50:20Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <reflected rdf:resource="syp2001-p-marchuk_a" />
+  <in-doc rdf:resource="pic1" />
+  <ground>background</ground>
+</reflection>

@@ -131,6 +131,123 @@ namespace FactographData.r
             result.Props = pros.Where(p => p != null).ToArray();
             return result;
         }
+
+
+        public static Rec BuildByObj(object[] r, Rec shablon, Func<string, object> getRecord)
+        {
+            if (r == null) return new Rec("noname", "notype");
+            Rec result = new(r[0].ToString(), r[1].ToString());
+            // Следуем шаблону. Подсчитаем количество стрелок
+            int[] nprops = Enumerable.Repeat<int>(0, shablon.Props.Length)
+                .ToArray();
+            // Другой массив говорит к какому свойству шаблона относится i-й элемент
+            object[] props = (object[])r[2];
+            int[] nominshab = Enumerable.Repeat<int>(-1, props.Length).ToArray();
+            for (int i = 0; i < props.Length; i++)
+            {
+                object[] p = (object[])props[i];
+                string Pprop = (string)((object[]) p[1])[0];
+                int nom = -1;
+                IEnumerable<Tuple<int, Pro>> pairs = Enumerable.Range(0, shablon.Props.Length)
+                        .Select(i => new Tuple<int, Pro>(i, shablon.Props[i]))
+                        .Where(pa =>
+                            pa.Item2.Pred != null &&
+                            pa.Item2.Pred == Pprop);
+                if ((int)p[0] == 1)
+                {
+                    var pair = pairs.FirstOrDefault(pa => pa.Item2 is Str || pa.Item2 is Tex);
+                    if (pair != null) nom = pair.Item1;
+                }
+                else if ((int)p[0] == 2)
+                {
+                    var pair = pairs.FirstOrDefault(pa => pa.Item2 is Dir);
+                    if (pair != null) nom = pair.Item1;
+                }
+                else if ((int)p[0] == 3)
+                {
+                    var pair = pairs.FirstOrDefault(pa => pa.Item2 is Inv);
+                    if (pair != null) nom = pair.Item1;
+                }
+                else throw new Exception("sfwefg");
+                if (nom != -1)
+                {
+                    nprops[nom] += 1;
+                    nominshab[i] = nom;
+                }
+            }
+            // Теперь заполним свойства для результата
+            Pro[] pros = new Pro[nprops.Length];
+            // Обработаем все номера, и которые нулевые и которые не нулевые в nprops
+            for (int j = 0; j < pros.Length; j++)
+            {
+
+                //if (nprops[j] == 0) continue;
+                var p = shablon.Props[j];
+                if (p is Str) pros[j] = new Str(p.Pred, null);
+                else if (p is Tex) pros[j] = new Tex(p.Pred, new TextLan[nprops[j]]);
+                else if (p is Dir) pros[j] = new Dir(p.Pred, new Rec[nprops[j]]);
+                else if (p is Inv) pros[j] = new Inv(p.Pred, new Rec[nprops[j]]);
+                else new Exception("928439");
+            }
+            // Сделаем массив индексов (можно было бы использовать nprops)
+            int[] pos = new int[nprops.Length]; // вроде размечается нулями...
+            // Снова пройдемся по свойствам записи и "разбросаем" элементы по приготовленным ячейкам.
+            for (int i = 0; i < props.Length; i++)
+            {
+                object[] p = (object[])props[i];
+                // Номер в шаблоне берем из nominshab
+                int nom = nominshab[i];
+                // Если нет в шаблоне, то не рассматриваем
+                if (nom == -1) continue;
+                // Выясняем какой тип у свойства и в зависимости от типа делаем пополнение
+                string Pprop = (string)((object[])p[1])[0];
+                string Pvalue = (string)((object[])p[1])[1];
+
+                if (pros[nom] is Str)
+                {
+                    if (((Str)pros[nom]).Value == null)
+                    { // нормально
+                        ((Str)pros[nom]).Value = Pvalue;
+                    }
+                    else throw new Exception($"Err: too many string values for {Pvalue}");
+                }
+                else if (pros[nom] is Tex)
+                {
+                    string Plang = (string)((object[])p[1])[2];
+                    ((Tex)pros[nom]).Values[pos[nom]] = new TextLan(Pvalue, Plang);
+                    pos[nom]++;
+                }
+                else if (pros[nom] is Dir)
+                {
+                    string id1 = Pvalue;
+                    object[]? r1 = (object[])getRecord(id1);
+                    var shablon1 = ((Dir)shablon.Props[nom]).Resources
+                        .FirstOrDefault(res => res.Tp == r1?[1]);
+                    if (shablon1 != null)
+                    {
+                        Rec r11 = Rec.BuildByObj(r1, shablon1, getRecord);
+                        ((Dir)pros[nom]).Resources[pos[nom]] = r11;
+                        pos[nom]++;
+                    }
+                }
+                else if (pros[nom] is Inv)
+                {
+                    string id1 = Pvalue;
+                    object[]?  r1 = (object[])getRecord(id1);
+                    var shablon1 = ((Inv)shablon.Props[nom]).Sources
+                        .FirstOrDefault(res => res.Tp == r1?[1].ToString());
+                    if (shablon1 != null)
+                    {
+                        Rec r11 = Rec.BuildByObj(r1, shablon1, getRecord);
+                        ((Inv)pros[nom]).Sources[pos[nom]] = r11;
+                        pos[nom]++;
+                    }
+                }
+            }
+            // Добавляем pros, устранив нулевые
+            result.Props = pros.Where(p => p != null).ToArray();
+            return result;
+        }
         // ======= Теперь доступы =======
         public string? GetText(string pred)
         {

@@ -137,3 +137,30 @@
   <in-org rdf:resource="famwf1233_1042" />
   <to-date>1954-07-07</to-date>
 </participation>
+<person rdf:about="user_cassete_Sergey_638137230007400743_1002" mT="2023-04-17 11:21:55Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <name>мар</name>
+</person>
+<person rdf:about="user_cassete_Sergey_638137230007400743_1002" mT="2023-04-17 11:22:13Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <name>пупкин</name>
+  <from-date>123</from-date>
+  <description>123</description>
+  <comment>коммент</comment>
+</person>
+<titled rdf:about="user_cassete_Sergey_638137230007400743_1003" mT="2023-04-17 11:22:36Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <has-title rdf:resource="user_cassete_Sergey_638137230007400743_1002" />
+</titled>
+<titled rdf:about="user_cassete_Sergey_638137230007400743_1003" mT="2023-04-17 11:22:48Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <has-title rdf:resource="user_cassete_Sergey_638137230007400743_1002" />
+  <degree>Ст</degree>
+  <from-date>44</from-date>
+  <to-date>44</to-date>
+</titled>
+<delete rdf:about="user_cassete_Sergey_638137230007400743_1003" mT="2023-04-17 11:23:05Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<titled rdf:about="user_cassete_Sergey_638137230007400743_1004" mT="2023-04-17 11:24:25Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <has-title rdf:resource="user_cassete_Sergey_638137230007400743_1002" />
+</titled>
+<titled rdf:about="user_cassete_Sergey_638137230007400743_1004" mT="2023-04-17 11:24:32Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <has-title rdf:resource="user_cassete_Sergey_638137230007400743_1002" />
+  <degree>2534</degree>
+  <comment>532</comment>
+</titled>

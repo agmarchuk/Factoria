@@ -72,7 +72,7 @@
                                 </select>
                             </td>
                         }
-                        else
+                        else // not edited row
                         {
                             if (value != null)
                             {
@@ -85,7 +85,7 @@
                         }
 
                     }
-                    else
+                    else // not enum
                     {
                         var textVal = db.GetLangText(value);
                         if (editedRow == ttreeInd)
@@ -113,14 +113,21 @@
                     }
 
                 }
-                else
+                else // direct link
                 {
                     value = directs.FirstOrDefault(text => text.Pred == possibleDirect);
                     if (editedRow == ttreeInd)
                     {
                         if (value != null)
                         {
-                            <td>@db.GetName(((TDTree)value).Resource)</td>
+                            <td>
+                                <FTTree.Components.Search 
+                                    showResults="@false" 
+                                    OnRecordSelect="@(e => ((TDTree)value).Resource = db.TBuilder.BuildTTree(e))" 
+                                    types="@ranges.ToArray()"
+                                />
+                                <div>@db.GetName(((TDTree)value).Resource)</div>
+                            </td>
                         }
                         else
                         {
@@ -145,6 +152,7 @@
                     if (editedRow != currentInd)
                     {
                         <td><button @onclick="@(arg => {editedRow = currentInd;})">Изменить</button></td>
+                        <td><button @onclick="@(arg => db.TBuilder.SaveTTree(ttree, db, true))">Удалить</button></td>
                     }
                     else
                     {
