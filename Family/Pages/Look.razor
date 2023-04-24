@@ -1,33 +1,37 @@
-﻿@page "/look/{entityId?}/{eid?}"
+﻿@page "/look/{entityId?}"
 @using FactographData.r;
 @using FactographData;
 @inject FactographData.IFDataService db
 
 <Family.Components.Info id="@entityId" />
 <Family.Components.ViewSearch target="look" typs="@(tps)" searchsample="" />
-<div>
-    <span style="color:coral;">@(db.ontology.LabelOfOnto(tree.Tp))</span>
-    &nbsp;
-    <span>@(tree.Id)</span> 
-</div>
-<h3>@(tree.GetText("http://fogid.net/o/name"))</h3>
 
-<Family.Components.InlinePortrait treeId="@(entityId)"/>
+@if (record != null)
+{
+    <div>
+    <span style="color:coral;">@(db.ontology.LabelOfOnto(record.Tp))</span>
+    <span>&nbsp; @(record.Id)</span> 
+    </div>
 
+    @if (record.Tp == "http://fogid.net/o/collection" || record.Tp == "http://fogid.net/o/cassette")
+    {
+        <Family.Components.LookCollection rec="@(record)" />
+    }
+}
 
 @code {
     [Parameter] // Фокусная запись
-    public string entityId { get; set; }
-    [Parameter] // Внешная запись
-    public string eid { get; set; }
-
-    private string Tp;
-    private string[] tps;
-    private Rec tree = null;
+    public string? entityId { get; set; }
+    //[Parameter] // Внешная запись
+    //public string eid { get; set; }
+    //private string Tp = "notp";
+    private string[] tps = new string[0];
+    private RRecord? record = null;
+    //private Rec tree = null;
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        if (tps == null) tps = db.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj").ToArray();
+        if (tps.Length == 0) tps = db.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj").ToArray();
 
         if (string.IsNullOrEmpty(entityId))
         {
@@ -36,20 +40,10 @@
         }
 
         var adapter = db.GetAdapter();
-        var r = adapter.GetRecord(entityId);
+        record = ObjToRRecord(adapter.GetRecord(entityId));
 
-
-        if (r == null)
-        {
-            tree = new Rec("noname", "notype");
-        }
-        RRecord? rrec = ObjToRRecord(r);
-        Tp = rrec.Tp;
-
-        Rec shablon = new Rec(null, null,
-            new Tex("http://fogid.net/o/name"),
-            new Tex("http://fogid.net/o/description")
-        );
+        string Tp = "notype";
+        Rec shablon;
         if (Tp == "http://fogid.net/o/person")
         {
             shablon = new Rec(null, "http://fogid.net/o/person",
@@ -68,7 +62,7 @@
                             new Str("http://fogid.net/o/docmetainfo"))))
                     ));
         }
-        else if (Tp == "http://fogid.net/o/collection")
+        else if (Tp == "http://fogid.net/o/collection" || Tp == "http://fogid.net/o/cassette")
         {
             shablon = new Rec(null, "http://fogid.net/o/collection",
                 new Tex("http://fogid.net/o/description"),
@@ -82,11 +76,15 @@
                             new Tex("http://fogid.net/o/name"),
                             new Str("http://fogid.net/o/from-date"),
                             new Str("http://fogid.net/o/uri"),
-                            new Str("http://fogid.net/o/docmetainfo"))))
+                            new Str("http://fogid.net/o/docmetainfo")),
+                        new Rec(null, null,
+                            new Tex("http://fogid.net/o/name"),
+                            new Str("http://fogid.net/o/from-date"))
+                            ))
                     ));
         }
 
-        tree = Rec.Build(rrec, shablon, id => ObjToRRecord(adapter.GetRecord(id)));
+        //tree = Rec.Build(rrec, shablon, id => ObjToRRecord(adapter.GetRecord(id)));
     }
 
     private RRecord? ObjToRRecord(object obj)

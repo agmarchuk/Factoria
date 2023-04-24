@@ -1,0 +1,62 @@
+@using FactographData
+@using FactographData.r;
+@inject FactographData.IFDataService db
+
+@if (tree != null) foreach (var p in tree.Props)
+{
+    if (p is Tex)
+    {
+        if (p.Pred == "http://fogid.net/o/name") { <h3>@(((Tex)p).Values[0].Text)</h3> }
+
+    } else if (p is Str)
+    {
+
+    } else if (p is Dir)
+    {
+
+    } else if (p is Inv)
+    {
+        var inv = (Inv)p;
+        <div>
+            @foreach (var item in inv.Sources)
+            {
+                <div style="float:left; width: 200px; height: 200px; text-align:center; border:solid 1px;">
+                    ха-ха
+                </div>
+                
+            }
+        </div>
+    }
+}
+
+@code {
+    [Parameter]
+    public RRecord? rec { get; set; }
+
+    private Rec? tree = null;
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        Rec shablon = new Rec(null, "http://fogid.net/o/collection",
+            new Tex("http://fogid.net/o/name"),
+            new Tex("http://fogid.net/o/description"),
+            new Inv("http://fogid.net/o/in-collection",
+            new Rec(null, "http://fogid.net/o/collection-member",
+                new Dir("http://fogid.net/o/collection-item",
+                    new Rec(null, "http://fogid.net/o/document",
+                        new Tex("http://fogid.net/o/name"),
+                        new Str("http://fogid.net/o/from-date")),
+                    new Rec(null, "http://fogid.net/o/photo-doc",
+                        new Tex("http://fogid.net/o/name"),
+                        new Str("http://fogid.net/o/from-date"),
+                        new Str("http://fogid.net/o/uri"),
+                        new Str("http://fogid.net/o/docmetainfo")),
+                    new Rec(null, null,
+                        new Tex("http://fogid.net/o/name"),
+                        new Str("http://fogid.net/o/from-date"))
+                        ))
+                )); 
+        if (rec != null )       
+        tree = Rec.Build(rec, shablon, id => db.GetRRecord(id, true));
+    }
+}

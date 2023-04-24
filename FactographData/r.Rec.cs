@@ -105,7 +105,7 @@ namespace FactographData.r
                     string id1 = ((RLink)p).Resource;
                     RRecord? r1 = getRecord(id1);
                     var shablon1 = ((Dir)shablon.Props[nom]).Resources
-                        .FirstOrDefault(res => res.Tp == r1?.Tp);
+                        .FirstOrDefault(res => res.Tp == r1?.Tp || res.Tp == null);
                     if (shablon1 != null)
                     {
                         Rec r11 = Rec.Build(r1, shablon1, getRecord);

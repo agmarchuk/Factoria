@@ -36,9 +36,9 @@
     }
     else if (v is Dir)
     {
-        Rec record = ((Dir)v).Resources[0];
-        if (level > 0)
+        if (level > 0 && (((Dir)v).Resources).Length > 0)
         {
+            Rec record = ((Dir)v).Resources[0];
             string? nm = record.GetText("http://fogid.net/o/name");
             string tit = Utils.Inline(record, db.ontology);
             <span style="color:chocolate;">&nbsp; @(db.ontology.LabelOfOnto(v.Pred)): </span>

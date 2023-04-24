@@ -1,41 +1,142 @@
 @using FactographData
+@using FactographData.r;
 @using Family.Data
 @inject FactographData.IFDataService db
 
-<div style="border:thin solid;">
-    <span style="color:orangered;">@(db.ontology.LabelOfOnto(tree.Tp))</span>
-    <a href="">@(name)</a>
-    <span>@(totalline.Length > 100 ? totalline.Substring(0, 99) : totalline)</span>
-</div>
+@foreach (var v in recTree.Props)
+{
+    if (v is Tex)
+    {
+        var tx = Family.Data.Utils.OneText((Tex)v);
+        <span>&nbsp; @(tx)</span>
+    }
+    else if (v is Str)
+    {
+        string? s = ((Str)v).Value;
+        @if (v.Pred == "http://fogid.net/o/from-date")
+        {
+            string d = Utils.DatePrinted(s);
+            <span>&nbsp; @(d)</span>
+        }
+        else if (v.Pred == "http://fogid.net/o/to-date")
+        {
+            string d = Utils.DatePrinted(s);
+            <span> -@(d)</span>
+        }
+        else if (db.ontology.IsEnumeration(v.Pred))
+        {
+            <span>&nbsp; @(db.ontology.EnumValue(v.Pred, s, "ru"))</span>
+        }
+        else
+        {
+            <span>&nbsp; @(s)</span>
+        }
+    }
+    else if (v is Dir)
+    {
+        if (level > 0 && (((Dir)v).Resources).Length > 0)
+        {
+            Rec record = ((Dir)v).Resources[0];
+            string? nm = record.GetText("http://fogid.net/o/name");
+            string tit = Utils.Inline(record, db.ontology);
+            <span style="color:chocolate;">&nbsp; @(db.ontology.LabelOfOnto(v.Pred)): </span>
+            <a href="/view/@(record.Id)" title="@(tit)">@(nm)</a>
+        }
+    }
+    else if (v is Inv)
+    {
+        Rec[] records = ((Inv)v).Sources;
+        if ((v.Pred == "http://fogid.net/o/father" || v.Pred == "http://fogid.net/o/mother") && level > 0)
+        {
+            <span style="color:green;">&nbsp; дети: </span>
+            foreach (Rec rec in records)
+            {
+                string? nm = rec.GetText("http://fogid.net/o/name");
+                string tit = Utils.Inline(rec, db.ontology);
+                <span>&nbsp;</span>
+                <a href="/view/@(rec.Id)" title="@(tit)">@(nm)</a>
+            }
+        }
+        else
+        {
+            <span style="color:green;">&nbsp; @(db.ontology.InvLabelOfOnto(v.Pred)): </span>
+            foreach (Rec rec in records.Where(r => r != null))
+            {
+                <Family.Components.InlinePortrait recTree="@(rec)" level="1" />
+            }
+        }
+    }
+}
+
 
 @code {
     [Parameter]
-    public string? treeId { get; set; }
+    public Rec? recTree { get; set; }
+    [Parameter]
+    public int level { get; set; } = 2;
+    [Parameter]
+    public string? forbidden { get; set; }
 
-    private TTree? tree;
-    private string? name;
-    private string? fromdate;
-    private string? description;
-    private IEnumerable<TTree>? titles;
-    private IEnumerable<TTree>? reflected;
-    private string totalline = "";
+    //private RRecord? rRecord = null;
+    //private Rec? tree = null;
 
     protected override void OnParametersSet()
     {
-        if (treeId != null)
-        {
-            tree = ((FDataService)db).ttreebuilder.GetTTree(treeId);
-            name = tree?.GetTTexts("http://fogid.net/o/name")?.FirstOrDefault()?.Text;
-            fromdate = tree?.GetTString("http://fogid.net/o/from-date");
-            description = tree?.GetTTexts("http://fogid.net/o/description")?.FirstOrDefault()?.Text;
-            titles = tree?.GetInverseItems("http://fogid.net/o/has-title");
-            reflected = tree?.GetInverseItems("http://fogid.net/o/reflected");
-            totalline += (fromdate == null ? "" : " " + fromdate) +
-                (description == null ? "" : " " + description) +
-                (titles==null?"" : $" {titles.Count()} титулов" ) +
-                (reflected == null || reflected.Count() == 0 ? "" : $" {reflected.Count()} отражений") +
-                "";
+        base.OnParametersSet();
+        //if (entityId != null)
+        //{
+        //    rRecord = db.GetRRecord(entityId, true);
+        //}
+        //string ty = "http://fogid.net/o/person";
 
-        }
+        //Rec shablon = GetUniShablon(ty, 2, null);
+        //tree = Rec.Build(rRecord, shablon, id => db.GetRRecord(id, true));
     }
+    private Rec GetUniShablon(string ty, int level, string? forbidden)
+    {
+        // ¬се пр€мые возможнные свойства
+        string[] dprops = db.ontology.GetDirectPropsByType(ty).ToArray();
+        var propsdirect = dprops.Select<string, Pro?>(pid =>
+            {
+                var os = db.ontology.OntoSpec
+                    .FirstOrDefault(o => o.Id == pid);
+                if (os == null) return null;
+                if (os.Tp == "DatatypeProperty")
+                {
+                    var tt = db.ontology.RangesOfProp(pid).FirstOrDefault();
+                    bool istext = tt == "http://fogid.net/o/text" ? true : false;
+                    if (istext) return new Tex(pid);
+                    else return new Str(pid);
+                }
+                else if (os.Tp == "ObjectProperty" && level > 0 && os.Id != forbidden)
+                {
+                    var tt = db.ontology.RangesOfProp(pid).FirstOrDefault();
+                    if (tt == null) return null;
+                    return new Dir(pid, new Rec[] { GetUniShablon(tt, 0, null) }); // ”корачивает развертку шаблона
+                }
+                return null;
+            }).ToArray();
+        string[] iprops = level > 1 ? db.ontology.GetInversePropsByType(ty).ToArray() : new string[0];
+        var propsinverse = iprops.Select<string, Pro?>(pid =>
+            {
+                var os = db.ontology.OntoSpec
+                    .FirstOrDefault(o => o.Id == pid);
+                if (os == null) return null;
+                if (os.Tp == "ObjectProperty")
+                {
+                    string[] tps = db.ontology.DomainsOfProp(pid).ToArray();
+                    if (tps.Length == 0) return null;
+                    return new Inv(pid, tps.Select(t => GetUniShablon(t, level - 1, pid)).ToArray());
+                }
+                return null;
+            }).ToArray();
+        var shab = new Rec(null, ty,
+            propsdirect
+            .Concat(propsinverse)
+            .Where(p => p != null)
+            .Cast<Pro>()
+            .ToArray());
+        return shab;
+    }
+
 }
