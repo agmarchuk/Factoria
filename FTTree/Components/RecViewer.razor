@@ -1,0 +1,100 @@
+﻿@using FTTree.Data;
+@using FactographData.r;
+@using FactorgaphyTTree.Data
+@using FactographData
+@implements IRecComponent
+@inject FactographData.IFDataService db
+@inject NavigationManager navigationManager
+
+ <table>
+@foreach(var rec in recs)
+{
+    var fields = rec.Props.Where(prop => prop is Tex || prop is Str || prop is Dir);
+    //var possibleDirects = db.ontology.GetDirectPropsByType(ttree.Tp).Where(type => type != forbidden).ToArray();
+
+    @if (firstRow)
+    {
+        firstRow = false;
+        <tr>
+            @foreach (var field in fields)
+            {
+                    <th>@db.GetOntLabel(field.Pred)</th>
+
+            }
+        </tr>
+    }
+    <tr>
+
+            @foreach (var field in fields)
+            {
+                //var value = field.FirstOrDefault(text => text.Pred == fields);
+                if (field is Str)
+                {
+                    var value = ((Str)field).Value;
+                    if (value != null)
+                    {
+                        bool isEnum = db.ontology.IsEnumeration(field.Pred);
+                        if (isEnum)
+                        {
+                            <td>@db.GetLangText(field, field.Pred)</td>
+                        }
+                        else
+                        {
+                            <td>@value</td>
+                        }
+
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                }
+                else if (field is Tex)
+                {
+                    var values = ((Tex)field).Values;
+                    if (values.Length != 0)
+                    {
+                        <td>@db.GetLangText(field)</td>
+                    } 
+                    else
+                    {
+                        <td></td>
+                    }
+                } else if (field is Dir)
+                {
+                    var values = ((Dir)field).Resources;
+                    if (values.Length != 0 && values[0] != null)
+                    {
+                        <td><NavLink href="@("/portrait/" + values[0].Id)">@db.GetName(values[0])</NavLink></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                }
+            }
+    </tr>
+    
+}
+</table>
+
+
+@code {
+    [Parameter]
+    public Rec[] recs { get; set; }
+
+    [Parameter]
+    public string forbidden { get; set; }
+
+    private bool firstRow = true;
+
+    protected override void OnInitialized() // = On Page Load
+    {
+        firstRow = true;
+    }
+
+    protected override void OnParametersSet()
+    {
+        OnInitialized();
+    }
+}
