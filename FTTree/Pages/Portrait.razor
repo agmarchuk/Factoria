@@ -14,25 +14,32 @@
     </Authorized>
 </AuthorizeView>
 <h1>Portrait</h1>
-@if (mode == "view")
+@if (mode == MainLayout.viewMode)
 {
-    <NavLink href="@($"/portrait/{entityId}/edit")">Edit</NavLink>
+    <NavLink href="@($"/portrait/{entityId}/{MainLayout.editMode}")">Edit</NavLink>
 } 
 else
 {
     <NavLink href="@($"/portrait/{entityId}")">View</NavLink>
 }
-<DynamicComponent Type="componentType" Parameters="@(new Dictionary<string, object>(){{"ttrees",new TTree[]{currentRecord} }})"> </DynamicComponent>
+<DynamicComponent Type="componentType" Parameters="@(new Dictionary<string, object>(){{"recs",new Rec[]{currentRecord} }})"> </DynamicComponent>
 @foreach (var inverse in inverses)
 {
+    var sources = ((Inv)inverse).Sources;
+    @if (mode == MainLayout.viewMode && sources.Length == 0)
+    {
+        continue;
+    }
     <h3>@db.GetOntLabel(inverse.Pred)</h3>
-    foreach(var typedInv in ((TInvTree)inverse).Sources)
+    <DynamicComponent Type="componentType" Parameters="@(new Dictionary<string, object>(){{"recs",sources}, {"forbidden", inverse.Pred}})"></DynamicComponent>
+
+    @*foreach(var typedInv in ((TInvTree)inverse).Sources)
     {
         <h4>@db.GetOntLabel(typedInv.Pred)</h4>
         var sources = ((TTypedInv)typedInv).Sources.OrderBy(el => el.Id).ToArray();
-        <DynamicComponent Type="componentType" Parameters="@(new Dictionary<string, object>(){{"ttrees",sources}, {"forbidden", inverse.Pred}})"></DynamicComponent>
+        <DynamicComponent Type="componentType" Parameters="@(new Dictionary<string, object>(){{"recs",sources}, {"forbidden", inverse.Pred}})"></DynamicComponent>
 
-    }
+    @*}*@
 }
 
 
@@ -44,22 +51,23 @@ else
     [Parameter]
     public string mode { get; set; }
 
-    private Type componentType = typeof(TTreeViewer);
+    private Type componentType = typeof(RecViewer);
 
-    private TTree currentRecord;
+    private Rec currentRecord;
 
-    private TGroup[] inverses = null;
+    private Pro[] inverses = null;
 
     protected override void OnInitialized() // = On Page Load
     {
         if (entityId != null)
         {
-            currentRecord = db.TBuilder.BuildTTree(entityId);
+            //currentRecord = db.TBuilder.BuildTTree(entityId);
             object[] obj = (object[])db.GetAdapter().GetRecord(entityId);
-            Rec rec = Rec.BuildByObj(obj, db.GenereateTempalate(obj[1].ToString(), 2, entityId), db.GetAdapter().GetRecord);
-            inverses = currentRecord.Groups.Where(gr => gr is TInvTree).ToArray();
-            mode = mode != "edit" ? "view" : mode;
-            componentType = mode == "edit" ? typeof(TTreeEditor) : typeof(TTreeViewer);
+            currentRecord = Rec.BuildByObj(obj, db.GenereateTempalate(obj[1].ToString(), 2, entityId), db.GetAdapter().GetRecord);
+            inverses = currentRecord.Props.Where(prop => prop is Inv).ToArray();
+            //inverses = currentRecord.Groups.Where(gr => gr is TInvTree).ToArray();
+            mode = mode != MainLayout.editMode ? MainLayout.viewMode : mode;
+            componentType = mode == MainLayout.editMode ? typeof(RecEditor) : typeof(RecViewer);
         }
     }
 

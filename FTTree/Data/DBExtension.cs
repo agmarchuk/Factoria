@@ -13,11 +13,11 @@ namespace FTTree.Data
             return showLabels ? db.ontology.LabelOfOnto(input) : input;
         }
 
-        public static string? GetLangText(this IFDataService db, TGroup input, string? enumSpecificatior = null) // TODO:add fallback lang
+        public static string? GetLangText(this IFDataService db, Pro input, string? enumSpecificatior = null) // TODO:add fallback lang
         {
             if (enumSpecificatior is not null && showLabels) // for enumerations
             {
-                var text = ((TTexts)input).Values.FirstOrDefault()?.Text;
+                var text = ((Str)input).Value;
                 return String.IsNullOrEmpty(text) ? "" : db.ontology.EnumValue(enumSpecificatior, text, lang);
             }
             if (input == null)
@@ -28,17 +28,17 @@ namespace FTTree.Data
             //{
             //    langText = ((Texts)input).Values.FirstOrDefault(); // 1) Try default user lang
             //}
-            var langText = ((TTexts)input).Values.FirstOrDefault(val => val.Lang == lang || String.IsNullOrEmpty(val.Lang)); // 2) Try default or empty lang
+            var langText = ((Tex)input).Values.FirstOrDefault(val => val.Lang == lang || String.IsNullOrEmpty(val.Lang)); // 2) Try default or empty lang
             if (langText == null)
             {
-                langText = ((TTexts)input).Values.FirstOrDefault(); // 3) First available lang
+                langText = ((Tex)input).Values.FirstOrDefault(); // 3) First available lang
             }
             return langText?.Text;
         }
 
-        public static string? GetName(this IFDataService db, TTree ttree)
+        public static string? GetName(this IFDataService db, Rec rec)
         {
-            return db.GetLangText(ttree.Groups.FirstOrDefault(gr => gr.Pred == "http://fogid.net/o/name"));
+            return db.GetLangText(rec.Props.FirstOrDefault(gr => gr.Pred == "http://fogid.net/o/name"));
         }
 
         public static bool IsObject(this IFDataService db, string pred)

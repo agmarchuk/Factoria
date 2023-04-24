@@ -222,7 +222,7 @@ namespace FactographData.r
                     string id1 = Pvalue;
                     object[]? r1 = (object[])getRecord(id1);
                     var shablon1 = ((Dir)shablon.Props[nom]).Resources
-                        .FirstOrDefault(res => res.Tp == r1?[1]);
+                        .FirstOrDefault(/*res => res.Tp == r1?[1].ToString()*/);
                     if (shablon1 != null)
                     {
                         Rec r11 = Rec.BuildByObj(r1, shablon1, getRecord);
@@ -235,7 +235,7 @@ namespace FactographData.r
                     string id1 = Pvalue;
                     object[]?  r1 = (object[])getRecord(id1);
                     var shablon1 = ((Inv)shablon.Props[nom]).Sources
-                        .FirstOrDefault(res => res.Tp == r1?[1].ToString());
+                        .FirstOrDefault(/*res => res.Tp == r1?[1].ToString()*/);
                     if (shablon1 != null)
                     {
                         Rec r11 = Rec.BuildByObj(r1, shablon1, getRecord);
