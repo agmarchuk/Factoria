@@ -249,6 +249,13 @@ namespace FactographData.r
             return result;
         }
         // ======= Теперь доступы =======
+        public string? GetStr(string pred)
+        {
+            var group = Props.FirstOrDefault(p => p.Pred == pred);
+            if (group == null || !(group is Str) ) return null;
+            Str str = (Str)group;
+            return str.Value;
+        } 
         public string? GetText(string pred)
         {
             var group = Props.FirstOrDefault(p => p.Pred == pred);
@@ -261,6 +268,22 @@ namespace FactographData.r
                 if (t.Lang == "ru") break;
             }
             return result;
+        }
+        string[] months =  new string[] {"янв", "фев", "мар", "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"}; 
+        public string GetDates()
+        {
+            
+            string? df = GetStr("http://fogid.net/o/from-date");
+            string? dt = GetStr("http://fogid.net/o/to-date");
+            return (df == null ? "" : df) + (string.IsNullOrEmpty(dt) ? "" : "-" + dt);
+        }
+        public Rec? GetDirect(string pred)
+        {
+            var group = Props.FirstOrDefault(p => p.Pred == pred);
+            if (group == null || !(group is Dir)) return null;
+            Dir dir = (Dir)group;
+            if (dir.Resources.Length == 0) return null;
+            return dir.Resources[0];
         }
 
     }

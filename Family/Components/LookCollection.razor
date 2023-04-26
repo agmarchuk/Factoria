@@ -20,8 +20,19 @@
         <div>
             @foreach (var item in inv.Sources)
             {
-                <div style="float:left; width: 200px; height: 200px; text-align:center; border:solid 1px;">
-                    ха-ха
+                var sys = item.GetDirect("http://fogid.net/o/collection-item");
+                <div style="float:left; width: 200px; height: 200px; border:solid 1px;">
+                    <div>
+                        @if (sys != null)
+                        {
+                            <div style="color:coral;">@(db.ontology.LabelOfOnto(sys.Tp))</div>
+                            <Family.Components.Inline200x200 tree="@(sys)" />
+                        }
+                        else
+                        {
+                            <span>невыявленный объект рисования</span>                                
+                        }
+                    </div>
                 </div>
                 
             }
@@ -43,7 +54,7 @@
             new Inv("http://fogid.net/o/in-collection",
             new Rec(null, "http://fogid.net/o/collection-member",
                 new Dir("http://fogid.net/o/collection-item",
-                    new Rec(null, "http://fogid.net/o/document",
+@*                    new Rec(null, "http://fogid.net/o/document",
                         new Tex("http://fogid.net/o/name"),
                         new Str("http://fogid.net/o/from-date")),
                     new Rec(null, "http://fogid.net/o/photo-doc",
@@ -51,10 +62,12 @@
                         new Str("http://fogid.net/o/from-date"),
                         new Str("http://fogid.net/o/uri"),
                         new Str("http://fogid.net/o/docmetainfo")),
-                    new Rec(null, null,
+*@                    new Rec(null, null,
                         new Tex("http://fogid.net/o/name"),
-                        new Str("http://fogid.net/o/from-date"))
-                        ))
+                        new Str("http://fogid.net/o/from-date"), 
+                        new Str("http://fogid.net/o/uri"),
+                        new Str("http://fogid.net/o/docmetainfo"))
+                       ))
                 )); 
         if (rec != null )       
         tree = Rec.Build(rec, shablon, id => db.GetRRecord(id, true));

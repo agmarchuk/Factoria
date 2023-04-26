@@ -46,6 +46,14 @@ namespace Family.Controllers
             string ext = qu[0].Name.Substring(pos + 1);
             return PhysicalFile(path + "." + ext, "video/" + ext);
         }
+        [HttpGet("docs/GetAudio")]
+        public IActionResult GetAudio(string u)
+        {
+            string path = db.GetFilePath(u, null);
+            if (path == null) return NotFound();
+            var q = path.Replace("documents/normal", "originals");
+            return PhysicalFile(q + ".mp3", "audio/mp3");
+        }
         [HttpGet("docs/GetPdf")]
         public IActionResult GetPdf(string u)
         {

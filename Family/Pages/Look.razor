@@ -17,6 +17,14 @@
     {
         <Family.Components.LookCollection rec="@(record)" />
     }
+    else if (db.ontology.DescendantsAndSelf("http://fogid.net/o/document").Contains(record.Tp))
+    {
+        <Family.Components.LookUniversal entityId="@(entityId)" />
+    }
+    else
+    {
+        <Family.Components.LookUniversal entityId="@(entityId)" />
+    }
 }
 
 @code {
