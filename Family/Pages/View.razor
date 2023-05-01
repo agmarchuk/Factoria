@@ -3,6 +3,7 @@
 @using FactographData;
 @inject FactographData.IFDataService db
 
+<div>[@(entityId)] [@(Tp)] [@(tree?.Id)] [@(tree?.Tp)] </div>
 <Family.Components.Info id="@entityId" />
 <Family.Components.ViewSearch target="view" typs="@(tps)" searchsample=""/>
 <Family.Components.ViewFormat entityId="@(entityId)" />
