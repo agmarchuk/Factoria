@@ -76,7 +76,7 @@
     else if (focusRec.Tp == "http://fogid.net/o/document")
     {
         string docmetainfo = ((RField)focusRec.Props.FirstOrDefault(p => p.Prop == "http://fogid.net/o/docmetainfo"))?.Value;
-        if (docmetainfo.Contains("application/pdf"))
+        if (docmetainfo != null && docmetainfo.Contains("application/pdf"))
         {
             string sr = "docs/GetPdf?u=" + uri;
             <embed src="@sr" width="100%" height="800" />
