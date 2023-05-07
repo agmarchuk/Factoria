@@ -3,7 +3,7 @@
 @using FactographData;
 @inject FactographData.IFDataService db
 
-<div>[@(entityId)] [@(Tp)] [@(tree?.Id)] [@(tree?.Tp)] </div>
+
 <Family.Components.Info id="@entityId" />
 <Family.Components.ViewSearch target="view" typs="@(tps)" searchsample=""/>
 <Family.Components.ViewFormat entityId="@(entityId)" />
@@ -25,7 +25,8 @@
 
         if (string.IsNullOrEmpty(entityId))
         {
-            entityId = "start2023";
+            return;
+            //entityId = "start2023";
             //entityId = "famwf1233_1001";
         }
 
@@ -55,7 +56,7 @@
                         new Str("http://fogid.net/o/docmetainfo"))))
                 ));
 
-        tree = Rec.Build(rrec, shablon, id => ObjToRRecord(adapter.GetRecord(id)));
+        tree = Rec.Build(rrec, shablon, db.ontology, id => ObjToRRecord(adapter.GetRecord(id)));
     }
 
     private RRecord? ObjToRRecord(object obj)

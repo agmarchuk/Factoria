@@ -92,7 +92,7 @@
         string ty = "http://fogid.net/o/person";
 
         Rec shablon = GetUniShablon(ty, 2, null);
-        tree = Rec.Build(rRecord, shablon, id => db.GetRRecord(id, true));
+        tree = Rec.Build(rRecord, shablon, db.ontology, id => db.GetRRecord(id, true));
     }
     private Rec GetUniShablon(string ty, int level, string? forbidden)
     {

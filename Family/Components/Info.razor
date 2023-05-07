@@ -63,7 +63,7 @@
         </div>
         <div style="width: 200px; color:lightyellow;">Марчуки, Беляевы, Кириковы, Петерсоны и др.</div>
     </div>
-    <img src="/FlyingBirdsSmall.jpg"/>
+    <img src="FlyingBirdsSmall.jpg"/>
     <span style="font-size:large;font-weight:bold;">Семейный архив</span>
 </div>
 
@@ -79,16 +79,17 @@
     {
         var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
         await customAuthStateProvider.UpdateAuthenticationState(null);
-        navManager.NavigateTo("/", true);
+        navManager.NavigateTo("/home/", true);
     }
 
     async Task SelectRegime(ChangeEventArgs e)
     {
         string? reg = e.Value?.ToString();
-        sessState.Regime = reg;
+        if (string.IsNullOrEmpty(reg)) reg = "home";
+        sessState.Regime = string.IsNullOrEmpty(reg) ? "home" : reg;
         await SetSessionStateAsync();
         //StateHasChanged();
-        navManager.NavigateTo("/" + reg + "/" + id??"", true);
+        navManager.NavigateTo(reg + "/" + id??"", true);
     }
     private async Task SetSessionStateAsync()
     {

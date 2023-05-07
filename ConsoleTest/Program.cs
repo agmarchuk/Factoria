@@ -12,12 +12,12 @@ partial class Program
     public static void Main()
     {
         Console.WriteLine("Start serialization tests");
-        int npersons = 100_000_000;
+        int npersons = 1_000_000;
 
         IEnumerable<Person> persons = Enumerable.Range(0, npersons)
             .Select(i => new Person { id = i, name = "" + i, age = 33 });
 
-        FileStream fs = new FileStream(@"D:\Home\data\serial1.bin", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+        FileStream fs = new FileStream(@"C:\Home\data\serial1.bin", FileMode.OpenOrCreate, FileAccess.ReadWrite);
         BinaryReader br = new BinaryReader(fs);
         BinaryWriter bw = new BinaryWriter(fs);
 

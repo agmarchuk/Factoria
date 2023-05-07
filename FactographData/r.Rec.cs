@@ -1,4 +1,6 @@
 ﻿using System.Text;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FactographData.r
 {
@@ -22,7 +24,7 @@ namespace FactographData.r
             return sb.ToString();
         }
         // =================== Самое главное: генерация дерева по шаблону ==========
-        public static Rec Build(RRecord r, Rec shablon, Func<string, RRecord> getRecord)
+        public static Rec Build(RRecord r, Rec shablon, IOntology ontology, Func<string, RRecord> getRecord)
         {
             if (r == null) return new Rec("noname", "notype");
             Rec result = new(r.Id, r.Tp);
@@ -105,13 +107,15 @@ namespace FactographData.r
                     string id1 = ((RLink)p).Resource;
                     RRecord? r1 = getRecord(id1);
                     var shablon1 = ((Dir)shablon.Props[nom]).Resources
-                        .FirstOrDefault(res => res.Tp == r1?.Tp || res.Tp == null);
+                        .FirstOrDefault(res => res.Tp == null || 
+                            (r1 != null && ontology.DescendantsAndSelf(res.Tp).Any(t => t == r1.Tp)) ); //res.Tp == r1?.Tp
                     if (shablon1 != null)
                     {
-                        Rec r11 = Rec.Build(r1, shablon1, getRecord);
+                        Rec r11 = Rec.Build(r1, shablon1, ontology, getRecord);
                         ((Dir)pros[nom]).Resources[pos[nom]] = r11;
                         pos[nom]++;
                     }
+                    else Console.WriteLine($"shablon=null {pros[nom].Pred} {r1?.Tp} {((Dir)shablon.Props[nom]).ToString()}");
                 }
                 else if (pros[nom] is Inv)
                 {
@@ -121,7 +125,7 @@ namespace FactographData.r
                         .FirstOrDefault(res => res.Tp == r1?.Tp);
                     if (shablon1 != null)
                     {
-                        Rec r11 = Rec.Build(r1, shablon1, getRecord);
+                        Rec r11 = Rec.Build(r1, shablon1, ontology, getRecord);
                         ((Inv)pros[nom]).Sources[pos[nom]] = r11;
                         pos[nom]++;
                     }
@@ -357,16 +361,17 @@ namespace FactographData.r
         }
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder("d(");
-            bool firsttime = true;
+            StringBuilder sb = new StringBuilder("d"+Pred+"(");
+            bool firsttime = true; 
             foreach (var res in Resources)
-            {
+            {                
                 if (!firsttime) sb.Append(", ");
                 firsttime = false;
-                sb.Append(res.ToString());
+                if (res != null) sb.Append(res.ToString());
+                else sb.Append("null");
             }
             sb.Append(')');
-            return sb.ToString();
+            return sb.ToString(); 
         }
     }
     public class Inv : Pro
@@ -379,7 +384,7 @@ namespace FactographData.r
         }
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder("i(");
+            StringBuilder sb = new StringBuilder("i"+Pred+"(");
             bool firsttime = true;
             foreach (var res in Sources)
             {

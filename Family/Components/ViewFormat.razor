@@ -68,7 +68,7 @@
                                     new Str("http://fogid.net/o/docmetainfo"))))
                         ));
             }
-            tree = Rec.Build(rRecord, shablon, id => db.GetRRecord(id, true));
+            tree = Rec.Build(rRecord, shablon, db.ontology, id => db.GetRRecord(id, true));
         }
     }
 

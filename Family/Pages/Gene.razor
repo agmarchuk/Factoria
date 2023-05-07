@@ -13,10 +13,6 @@
     <input @bind="searchsample" style="height:24px; margin-top:0px;margin-bottom:10px;" />
     <span>расш.<input type="checkbox" @bind="extended" /></span>
     <span> </span>
-@*    <div style="display: inline-block; float:right; ">
-        <a href="edit/@(entityId)">ред</a> |
-        <a href="gene/@(entityId)">род</a>
-    </div>*@
 </div>
 @if (!string.IsNullOrEmpty(searchsample))
 {
@@ -39,7 +35,7 @@
     foreach (RRecord rec in query)
     {
         <div>
-            <a href="/gene/@(rec.Id)">@rec.GetName()</a>
+            <a href="gene/@(rec.Id)">@rec.GetName()</a>
         </div>
     }
 }
@@ -56,12 +52,12 @@
         </div>
     </div>
     <div></div>
-    <div><a href="/gene/famwf1233_1001">Марчук Гурий Иванович</a></div>
-    <div><a href="/gene/famwf1234_1120">Марчук Алексей Николаевич</a></div>
-    <div><a href="/gene/famwf1233_1005">Марчук Ольга Николаевна</a></div>
-    <div><a href="/gene/Mc2816_1009">Кириков Александр Васильевич</a></div>
-    <div><a href="/gene/famwf1234_1005">Марчук Савва Иванович</a></div>
-    <div><a href="/gene/svet_100616111408_20915">Петерсон Юрий Николаевич</a></div>
+    <div><a href="gene/famwf1233_1001">Марчук Гурий Иванович</a></div>
+    <div><a href="gene/famwf1234_1120">Марчук Алексей Николаевич</a></div>
+    <div><a href="gene/famwf1233_1005">Марчук Ольга Николаевна</a></div>
+    <div><a href="gene/Mc2816_1009">Кириков Александр Васильевич</a></div>
+    <div><a href="gene/famwf1234_1005">Марчук Савва Иванович</a></div>
+    <div><a href="gene/svet_100616111408_20915">Петерсон Юрий Николаевич</a></div>
 
 }
 else
@@ -93,7 +89,7 @@ else
             <img src="images/family.jpg" width="12" />
             <Family.Components.ViewMidiPortrait record="@(sp)" />
         }
-    </div>
+        </div>
     }
 }
 
@@ -112,7 +108,7 @@ else
     {
         RRecord record = (new RYEngine(db)).GetRRecord(id, true);
         if (record == null) return null;
-        if (record.Tp != "http://fogid.net/o/person") throw new Exception("Err: 2229 Tp=" + record.Tp);
+        if (record.Tp != "http://fogid.net/o/person") return null;
         List<RRecord> spouse = new List<RRecord>();
         foreach (RProperty p in record.Props)
         {

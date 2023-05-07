@@ -3,7 +3,7 @@
 @using Family.Data
 @inject FactographData.IFDataService db
 
-@foreach (var v in recTree.Props)
+@if(recTree != null) foreach (var v in recTree.Props)
 {
     if (v is Tex)
     {
@@ -21,7 +21,10 @@
         else if (v.Pred == "http://fogid.net/o/to-date")
         {
             string d = Utils.DatePrinted(s);
+            if (!string.IsNullOrEmpty(d))
+            {
             <span> -@(d)</span>
+            }
         }
         else if (db.ontology.IsEnumeration(v.Pred))
         {
@@ -34,13 +37,13 @@
     }
     else if (v is Dir)
     {
-        if (level > 0 && (((Dir)v).Resources).Length > 0)
+        if (level > 0 && (((Dir)v).Resources).Length > 0 && ((Dir)v).Resources[0] != null)
         {
             Rec record = ((Dir)v).Resources[0];
             string? nm = record.GetText("http://fogid.net/o/name");
             string tit = Utils.Inline(record, db.ontology);
             <span style="color:chocolate;">&nbsp; @(db.ontology.LabelOfOnto(v.Pred)): </span>
-            <a href="/view/@(record.Id)" title="@(tit)">@(nm)</a>
+            <a href="@(regime)/@(record.Id)" title="@(tit)">@(nm)</a> 
         }
     }
     else if (v is Inv)
@@ -48,13 +51,13 @@
         Rec[] records = ((Inv)v).Sources;
         if ((v.Pred == "http://fogid.net/o/father" || v.Pred == "http://fogid.net/o/mother") && level > 0)
         {
-            <span style="color:green;">&nbsp; дети: </span>
+            <span style="color:green;">&nbsp; пїЅпїЅпїЅпїЅ: </span>
             foreach (Rec rec in records)
             {
                 string? nm = rec.GetText("http://fogid.net/o/name");
                 string tit = Utils.Inline(rec, db.ontology);
                 <span>&nbsp;</span>
-                <a href="/view/@(rec.Id)" title="@(tit)">@(nm)</a>
+                <a href="@(regime)/@(rec.Id)" title="@(tit)">@(nm)</a>
             }
         }
         else
@@ -76,7 +79,8 @@
     public int level { get; set; } = 2;
     [Parameter]
     public string? forbidden { get; set; }
-
+    [Parameter]
+    public string regime { get; set; } = "view";
     //private RRecord? rRecord = null;
     //private Rec? tree = null;
 
@@ -94,7 +98,7 @@
     }
     private Rec GetUniShablon(string ty, int level, string? forbidden)
     {
-        // Все прямые возможнные свойства
+        // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         string[] dprops = db.ontology.GetDirectPropsByType(ty).ToArray();
         var propsdirect = dprops.Select<string, Pro?>(pid =>
             {
@@ -112,7 +116,7 @@
                 {
                     var tt = db.ontology.RangesOfProp(pid).FirstOrDefault();
                     if (tt == null) return null;
-                    return new Dir(pid, new Rec[] { GetUniShablon(tt, 0, null) }); // Укорачивает развертку шаблона
+                    return new Dir(pid, new Rec[] { GetUniShablon(tt, 0, null) }); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 }
                 return null;
             }).ToArray();

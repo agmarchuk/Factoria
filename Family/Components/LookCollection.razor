@@ -70,6 +70,6 @@
                        ))
                 )); 
         if (rec != null )       
-        tree = Rec.Build(rec, shablon, id => db.GetRRecord(id, true));
+        tree = Rec.Build(rec, shablon, db.ontology, id => db.GetRRecord(id, true));
     }
 }

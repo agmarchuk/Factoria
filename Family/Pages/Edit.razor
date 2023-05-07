@@ -1,27 +1,10 @@
 ﻿@page "/edit/{entityId?}/{eid?}"
 
-@using Family.Authentication;
-@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@using Family.Models;
-
 @using FactographData
-@inject AuthenticationStateProvider authStateProvider
-@*@inject ProtectedSessionStorage ProtectedSessionStore*@
-@inject ProtectedSessionStorage storage
-@inject NavigationManager navManager
-
-
 @inject FactographData.IFDataService dba
 @inject AuthenticationStateProvider authStateProvider
 
-<AuthorizeView>
-    <Authorized>
-        <Family.Components.Info id="@entityId" usr="@(context.User.Identity?.Name)" />
-    </Authorized>
-    <NotAuthorized>
-        <Family.Components.Info id="@entityId" />
-    </NotAuthorized>
-</AuthorizeView>
+<Family.Components.Info id="@entityId" />
 
 <Family.Components.ViewSearch onSelected="@((rid) => UtilizeRecord((string)rid))" searchsample="@searchsample" typs="@tps" target="edit" user="@user"  />
 
