@@ -426,6 +426,15 @@ namespace FactographData
                 .Cast<RField>()
                 .FirstOrDefault(rl => rl.Prop == "Label")?.Value;
         }
+        public string LabelOfOnto(string id, string lang)
+        {
+            if (string.IsNullOrEmpty(id) || !dicOnto.ContainsKey(id)) return null;
+            int nom = dicOnto[id];
+            return rontology[nom].Props
+                .Where(p => p is RField)
+                .Cast<RField>()
+                .FirstOrDefault(rl => rl.Prop == "Label" && rl.Lang == lang)?.Value;
+        }
         public string InvLabelOfOnto(string id)
         {
             int nom = dicOnto[id];

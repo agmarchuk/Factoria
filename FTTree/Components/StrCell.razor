@@ -1,0 +1,77 @@
+﻿@using FTTree.Data;
+@using FactographData.r;
+@implements ICellComponent
+@inject FactographData.IFDataService db
+
+@if (property is Str)
+{
+    bool isEnum = db.ontology.IsEnumeration(property.Pred);
+    if (isEnum)
+    {
+        var options = db.ontology.EnumPairs(property.Pred, MainLayout.currentLanguage);
+        if (isEdited)
+        {
+            <td>
+                <select @onchange="@(arg => {
+                    if (((Str)property).Value == null) {
+                        ((Str)property).Value = "";
+                    } else {
+                        ((Str)property).Value = arg.Value.ToString();
+                    }
+                })">
+                    <option value="null"></option>
+                    @foreach (var option in options)
+                    {
+                        if (option.Key == ((Str)property).Value)
+                        {
+                            <option value="@option.Key" selected>@option.Value</option>
+                        }
+                        else
+                        {
+                            <option value="@option.Key">@option.Value</option>
+                        }
+                    }
+                </select>
+            </td>
+        }
+        else // not edited row
+        {
+            if (((Str)property).Value != null)
+            {
+                <td>@db.GetLangText(property, property.Pred)</td>
+            }
+            else
+            {
+                <td></td>
+            }
+
+        }
+
+    }
+    else //not enum
+    {
+        if (isEdited)
+        {
+            <td><input type="text" @bind-value="@(((Str)property).Value)" /></td>
+        }
+        else
+        {
+            if (((Str)property).Value != null)
+            {
+                <td>@db.GetLangText(property)</td>
+            }
+            else
+            {
+                <td></td>
+            }
+        }
+    }
+}
+
+@code {
+    [Parameter]
+    public bool isEdited { get; set; }
+
+    [Parameter]
+    public Pro property { get; set; }
+}

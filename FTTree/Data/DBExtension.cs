@@ -1,13 +1,17 @@
 ﻿using FactographData;
 using FactographData.r;
+using FTTree.Components;
 using FTTree.Shared;
+using OAData.Adapters;
+using System.Linq;
+using System.Security.AccessControl;
+using System.Xml.Linq;
 
 namespace FTTree.Data
 {
     public static class DBExtension
     {
         private static bool showLabels = true;
-        private static string lang = MainLayout.defaultLanguage;
         public static string GetOntLabel(this IFDataService db, string input)
         {
             return showLabels ? db.ontology.LabelOfOnto(input) : input;
@@ -15,25 +19,40 @@ namespace FTTree.Data
 
         public static string? GetLangText(this IFDataService db, Pro input, string? enumSpecificatior = null) // TODO:add fallback lang
         {
-            if (enumSpecificatior is not null && showLabels) // for enumerations
-            {
-                var text = ((Str)input).Value;
-                return String.IsNullOrEmpty(text) ? "" : db.ontology.EnumValue(enumSpecificatior, text, lang);
-            }
             if (input == null)
             {
                 return null;
             }
-            //if (langText == null)
-            //{
-            //    langText = ((Texts)input).Values.FirstOrDefault(); // 1) Try default user lang
-            //}
-            var langText = ((Tex)input).Values.FirstOrDefault(val => val.Lang == lang || String.IsNullOrEmpty(val.Lang)); // 2) Try default or empty lang
-            if (langText == null)
+            if (input is Str)
             {
-                langText = ((Tex)input).Values.FirstOrDefault(); // 3) First available lang
+                var text = ((Str)input).Value;
+                if (enumSpecificatior is not null && showLabels) // for enumerations
+                {
+
+                    return String.IsNullOrEmpty(text) ? "" : db.ontology.EnumValue(enumSpecificatior, text, MainLayout.currentLanguage);
+                }
+                else
+                {
+                    return String.IsNullOrEmpty(text) ? "" : text;
+                }
             }
-            return langText?.Text;
+            if (input is Tex)
+            {
+                var langText = ((Tex)input).Values
+                    .FirstOrDefault(val => val.Lang == MainLayout.currentLanguage || String.IsNullOrEmpty(val.Lang)); // 1) Try user or empty lang
+                if (langText == null)
+                {
+                    langText = langText = ((Tex)input).Values
+                    .FirstOrDefault(val => val.Lang == MainLayout.defaultLanguage); // 2) Try default lang
+                }
+                if (langText == null)
+                {
+                    langText = langText = ((Tex)input).Values.FirstOrDefault(); // 3) Try first available lang
+                }
+                return langText?.Text;
+            }
+
+            return null;
         }
 
         public static string? GetName(this IFDataService db, Rec rec)
@@ -44,6 +63,11 @@ namespace FTTree.Data
         public static bool IsObject(this IFDataService db, string pred)
         {
             return db.ontology.DescendantsAndSelf(MainLayout.defaultObjectProp).Contains(pred);
+        }
+        public static Rec GenerateRecordById(this IFDataService db, string id)
+        {
+            object[] obj = (object[])db.GetAdapter().GetRecord(id);
+            return Rec.BuildByObj(obj, db.GenereateTempalate(obj[1].ToString(), 2, id), db.GetAdapter().GetRecord);
         }
 
         public static Rec GenereateTempalate(this IFDataService db, string ty, int level, string? forbidden)
@@ -91,6 +115,40 @@ namespace FTTree.Data
                 .Cast<Pro>()
                 .ToArray());
             return shab;
+        }
+
+        public static void SaveRec(this IFDataService db, Rec rec)
+        {
+            var objectRec = Rec.RecToObject(rec);
+            var xmlRec = Rec.RecToXML(rec, "Sergey");
+            ((UpiAdapter)db.GetAdapter()).PutItem(objectRec);
+            db.UpdateItem(xmlRec);
+        }
+        public static void DeleteRec(this IFDataService db, Rec rec)
+        {
+            ((UpiAdapter)db.GetAdapter()).PutItem(new object[] { rec.Id, "delete", new object[0] });
+            db.UpdateItem(new XElement("delete", new XAttribute("owner", "Sergey"), new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", rec.Id)));
+        }
+
+        public static Type GetComponentType(this IFDataService db, Pro field)
+        {
+            var compType = typeof(StrCell);
+
+            if (field is Tex)
+            {
+                compType = typeof(TexCell);
+            }
+
+            if (field is Dir)
+            {
+                compType = typeof(DirCell);
+            }
+            return compType;
+        }
+
+        public static string GetOntologyLabel(this IFDataService db, string prop)
+        {
+            return db.ontology.LabelOfOnto(prop, MainLayout.currentLanguage);
         }
     }
 }

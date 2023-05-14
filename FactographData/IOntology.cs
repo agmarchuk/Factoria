@@ -16,6 +16,7 @@ namespace FactographData
         IEnumerable<string> GetInversePropsByType(string tp);
         IEnumerable<string> GetDirectPropsByType(string tp);
         string LabelOfOnto(string id);
+        string LabelOfOnto(string id, string lang);
         string InvLabelOfOnto(string propId);
         IEnumerable<string> DomainsOfProp(string propId);
         IEnumerable<string> RangesOfProp(string propId);

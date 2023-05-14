@@ -1,6 +1,7 @@
 ﻿@using System.Collections.Generic
 @using System.Linq
 @using System.Xml.Linq
+@using FTTree.Data;
 
 @inject FactographData.IFDataService db
 
@@ -10,10 +11,10 @@
     {
         <select @bind="searchtype" style="height: 24px; margin-top: 10px; margin-bottom: 10px; ">
             <option value=""></option>
-            @foreach (var type in types.Where(t => db.ontology.LabelOfOnto(t) != null)) //TODO: Надо бы более корректно...
+            @foreach (var type in types.Where(t => db.GetOntologyLabel(t) != null)) //TODO: Надо бы более корректно...
             {
                 <option value="@type">@(
-              db.ontology.LabelOfOnto(type)
+                        db.GetOntologyLabel(type)
               )</option>
             }
         </select>

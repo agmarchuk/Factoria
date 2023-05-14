@@ -94,3 +94,40 @@
   <in-doc rdf:resource="pic1" />
   <ground>background</ground>
 </reflection>
+<delete rdf:about="uch08-1055" mT="2023-05-14 15:31:53Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<person rdf:about="syp2001-p-marchuk_a" mT="2023-05-14 15:53:35Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <name xml:lang="ru">Марчук Александр Гурьевич</name>
+  <name xml:lang="en">Marchuk Alexander</name>
+  <from-date>1951-12-30</from-date>
+  <description xml:lang="ru">555</description>
+  <description xml:lang="en">123</description>
+  <to-date>213</to-date>
+  <sex>m</sex>
+  <comment xml:lang="ru">com</comment>
+  <comment xml:lang="en">test</comment>
+</person>
+<person rdf:about="syp2001-p-marchuk_a" mT="2023-05-14 16:00:44Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <name xml:lang="ru">Марчук Александр Гурьевич</name>
+  <name xml:lang="en">Marchuk Alexander</name>
+  <from-date>1951-12-30</from-date>
+  <description xml:lang="ru">555</description>
+  <description xml:lang="en">123</description>
+  <to-date>213657567</to-date>
+  <sex>m</sex>
+  <comment xml:lang="ru">com</comment>
+  <comment xml:lang="en">test</comment>
+</person>
+<person rdf:about="syp2001-p-marchuk_a" mT="2023-05-14 16:17:59Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <name xml:lang="ru">Марчук Александр Гурьевич</name>
+  <name xml:lang="en">Marchuk Alexander</name>
+  <from-date>1951-12-30</from-date>
+  <description xml:lang="ru">555</description>
+  <description xml:lang="en">123</description>
+  <to-date>213657567</to-date>
+  <sex>m</sex>
+  <comment xml:lang="ru">com435345</comment>
+  <comment xml:lang="en">test</comment>
+</person>
+<location rdf:about="syp2009_ref_Changed_276" mT="2023-05-14 16:18:25Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <location-place rdf:resource="tomsk" />
+</location>

@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using System.Collections.Generic;
-using System.Linq;
+using System.Xml.Linq;
 
 namespace FactographData.r
 {
@@ -273,6 +273,58 @@ namespace FactographData.r
             }
             return result;
         }
+
+
+        public static object[] RecToObject(Rec rec)
+        {
+            object[] orec = new object[3];
+            orec[0] = rec.Id;
+            orec[1] = rec.Tp;
+            List<object> fields = new List<object>();
+            foreach (Str str in rec.Props.Where(gr => gr is Str))
+            {
+                if (str.Value != null)
+                {
+                    object[] group = new object[2];
+                    group[0] = 1;
+                    object[] field = new object[3];
+                    field[0] = str.Pred;
+                    field[1] = str.Value;// == null ? "" : value.Text;
+                    field[2] = null;// == null ? "" : value.Lang;
+                    group[1] = field;
+                    fields.Add(group);
+                }
+
+            }
+            foreach (Tex tex in rec.Props.Where(gr => gr is Tex))
+            {
+
+                foreach (var value in tex.Values)
+                {
+                    if (value.Text == null || value.Text == "")
+                    {
+                        continue;
+                    }
+                    object[] group = new object[2];
+                    group[0] = 1;
+                    object[] field = new object[3];
+                    field[0] = tex.Pred;
+                    field[1] = value.Text;// == null ? "" : value.Text;
+                    field[2] = value.Lang;// == null ? "" : value.Lang;
+                    group[1] = field;
+                    fields.Add(group);
+                }
+            }
+            foreach (Dir dir in rec.Props.Where(gr => gr is Dir))
+            {
+                if (dir.Resources.Length != 0)
+                {
+                    fields.Add(new object[2] { 2, new object[2] { dir.Pred, dir.Resources.FirstOrDefault().Id } });
+                }
+            }
+            orec[2] = fields.ToArray();
+            return orec;
+        }
         string[] months =  new string[] {"янв", "фев", "мар", "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"}; 
         public string GetDates()
         {
@@ -290,7 +342,56 @@ namespace FactographData.r
             return dir.Resources[0];
         }
 
+        public static XElement RecToXML(Rec rec, string owner)
+        {
+            var xres = new XElement(ToXName(rec.Tp),
+                (rec.Id == null ? null : new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", rec.Id)),
+                rec.Props.SelectMany<Pro, XElement>(p =>
+                {
+                    if (p is Str && ((Str)p).Value != null)
+                    {
+                        return new XElement[1] { new XElement(ToXName(p.Pred), ((Str)p).Value) };
+                    }
+                    else if (p is Tex && ((Tex)p).Values.Length != 0)
+                    {
+                        XElement[] xel = new XElement[((Tex)p).Values.Length];
+                        for (int i = 0; i < xel.Length; i++)
+                        {
+                            if (((Tex)p).Values[i].Text  != null && ((Tex)p).Values[i].Text != "")
+                            {
+                                xel[i] = new XElement(ToXName(p.Pred), ((Tex)p).Values[i].Text,
+                                    ((Tex)p).Values[i] == null ? null : new XAttribute("{http://www.w3.org/XML/1998/namespace}lang", ((Tex)p).Values[i].Lang));
+
+                            }
+
+                        }
+                        return xel;
+                    }
+                    else if (p is Dir && ((Dir)p).Resources.Length != 0)
+                    {
+
+                        return new XElement[1] {
+                            new XElement(ToXName(p.Pred), new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", ((Dir)p).Resources.FirstOrDefault().Id))
+                        };
+
+                    }
+                    return new XElement[0];
+                }).Where(x => x != null),
+                new XAttribute("owner", owner));
+            return xres;
+        }
+
+        private static XName ToXName(string name)
+        {
+            int pos = name.LastIndexOf('/'); //TODO: Наверное, нужны еще другие окончания пространств имен
+            string localName = name.Substring(pos + 1);
+            string namespaceName = pos >= 0 ? name.Substring(0, pos + 1) : "";
+            return XName.Get(localName, namespaceName);
+        }
+
     }
+
+
     public abstract class Pro
     {
         public string Pred { get; internal set; } = "";
@@ -313,7 +414,7 @@ namespace FactographData.r
     }
     public class Tex : Pro
     {
-        public TextLan[] Values { get; internal set; }
+        public TextLan[] Values { get; set; }
         public Tex(string pred, params TextLan[] values)
         {
             this.Pred = pred;
@@ -336,7 +437,7 @@ namespace FactographData.r
     }
     public class Str : Pro
     {
-        public string? Value { get; internal set; }
+        public string? Value { get; set; }
         public Str(string pred)
         {
             this.Pred = pred;

@@ -7,7 +7,7 @@
 @inject NavigationManager navigationManager
 
  <table>
-@foreach(var rec in recs)
+@foreach(var rec in recs.Where(r => r.Tp != "delete"))
 {
     var fields = rec.Props.Where(prop => prop is Tex || prop is Str || prop is Dir);
     //var possibleDirects = db.ontology.GetDirectPropsByType(ttree.Tp).Where(type => type != forbidden).ToArray();
@@ -18,8 +18,7 @@
         <tr>
             @foreach (var field in fields)
             {
-                    <th>@db.GetOntLabel(field.Pred)</th>
-
+                    <th>@db.GetOntologyLabel(field.Pred)</th>
             }
         </tr>
     }
@@ -27,51 +26,9 @@
 
             @foreach (var field in fields)
             {
-                //var value = field.FirstOrDefault(text => text.Pred == fields);
-                if (field is Str)
-                {
-                    var value = ((Str)field).Value;
-                    if (value != null)
-                    {
-                        bool isEnum = db.ontology.IsEnumeration(field.Pred);
-                        if (isEnum)
-                        {
-                            <td>@db.GetLangText(field, field.Pred)</td>
-                        }
-                        else
-                        {
-                            <td>@value</td>
-                        }
+                <DynamicComponent Type="@db.GetComponentType(field)"
+                          Parameters="@(new Dictionary<string, object>(){{"property", field}, {"isEdited", false}})"> </DynamicComponent>
 
-                    }
-                    else
-                    {
-                        <td></td>
-                    }
-                }
-                else if (field is Tex)
-                {
-                    var values = ((Tex)field).Values;
-                    if (values.Length != 0)
-                    {
-                        <td>@db.GetLangText(field)</td>
-                    } 
-                    else
-                    {
-                        <td></td>
-                    }
-                } else if (field is Dir)
-                {
-                    var values = ((Dir)field).Resources;
-                    if (values.Length != 0 && values[0] != null)
-                    {
-                        <td><NavLink href="@("/portrait/" + values[0].Id)">@db.GetName(values[0])</NavLink></td>
-                    }
-                    else
-                    {
-                        <td></td>
-                    }
-                }
             }
     </tr>
     
@@ -85,6 +42,10 @@
 
     [Parameter]
     public string forbidden { get; set; }
+
+    [Parameter]
+    public Rec originalRecord { get; set; }
+
 
     private bool firstRow = true;
 

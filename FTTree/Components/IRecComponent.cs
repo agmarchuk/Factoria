@@ -1,5 +1,4 @@
-﻿using FactographData;
-using FactographData.r;
+﻿using FactographData.r;
 using Microsoft.AspNetCore.Components;
 
 namespace FTTree.Components
@@ -11,5 +10,9 @@ namespace FTTree.Components
 
         [Parameter]
         public string forbidden { get; set; }
+
+        [Parameter]
+        public Rec originalRecord { get; set; }
+
     }
 }

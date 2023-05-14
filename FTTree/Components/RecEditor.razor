@@ -6,158 +6,45 @@
 @implements IRecComponent
 @inject FactographData.IFDataService db
 
-@*<table>
-    @for (int ttreeInd = 0; ttreeInd < ttrees.Count(); ttreeInd++)
+<table>
+    @for (int recInd = 0; recInd < recs.Count(); recInd++)
     {
-        var ttree = ttrees[ttreeInd];
-        var texts = ttree.Groups.Where(gr => gr is TTexts).ToArray();
-        var directs = ttree.Groups.Where(gr => gr is TDTree).ToArray();
-        var possibleDirects = db.ontology.GetDirectPropsByType(ttree.Tp).Where(type => type != forbidden).ToArray();
+        var rec = recs[recInd];
+        if (rec.Tp == "delete")
+        {
+            continue;
+        }
+        var fields = rec.Props.Where(prop => prop is Tex || prop is Str || prop is Dir).ToArray();
 
-        @if (ttreeInd == 0)
+        @if (recInd == 0)
         {
             <tr>
-                @foreach (var possibleDirect in possibleDirects)
+                @foreach (var field in fields)
                 {
-                    <th>@db.GetOntLabel(possibleDirect)</th>
+                    <th>@db.GetOntologyLabel(field.Pred)</th>
 
                 }
             </tr>
         }
         <tr>
-            @for (int i = 0; i < possibleDirects.Count(); i++)
+            @for (int i = 0; i < fields.Count(); i++)
             {
-                var possibleDirect = possibleDirects[i];
-                var value = texts.FirstOrDefault(text => text.Pred == possibleDirect);
-                var ranges = db.ontology.RangesOfProp(possibleDirect);
-                var isObject = db.IsObject(ranges.First());
-                //var anc = db.ontology.AncestorsAndSelf(possibleDirect);
-                if (!isObject)
-                {
-                    bool isEnum = db.ontology.IsEnumeration(possibleDirect);
-                    if (isEnum)
-                    {
-                        var options = db.ontology.EnumPairs(possibleDirect, MainLayout.defaultLanguage);
-                        if (editedRow == ttreeInd)
-                        {
-                            var currValue = "null";
-                            if (value != null)
-                            {
-                                currValue = ((TTexts)value).Values.FirstOrDefault()?.Text;
-                            }
-                            <td>
-                                <select @onchange="@(arg => {
-                                        if (value == null) {
-                                            var newTexts = new TGroup[ttree.Groups.Length + 1];
-                                            ttree.Groups.CopyTo(newTexts, 0);
-                                            var textLan = new TextLan(arg.Value.ToString(), "");
-                                            var textLanArr = new TextLan[1]{textLan};
-                                            newTexts[ttree.Groups.Length] = new TTexts(possibleDirect, textLanArr);
-                                            ttree.Groups = newTexts;
-                                        } else {
-                                            ((TTexts)value).Values[0].Text = arg.Value.ToString();
-                                        }
-                                    })">
-                                    <option value="null"></option>
-                                    @foreach (var option in options)
-                                    {
-                                        if (option.Key == currValue)
-                                        {
-                                            <option value="@option.Key" selected>@option.Value</option>
-                                        }
-                                        else
-                                        {
-                                            <option value="@option.Key">@option.Value</option>
-                                        }
-                                    }
-                                </select>
-                            </td>
-                        }
-                        else // not edited row
-                        {
-                            if (value != null)
-                            {
-                                <td>@db.GetLangText(value, value.Pred)</td>
-                            } else
-                            {
-                                <td></td>
-                            }
+                var field = fields[i];
 
-                        }
-
-                    }
-                    else // not enum
-                    {
-                        var textVal = db.GetLangText(value);
-                        if (editedRow == ttreeInd)
-                        {
-                            if (value == null)
-                            {
-                                var newTexts = new TGroup[ttree.Groups.Length + 1];
-                                ttree.Groups.CopyTo(newTexts, 0);
-                                var textLan = new TextLan("", MainLayout.defaultLanguage);
-                                var textLanArr = new TextLan[1]{textLan};
-                                newTexts[ttree.Groups.Length] = new TTexts(possibleDirect, textLanArr);
-                                ttree.Groups = newTexts;
-                                <td><input type="text" @bind-value="@textLan.Text" /></td>
-
-                            }
-                            else
-                            {
-                                var editIndex = GetLangIndex((TTexts)value, textVal);
-                                <td><input type="text" @bind-value="@(((TTexts)value).Values[editIndex].Text)" /></td>
-                            }
-                        } else
-                        {
-                            <td>@textVal</td>
-                        }
-                    }
-
-                }
-                else // direct link
-                {
-                    value = directs.FirstOrDefault(text => text.Pred == possibleDirect);
-                    if (editedRow == ttreeInd)
-                    {
-                        if (value != null)
-                        {
-                            <td>
-                                <FTTree.Components.Search 
-                                    showResults="@false" 
-                                    OnRecordSelect="@(e => ((TDTree)value).Resource = db.TBuilder.BuildTTree(e))" 
-                                    types="@ranges.ToArray()"
-                                />
-                                <div>@db.GetName(((TDTree)value).Resource)</div>
-                            </td>
-                        }
-                        else
-                        {
-                            <td></td>
-                        }
-                    }
-                    else
-                    {
-                        if (value != null)
-                        {
-                            <td><NavLink href="@("/portrait/" + ((TDTree)value).Resource.Id)">@db.GetName(((TDTree)value).Resource)</NavLink></td>
-                        }
-                        else
-                        {
-                            <td></td>
-                        }
-                    }
-                }
-                var currentInd = ttreeInd;
-                if (i == possibleDirects.Count() - 1)
+                <DynamicComponent Type="@db.GetComponentType(field)"
+                          Parameters="@(new Dictionary<string, object>(){{"property", field}, {"isEdited", editedRow == recInd}})"> </DynamicComponent>
+            
+                var currentInd = recInd;
+                if (i == fields.Count() - 1)
                 {
                     if (editedRow != currentInd)
                     {
                         <td><button @onclick="@(arg => {editedRow = currentInd;})">Изменить</button></td>
-                        <td><button @onclick="@(arg => db.TBuilder.SaveTTree(ttree, db, true))">Удалить</button></td>
+                        <td><button @onclick="@(arg => {editedRow = -1; db.DeleteRec(rec); })">Удалить</button></td>
                     }
                     else
                     {
-                        <td><button @onclick="@(arg => {editedRow = -1; db.TBuilder.SaveTTree(ttree, db); })">Сохранить</button></td>
+                        <td><button @onclick="@(arg => {editedRow = -1; db.SaveRec(rec); })">Сохранить</button></td>
                     }
 
                 }
@@ -166,7 +53,10 @@
 
     }
 </table>
-*@
+@if (forbidden != null)
+{
+    <button @onclick="@(arg => AddRecord())">Добавить запись</button>
+}
 
 @code {
     [Parameter]
@@ -175,30 +65,34 @@
     [Parameter]
     public string forbidden { get; set; }
 
+    [Parameter]
+    public Rec originalRecord { get; set; }
+
     private int editedRow = -1;
 
     protected override void OnInitialized() // = On Page Load
     {
 
     }
-    public int GetLangIndex(TTexts texts, string value)
+    public int GetLangIndex(TextLan[] textLans, string value)
     {
-        return value == null ? 0 : Array.FindIndex(texts.Values, (t => t.Text == value));
-    }
-
-    public TGroup[] GetExpandedGroup(TTree ttree, string possibleDirect)
-    {
-        var newTexts = new TGroup[ttree.Groups.Length + 1];
-        ttree.Groups.CopyTo(newTexts, 0);
-        var textLan = new TextLan("", MainLayout.defaultLanguage);
-        var textLanArr = new TextLan[1] { textLan };
-        newTexts[ttree.Groups.Length] = new TTexts(possibleDirect, textLanArr);
-        return newTexts;
+        return value == null ? 0 : Array.FindIndex(textLans, (t => t.Lang == value));
     }
 
     protected override void OnParametersSet()
     {
         OnInitialized();
+    }
+
+    private void AddRecord()
+    {
+        Rec[] newRecs = new Rec[recs.Length + 1];
+        recs.CopyTo(newRecs, 0);
+        var domains = db.ontology.DomainsOfProp(forbidden);
+        var template = db.GenereateTempalate(domains.FirstOrDefault(), 1, forbidden);
+        newRecs[recs.Length] = new Rec(null, domains.FirstOrDefault(), template.Props);
+        editedRow = recs.Length;
+        recs = newRecs;
     }
 
     

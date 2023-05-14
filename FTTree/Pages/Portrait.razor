@@ -30,8 +30,12 @@ else
     {
         continue;
     }
-    <h3>@db.GetOntLabel(inverse.Pred)</h3>
-    <DynamicComponent Type="componentType" Parameters="@(new Dictionary<string, object>(){{"recs",sources}, {"forbidden", inverse.Pred}})"></DynamicComponent>
+    <h3>@db.GetOntologyLabel(inverse.Pred)</h3>
+    <DynamicComponent Type="componentType" 
+        Parameters="@(new Dictionary<string, object>(){
+            {"recs",sources}, 
+            {"forbidden", inverse.Pred}, 
+            {"originalRecord", currentRecord}})"></DynamicComponent>
 
     @*foreach(var typedInv in ((TInvTree)inverse).Sources)
     {
@@ -62,8 +66,9 @@ else
         if (entityId != null)
         {
             //currentRecord = db.TBuilder.BuildTTree(entityId);
-            object[] obj = (object[])db.GetAdapter().GetRecord(entityId);
-            currentRecord = Rec.BuildByObj(obj, db.GenereateTempalate(obj[1].ToString(), 2, entityId), db.GetAdapter().GetRecord);
+            //object[] obj = (object[])db.GetAdapter().GetRecord(entityId);
+            //currentRecord = Rec.BuildByObj(obj, db.GenereateTempalate(obj[1].ToString(), 2, entityId), db.GetAdapter().GetRecord);
+            currentRecord = db.GenerateRecordById(entityId);
             inverses = currentRecord.Props.Where(prop => prop is Inv).ToArray();
             //inverses = currentRecord.Groups.Where(gr => gr is TInvTree).ToArray();
             mode = mode != MainLayout.editMode ? MainLayout.viewMode : mode;
