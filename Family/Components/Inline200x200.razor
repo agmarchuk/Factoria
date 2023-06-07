@@ -64,7 +64,7 @@
         }
         // Вычисление imagesource
         if (doctype == null) { }
-        else if (tree.Tp == "http://fogid.net/o/photo-doc" && doctype == "image/jpeg")
+        else if (tree.Tp == "http://fogid.net/o/photo-doc" && doctype.StartsWith("image/"))
         {
             imagesource = "docs/GetImage?u=" + uri + "&s=small";
         } 

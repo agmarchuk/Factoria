@@ -1,6 +1,8 @@
 ﻿@page "/login"
+@using FactographData;
 @using Family.Authentication;
 @inject UserAccountService userAccountService
+@inject IFDataService db
 @inject IJSRuntime js
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager navManager
@@ -36,6 +38,11 @@
         if (userAccount == null || userAccount.Password != model.Password)
         {
             await js.InvokeVoidAsync("alert", "Wrong login or password");
+            return;
+        }
+        else if ( ! db.HasWritabeFogForUser(userAccount?.UserName))
+        {
+            await js.InvokeVoidAsync("alert", "No writable space for user");
             return;
         }
         else

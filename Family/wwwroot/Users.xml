@@ -6,9 +6,9 @@
     <role>Administrator</role>
 	</user>
 	<user>
-		<name>test</name>
-		<password>test</password>
-    <role></role>
+		<name>test2</name>
+		<password>test2</password>
+    <role>User</role>
   </user>
 	<user>
 		<name>mag111</name>
@@ -18,6 +18,11 @@
 	<user>
 		<name>Sergey</name>
 		<password>111</password>
+		<role>User</role>
+	</user>
+	<user>
+		<name>misha</name>
+		<password>145</password>
 		<role>User</role>
 	</user>
 </users>

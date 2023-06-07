@@ -263,10 +263,29 @@ namespace OAData.Adapters
             GC.Collect();
         }
 
-
+        // Используется для решения отношения naming
+        private object ConvertNaming(object oo)
+        {
+            string tp = (string)((object[])oo)[1];
+            if (tp == "http://fogid.net/o/naming")
+            {
+                var referred_prop = ((object[])((object[])oo)[2])
+                    .Where(opr => (int)((object[])opr)[0] == 2)
+                    .Select(opr => ((object[])opr)[1])
+                    .FirstOrDefault(pr => (string)(((object[])pr)[0]) == "http://fogid.net/o/referred-sys");
+                if (referred_prop != null)
+                {
+                    string idd = (string)((object[])referred_prop)[1];
+                    oo = records.GetByKey(idd);
+                }
+            }
+            return oo;
+        }
         public override IEnumerable<XElement> SearchByName(string searchstring)
         {
-            var qu1 = records.GetAllByLike(0, searchstring).Distinct<object>(rSame);
+            var qu1 = records.GetAllByLike(0, searchstring)
+                .Select(r => ConvertNaming(r))
+                .Distinct<object>(rSame);
             var qu = qu1
                 .Select(r => ORecToXRec((object[])r, false))
                 ;

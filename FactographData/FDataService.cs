@@ -623,8 +623,9 @@ namespace FactographData
                 return PutItem(nitem);
             }
         }
-        public bool HasWritabeFogForUser(string user)
+        public bool HasWritabeFogForUser(string? user)
         {
+            if (user == null) return false;
             return fogs.Any(f => f.owner == user && f.writable);
         }
         public XElement PutItem(XElement item)
