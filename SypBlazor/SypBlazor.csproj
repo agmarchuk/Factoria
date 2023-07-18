@@ -15,6 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Factoria\FactographData\FactographData.csproj" />
+    <ProjectReference Include="..\FactographData\FactographData.csproj" />
   </ItemGroup>
 </Project>
