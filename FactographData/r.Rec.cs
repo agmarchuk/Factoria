@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using System;
 
 namespace FactographData.r
 {
@@ -24,7 +25,7 @@ namespace FactographData.r
             return sb.ToString();
         }
         // =================== Самое главное: генерация дерева по шаблону ==========
-        public static Rec Build(RRecord r, Rec shablon, IOntology ontology, Func<string, RRecord> getRecord)
+        public static Rec Build(RRecord r, Rec shablon, IOntology ontology, Func<string, RRecord?> getRecord)
         {
             if (r == null) return new Rec("noname", "notype");
             Rec result = new(r.Id, r.Tp);
@@ -94,7 +95,12 @@ namespace FactographData.r
                     { // нормально
                         ((Str)pros[nom]).Value = ((RField)p).Value;
                     }
-                    else throw new Exception($"Err: too many string values for {((RField)p).Prop}");
+                    else
+                    {
+                        // Бывает, что и есть, тогда просто пропустим другие значения
+                        //throw new Exception($"Err: too many string values for {((RField)p).Prop}");
+                    }
+
                 }
                 else if (pros[nom] is Tex)
                 {
@@ -115,7 +121,8 @@ namespace FactographData.r
                         ((Dir)pros[nom]).Resources[pos[nom]] = r11;
                         pos[nom]++;
                     }
-                    else Console.WriteLine($"shablon=null {pros[nom].Pred} {r1?.Tp} {((Dir)shablon.Props[nom]).ToString()}");
+                    //TODO: ВОзможно, надо что-то сделать и по else
+                    //else Console.WriteLine($"shablon=null {pros[nom].Pred} {r1?.Tp} {((Dir)shablon.Props[nom]).ToString()}");
                 }
                 else if (pros[nom] is Inv)
                 {
@@ -135,8 +142,6 @@ namespace FactographData.r
             result.Props = pros.Where(p => p != null).ToArray();
             return result;
         }
-
-
         public static Rec BuildByObj(object[] r, Rec shablon, Func<string, object> getRecord)
         {
             if (r == null) return new Rec("noname", "notype");
@@ -252,6 +257,56 @@ namespace FactographData.r
             result.Props = pros.Where(p => p != null).ToArray();
             return result;
         }
+        // Генерация универсального шаблона
+        public static Rec GetUniShablon(string ty, int level, string? forbidden, IOntology ontology)
+        {
+            // Все прямые возможнные свойства
+            string[] dprops = ontology.GetDirectPropsByType(ty).ToArray();
+            var propsdirect = dprops.Select<string, Pro?>(pid =>
+            {
+                var os = ontology.OntoSpec
+                    .FirstOrDefault(o => o.Id == pid);
+                if (os == null) return null;
+                if (os.Tp == "DatatypeProperty")
+                {
+                    var tt = ontology.RangesOfProp(pid).FirstOrDefault();
+                    bool istext = tt == "http://fogid.net/o/text" ? true : false;
+                    if (istext) return new Tex(pid);
+                    else return new Str(pid);
+                }
+                else if (os.Tp == "ObjectProperty" && level > 0 && os.Id != forbidden)
+                {
+                    var tt = ontology.RangesOfProp(pid).FirstOrDefault();
+                    if (tt == null) return null;
+                    return new Dir(pid, new Rec[] { GetUniShablon(tt, 0, null, ontology) }); // Укорачивает развертку шаблона
+                }
+                return null;
+            }).ToArray();
+            string[] iprops = level > 1 ? ontology.GetInversePropsByType(ty).ToArray() : new string[0];
+            var propsinverse = iprops.Select<string, Pro?>(pid =>
+            {
+                var os = ontology.OntoSpec
+                    .FirstOrDefault(o => o.Id == pid);
+                if (os == null) return null;
+                if (os.Tp == "ObjectProperty")
+                {
+                    string[] tps = ontology.DomainsOfProp(pid).ToArray();
+                    if (tps.Length == 0) return null;
+                    return new Inv(pid, tps.Select(t => GetUniShablon(t, level - 1, pid, ontology)).ToArray());
+                }
+                return null;
+            }).ToArray();
+            var shab = new Rec(null, ty,
+                propsdirect
+                .Concat(propsinverse)
+                .Where(p => p != null)
+                .Cast<Pro>()
+                .ToArray());
+            return shab;
+        }
+
+
+
         // ======= Теперь доступы =======
         public string? GetStr(string pred)
         {

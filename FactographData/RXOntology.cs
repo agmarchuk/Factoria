@@ -290,23 +290,27 @@ namespace FactographData
         // Таблица перечислимых DatatypeProperty id -> XElement EnumerationType
         private Dictionary<string, XElement> enufildspecs;
         public bool IsEnumeration(string prop) => enufildspecs.ContainsKey(prop);
-        public string EnumValue(string prop, string val, string lang)
+        public string? EnumValue(string prop, string val, string lang)
         {
             if (val == null || !enufildspecs.ContainsKey(prop)) return null;
             XElement spec = enufildspecs[prop];
+
+            //var state = spec.Elements("state")
+            //    .Where(s => s.Attribute("value").Value == val)
+            //    .Aggregate((acc, s) =>
+            //    {
+            //        if (acc == null) return s;
+            //        string lan = acc.Attribute("{http://www.w3.org/XML/1998/namespace}lang")?.Value;
+            //        if (lan == null) return s;
+            //        if (lan == lang) return acc;
+            //        string lan1 = s.Attribute("{http://www.w3.org/XML/1998/namespace}lang")?.Value;
+            //        if (lan1 == null) return acc;
+            //        if (lan1 == lang || lan1 == "en") return s;
+            //        return acc;
+            //    });
             var state = spec.Elements("state")
-                .Where(s => s.Attribute("value").Value == val)
-                .Aggregate((acc, s) =>
-                {
-                    if (acc == null) return s;
-                    string lan = acc.Attribute("{http://www.w3.org/XML/1998/namespace}lang")?.Value;
-                    if (lan == null) return s;
-                    if (lan == lang) return acc;
-                    string lan1 = s.Attribute("{http://www.w3.org/XML/1998/namespace}lang")?.Value;
-                    if (lan1 == null) return acc;
-                    if (lan1 == lang || lan1 == "en") return s;
-                    return acc;
-                });
+                .Where(s => s.Attribute("value")?.Value == val)
+                .FirstOrDefault(s => s.Attribute("{http://www.w3.org/XML/1998/namespace}lang")?.Value == "ru");
             if (state == null) return null;
             return state.Value;
         }

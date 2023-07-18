@@ -77,6 +77,42 @@ namespace FactographData
                 return rr;
             };
             return null;
-        } 
+        }
+        IEnumerable<RRecord> SearchRRecords(string sample, bool bywords)
+        {
+            var xrecs = bywords ? SearchByWords(sample) : SearchByName(sample);
+            foreach (var xrec in xrecs)
+            {
+                RRecord rr = new RRecord
+                {
+                    Id = xrec.Attribute("id").Value,
+                    Tp = xrec.Attribute("type").Value,
+                    Props = xrec.Elements()
+                        .Select<XElement, RProperty?>(p =>
+                        {
+                            string? pred = p.Attribute("prop")?.Value;
+                            if (pred == null) return null;
+                            if (p.Name == "field")
+                            {
+                                return new RField { Prop = pred, Value = p.Value, Lang = "ru" };
+                            }
+                            else if (p.Name == "direct")
+                            {
+                                return new RLink { Prop = pred, Resource = p.Element("record").Attribute("id").Value };
+                                //return new RDirect { Prop = pred, DRec = }
+                            }
+                            if (p.Name == "inverse")
+                            {
+                                return new RInverseLink { Prop = pred, Source = p.Element("record").Attribute("id").Value };
+                            }
+                            else return null;
+                        })
+                        .Where(ob => ob != null)
+                        .Cast<RProperty>()
+                        .ToArray()
+                };
+                yield return rr;
+            }
+        }
     }
 }

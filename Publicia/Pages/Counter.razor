@@ -1,0 +1,44 @@
+﻿@page "/counter"
+
+<MatAccordion>
+    <MatExpansionPanel @bind-Expanded="@panelOpenState">
+        <MatExpansionPanelSummary>
+            <MatExpansionPanelHeader>Self aware panel</MatExpansionPanelHeader>
+            <MatExpansionPanelSubHeader>
+                Currently I am @(panelOpenState ? "open" : "closed")
+            </MatExpansionPanelSubHeader>
+        </MatExpansionPanelSummary>
+        <MatExpansionPanelDetails>
+            <p>I'm visible because I am open</p>
+        </MatExpansionPanelDetails>
+    </MatExpansionPanel>
+
+    <MatExpansionPanel>
+        <MatExpansionPanelSummary>
+            <MatExpansionPanelHeader>Personal data</MatExpansionPanelHeader>
+            <MatExpansionPanelSubHeader>Type your name and age</MatExpansionPanelSubHeader>
+        </MatExpansionPanelSummary>
+        <MatExpansionPanelDetails>
+            <MatStringField Label="First name"></MatStringField>
+            <MatStringField Label="Age"></MatStringField>
+        </MatExpansionPanelDetails>
+    </MatExpansionPanel>
+
+    <MatExpansionPanel>
+        <MatExpansionPanelSummary>
+            <MatExpansionPanelHeader>Personal data</MatExpansionPanelHeader>
+            <MatExpansionPanelSubHeader>Type your name and age</MatExpansionPanelSubHeader>
+        </MatExpansionPanelSummary>
+        <MatExpansionPanelDetails>
+            <MatStringField Label="Имя"></MatStringField>
+            <MatStringField Label="Возраст"></MatStringField>
+        </MatExpansionPanelDetails>
+    </MatExpansionPanel>
+
+</MatAccordion>
+
+
+@code
+{
+    bool panelOpenState;
+        }

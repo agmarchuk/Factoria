@@ -1,0 +1,80 @@
+﻿@using FactographData
+@using FactographData.r
+@inject FactographData.IFDataService db
+
+<table class="mat-elevation-z5 bor" style="">
+    <tr class="bor">
+        @foreach (var p in fieldsdirects[0])
+        {
+            string pred = p.Pred;
+            if (pred == "http://fogid.net/o/uri" || pred == "http://fogid.net/o/docmetainfo") { continue; }
+            string label = db.ontology.LabelOfOnto(p.Pred);
+            <th class="bor">@(label)</th>
+        }
+    </tr>
+    @foreach (var props in fieldsdirects)
+    {
+        <tr class="bor">
+            @foreach (var p in props)
+            {
+                string pred = p.Pred;
+                if (pred == "http://fogid.net/o/uri" || pred == "http://fogid.net/o/docmetainfo") { continue; }
+                if (p is Str)
+                {
+                    if (db.ontology.IsEnumeration(pred))
+                    {
+                        string? s = ((Str)p).Value;
+                        <td class="bor">@(db.ontology.EnumValue(pred, s, "ru"))</td>
+                    }
+                    else
+                    {
+                        <td class="bor">@(((Str)p).Value)</td>
+                    }
+                }
+                else if (p is Tex)
+                {
+                    var t = (Tex)p;
+                    if (t != null && t.Values.Length > 0)
+                    {
+                        <td class="bor">@(((Tex)p).Values[0].Text)</td>
+                    }
+                    else
+                    {
+                        <td class="bor"></td>
+                    }
+                }
+                else if (p is Dir)
+                {
+                    var d = (Dir)p;
+                    var resources = d.Resources;
+                    <td class="bor">
+                        @foreach (var r in resources)
+                        {
+                            if (r == null)
+                            { // Видимо висящая ссылка
+                                <span>[нет ссылки]</span>                                
+                            }  
+                            else
+                            {
+                                string path = contro + r.Id;
+                                <a href="@(path)">@(r.GetText("http://fogid.net/o/name"))</a>
+                            }
+                        }
+                    </td>
+                }
+            }
+        </tr>
+    }
+
+
+</table>
+
+
+@code {
+    [Parameter]
+    public Pro[][] fieldsdirects { get; set; }
+    [Parameter]
+    public string contro { get; set; } = "index/";
+    [Parameter]
+    public int level { get; set; }
+}
