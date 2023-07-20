@@ -1,8 +1,11 @@
 ﻿@page "/"
 @page "/index/{entityId?}/{eid?}"
+@using System.Xml.Linq
 @using FactographData
 @using FactographData.r
 @inject FactographData.IFDataService db
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navManager
 
 <div>
     <input @bind="searchstring" style="height:24px; margin-top:10px;margin-bottom:10px;" />
@@ -32,6 +35,13 @@
             }
         </div>
     }
+    if (user != null && !string.IsNullOrEmpty(stype) && db.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj").Contains(stype))
+    {
+        <div>
+        <a href="javascript:void(0)" @onclick="@(e =>NewItemClick(stype))">нов.</a>
+        </div>
+    }
+    <hr/>
 }
 
 
@@ -177,7 +187,7 @@
     }
 
 }
-
+<div>user=@(user)</div>
 
 @code {
     [Parameter] // Фокусная запись
@@ -298,6 +308,17 @@
         }
     }
 
+    private string? user = null;
+    private string? look;
+    protected override async Task OnParametersSetAsync()
+    {
+        //var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        //var st = await customAuthStateProvider.GetAuthenticationStateAsync();
+        var st = await authStateProvider.GetAuthenticationStateAsync();
+        user = st.User.Identity?.Name;
+        //look = user;
+        await base.OnParametersSetAsync();
+    }
     protected override void OnParametersSet()
     {
         if (typs.Length == 0) typs = db.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj").ToArray();
@@ -329,5 +350,22 @@
                         new Rec(null, null,
                             new Tex("http://fogid.net/o/name"))
                             ))));
+    }
+
+    // ==================== Редактирование =======================
+    private void NewItemClick(string searchtype)
+    {
+        int pos = searchtype.LastIndexOf('/');
+        string local = searchtype.Substring(pos + 1);
+        string nsname = searchtype.Substring(0, pos + 1);
+        XElement xitem = new XElement(XName.Get(local, nsname),
+            new XAttribute("owner", user), 
+            new XElement(XName.Get("name", "http://fogid.net/o/"), searchstring));
+        XElement x = db.PutItem(xitem);
+        string? nid = x?.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
+        if (nid != null)
+        {
+            navManager.NavigateTo("index/" + nid);
+        }
     }
 }

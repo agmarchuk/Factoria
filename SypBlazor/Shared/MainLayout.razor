@@ -106,14 +106,15 @@
         navManager.NavigateTo("/index", true);       
     }
     private string? user = null;
-    private bool toedit = false;
-    protected override void OnParametersSet()
-    {
-        //user = this.context.User.Identity?.Name;
-//        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
-//        customAuthStateProvider.UpdateAuthenticationState(null);
-//public override async Task<AuthenticationState> GetAuthenticationStateAsync()
+    private bool toedit { get { return user != null; } }
+    //protected override void OnParametersSet()
+    //{
+    //    //var autask = authStateProvider.GetAuthenticationStateAsync();
+    //    //Task.WaitAll(autask);
+    //    //AuthenticationState st = autask.Result;
+    //    //user = st.User.Identity?.Name;
 
-        if (user != null) toedit = true;
-    }
+    //    if (user != null) toedit = true;
+    //}
+
 }
