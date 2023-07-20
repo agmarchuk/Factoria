@@ -3,6 +3,7 @@
 @inherits LayoutComponentBase
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager navManager
+@inject FactographData.IFDataService db
 
 <PageTitle>SypBlazor</PageTitle>
 
@@ -11,37 +12,28 @@
     {
         <div class="sidebar" style="position:absolute;margin-top:64px;">
             <AuthorizeView>
-                <Authorized>&nbsp;&nbsp;<span>@(context.User.Identity?.Name)</span> <a @onclick="Logout" href="javascript:voi(0)">Logout</a></Authorized>
-                <NotAuthorized><a href="/login">Login</a></NotAuthorized>
+                <Authorized>
+                    <span style="color:white;">@(context.User.Identity?.Name)</span>
+                    &nbsp;&nbsp; 
+                    <a @onclick="Logout" href="javascript:void(0)">Logout</a>
+                </Authorized>
+                <NotAuthorized>
+                    <!-- <a @onclick="ClickLogin" href="javascript:void(0)">Login</a> -->
+                    <NavLink @onclick="ClickLogin" class="nav-link" href="javascript:void(0)">Login</NavLink>
+                </NotAuthorized>
             </AuthorizeView>
-            <a href="login" style="color:white;margin-left:20px;padding-top:20px;">
-                login
-            </a>
-            @* <div class="nav-scrollable" @onclick="ToggleNavMenu">
-                <nav class="flex-column">
-                    <div class="nav-item px-3">
-                        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                            <span class="oi oi-home" aria-hidden="true"></span> Home
-                        </NavLink>
-                    </div>
-                    <div class="nav-item px-3">
-                        <NavLink class="nav-link" href="counter">
-                            <span class="oi oi-plus" aria-hidden="true"></span> Counter
-                        </NavLink>
-                    </div>
-                    <div class="nav-item px-3">
-                        <NavLink class="nav-link" href="fetchdata">
-                            <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-                        </NavLink>
-                    </div>
-                </nav>
-            </div> *@
+            <div>
+                <NavLink @onclick="Reload" href="javascript:void(0)">Перезагрузить!</NavLink>
+                @if (loaddone)
+                {
+                    <button @onclick="OkButton">ok</button>
+                }
+            </div>
         </div>
     }
 
 
     <main>
-
         <nav class="navbar navbar-expand-xxl navbar-light bg-light" style="height:64px; padding-top:0px;  background-image:url(VertPoloska.jpg)">
             <div class="container-fluid" style="padding-left:0px; padding-top:0px;">
                 <a class="navbar-brand" href="#">
@@ -70,9 +62,6 @@
 
 
         <article class="content px-4">
-
-
-
             @Body
         </article>
     </main>
@@ -91,10 +80,40 @@
     private bool expandSubNav;
 
     // Authorization
+    private async Task ClickLogin()
+    {
+        collapseNavMenu = false;
+        Console.WriteLine("collapse false");
+        navManager.NavigateTo("/login/", true);
+    }
     private async Task Logout()
     {
         var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
         await customAuthStateProvider.UpdateAuthenticationState(null);
-        navManager.NavigateTo("/home/", true);
+        navManager.NavigateTo("/index", true);
+    }
+
+    private bool loaddone = false;
+    private void Reload()
+    {
+        db.Reload();
+        loaddone = true;
+    }
+    private void OkButton()
+    {
+        loaddone = false;
+        collapseNavMenu = false;
+        navManager.NavigateTo("/index", true);       
+    }
+    private string? user = null;
+    private bool toedit = false;
+    protected override void OnParametersSet()
+    {
+        //user = this.context.User.Identity?.Name;
+//        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+//        customAuthStateProvider.UpdateAuthenticationState(null);
+//public override async Task<AuthenticationState> GetAuthenticationStateAsync()
+
+        if (user != null) toedit = true;
     }
 }
