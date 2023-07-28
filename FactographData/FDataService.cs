@@ -2,6 +2,7 @@
 //using RDFEngine;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -631,20 +632,20 @@ namespace FactographData
         public XElement PutItem(XElement item)
         {
             //XElement result = null;
-            string owner = item.Attribute("owner")?.Value;
+            string? owner = item.Attribute("owner")?.Value;
 
             // Запись возможна только если есть код владельца
             if (owner == null) return new XElement("error", "no owner attribute");
 
             // Проверим и изменим отметку времени
             string mT = DateTime.Now.ToUniversalTime().ToString("u");
-            XAttribute mT_att = item.Attribute("mT");
+            XAttribute? mT_att = item.Attribute("mT");
             if (mT_att == null) item.Add(new XAttribute("mT", mT));
             else mT_att.Value = mT;
 
 
             // Ищем подходящий фог-документ
-            FogInfo fi = fogs.FirstOrDefault(f => f.owner == owner && f.writable);
+            FogInfo? fi = fogs.FirstOrDefault(f => f.owner == owner && f.writable);
 
             // Если нет подходящего - запись не производится
             if (fi == null) return new XElement("error", "no writable fog for request");
@@ -653,8 +654,8 @@ namespace FactographData
             if (fi.fogx == null) fi.fogx = XElement.Load(fi.pth);
 
             // Изымаем из пришедшего элемента владельца и фиксируем его в фоге
-            XAttribute owner_att = item.Attribute("owner");
-            owner_att.Remove();
+            XAttribute? owner_att = item.Attribute("owner");
+            if (owner_att != null) owner_att.Remove();
 
             // Формируемый элемент (new item)
             XElement nitem;
@@ -667,16 +668,33 @@ namespace FactographData
             else
             {
                 // читаем или формируем идентификатор
-                string id = item.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
-                XElement element = null; // запись с пришедшим идентификатором
+                string? id = item.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
+                XElement? element = null; // запись с пришедшим идентификатором
                 if (id == null)
                 {
-                    XAttribute counter_att = fi.fogx.Attribute("counter");
-                    int counter = Int32.Parse(counter_att.Value);
-                    id = fi.fogx.Attribute("prefix").Value + counter;
+                    XAttribute? counter_att = fi.fogx.Attribute("counter");
+                    XAttribute? prefix_att = fi.fogx.Attribute("prefix");
+                    if ( counter_att != null && prefix_att != null)
+                    {
+                        int counter = Int32.Parse(counter_att.Value);
+                        id = prefix_att.Value + counter;
+                        counter_att.Value = "" + (counter + 1);
+                    }
+                    else
+                    {
+                        Random rnd = new Random();
+                        var r = rnd.Next();
+                        byte[] bytes = new byte[4];
+                        uint mask = 255;
+                        for (int i = 0; i < 4; i++)
+                        {
+                            bytes[i] = (byte)(r & mask);
+                            r >>= 8;
+                        }
+                        id = Convert.ToBase64String(bytes);
+                    }
                     // внедряем
                     item.Add(new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", id));
-                    counter_att.Value = "" + (counter + 1);
                 }
                 else
                 {
@@ -693,7 +711,7 @@ namespace FactographData
                 nitem = new XElement(item.Name, item.Attribute(ONames.rdfabout), item.Attribute("mT"),
                     item.Elements().Select(xprop =>
                     {
-                        XAttribute aresource = xprop.Attribute(ONames.rdfresource);
+                        XAttribute? aresource = xprop.Attribute(ONames.rdfresource);
                         if (aresource == null)
                         {   // DatatypeProperty
                             if (string.IsNullOrEmpty(xprop.Value)) return null; // Глевное убирание!!!

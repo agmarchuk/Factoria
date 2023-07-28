@@ -334,7 +334,7 @@ else
     {
         ((RField)bindProperty).Value = e.ToString();
     }
-    private static bool Allowed(string prop, string forbidden) =>
+    private static bool Allowed(string prop, string? forbidden) =>
         prop != forbidden &&
         prop != "http://fogid.net/o/uri" &&
         prop != "http://fogid.net/o/docmetainfo";

@@ -3,11 +3,23 @@
 @using System.Xml.Linq
 @using FactographData
 @using FactographData.r
+@using Family.Authentication;
 @inject FactographData.IFDataService db
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager navManager
 
-<div>
+@* ========= Тестовая область ========= *@
+@if (tree == null)
+{
+    navManager.NavigateTo("index/test2_631_1002");
+} else 
+{
+    <SypBlazor.Components.EditTable etree="tree" />
+    <hr />
+}
+@* ========= конец ========= *@
+
+@*<div>
     <input @bind="searchstring" style="height:24px; margin-top:10px;margin-bottom:10px;" />
     <select @bind="stype" style="height: 24px; margin-top: 10px; margin-bottom: 10px; ">
         <option value=""></option>
@@ -38,17 +50,21 @@
     if (user != null && !string.IsNullOrEmpty(stype) && db.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj").Contains(stype))
     {
         <div>
-        <a href="javascript:void(0)" @onclick="@(e =>NewItemClick(stype))">нов.</a>
+        <a href="javascript:void(0)" @onclick="@(e =>NewItem(stype))">нов.</a>
         </div>
     }
     <hr/>
 }
+*@
+<SypBlazor.Components.SearchPanel typs="@typs" user="@user"
+    onNewItem="stss => NewItem(((Tuple<string, string>)stss).Item1, ((Tuple<string, string>)stss).Item2)" 
+    onSelected="id => OnSelected((string)id)"    />
 
 
 @if (tree != null)
 {
-    Pro[][] fieldsdirects = new Pro[][]
-        { tree.Props.Where(p => p is Str | p is Tex | p is Dir).ToArray() };
+@*    Pro[][] fieldsdirects = new Pro[][]
+        { tree.Props.Where(p => p is Str | p is Tex | p is Dir).ToArray() };*@    
     var invProps = tree.Props.Where(p => p is Inv).Cast<Inv>().ToArray();
     <div>
         <span style="color:green;">@(db.ontology.LabelOfOnto(tree.Tp))</span>
@@ -117,8 +133,8 @@
 
         }
     }
-    <SypBlazor.Components.DrawTable fieldsdirects="@(fieldsdirects)" />
-    @if (invProps.Length > 0)
+    <SypBlazor.Components.DrawTable Trees="@(new Rec[] { tree })" onDelete="(id) => Delete((string)id)" user="@user" />
+    @if ( true || invProps.Length > 0) //TODO: надо разобраться почему нет пустых обратных списков свойств
     {
         <table style="border:none;">
 
@@ -127,13 +143,11 @@
             string pred = iProp.Pred;
             Rec[] inv_items = iProp.Sources.Where(g => g != null)
                 .ToArray();
-                if (s.ToEdit || inv_items.Length > 0)
+                if (user != null || inv_items.Length > 0)
                 {
                     <tr valign="top">
                         <td>
-                            <span style="color:green;">@(
-                db.ontology.InvLabelOfOnto(pred)
-                )</span>
+                            <span style="color:green;">@(db.ontology.InvLabelOfOnto(pred))</span>
                         </td>
                         <td>
                             @if (inv_items.Length > 0)
@@ -176,9 +190,30 @@
                                 }
                                 else
                                 {
-                                    <SypBlazor.Components.DrawTable fieldsdirects="@(fidis)" level="1" />
+                                    if (user != null)
+                                    {
+                                        var tty = iProp.Sources[0].Tp;
+                                        var pre = iProp.Pred;
+                                        <div>
+                                        <a href="javascript:void(0)" @onclick="@(e =>NewInverseRelation(tty, pre))">нов.</a>
+                                        </div>
+                                    }
+                                    <SypBlazor.Components.DrawTable Trees="@(inv_items)" level="1" user="@user" 
+                                        inverseProp="@(iProp.Pred)"
+                                        onDelete="(id) => Delete((string)id)" />
                                 }
-                        }
+                            }
+                            else
+                            {
+                                if (user != null)
+                                {
+                                    string pre = iProp.Pred;
+                                    string tty = db.ontology.DomainsOfProp(pre).First();
+                                    <div>
+                                        <a href="javascript:void(0)" @onclick="@(e =>NewInverseRelation(tty, pre))">нов.</a>
+                                    </div>
+                                }
+                            }
                     </td>
                 </tr>
             }
@@ -196,10 +231,10 @@
     public string? eid { get; set; }
 
     private string[] typs = new string[0];
-    private string? stype { get; set; }
-    private string all = "";
-    private string? searchstring { get; set; }
-    private bool bywords { get; set; }
+    //private string? stype { get; set; }
+    //private string all = "";
+    //private string? searchstring { get; set; }
+    //private bool bywords { get; set; }
 
     // группа параметров состояния
     struct AppState
@@ -220,14 +255,15 @@
     }
     private void ToCancel()
     {
-        searchstring = null;
+        //searchstring = null;
         StateHasChanged();
     }
     // Мы будем создавать Rec-модель
     private Rec? tree = null;
     private string? prev = null, next = null, externalId = null;
-    private void Build(string id)
+    private void Build(string? id)
     {
+        if (id == null) return;
         prev = null; next = null; externalId = null;
         RRecord? rrec = db.GetRRecord(id, true);
         if (rrec != null)
@@ -312,12 +348,11 @@
     private string? look;
     protected override async Task OnParametersSetAsync()
     {
-        //var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
-        //var st = await customAuthStateProvider.GetAuthenticationStateAsync();
         var st = await authStateProvider.GetAuthenticationStateAsync();
         user = st.User.Identity?.Name;
         //look = user;
         await base.OnParametersSetAsync();
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
     }
     protected override void OnParametersSet()
     {
@@ -326,7 +361,8 @@
         {
             BuildParts();
             Build(entityId);
-            searchstring = null;
+            //searchstring = null;
+            StateHasChanged();
         }
     }
     // Шаблоны обратных свойств, размещенные по обратным предикатам
@@ -352,9 +388,16 @@
                             ))));
     }
 
-    // ==================== Редактирование =======================
-    private void NewItemClick(string searchtype)
+    // ============= Навигация
+    private void OnSelected(string id)
     {
+        navManager.NavigateTo("index/" + id);
+    }
+
+    // ==================== Редактирование =======================
+    private void NewItem(string searchtype, string searchstring)
+    {
+        if (string.IsNullOrEmpty(searchstring) || string.IsNullOrEmpty(searchtype)) { return; }
         int pos = searchtype.LastIndexOf('/');
         string local = searchtype.Substring(pos + 1);
         string nsname = searchtype.Substring(0, pos + 1);
@@ -367,5 +410,37 @@
         {
             navManager.NavigateTo("index/" + nid);
         }
+    }
+    private void Delete(string id)
+    {
+        XElement xitem = new XElement("delete",
+            new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", id),
+            new XAttribute("owner", user));
+        db.PutItem(xitem);
+        if (id == entityId)
+        {
+            navManager.NavigateTo("index/", true);
+        }
+        else
+        {
+            //StateHasChanged();
+            Build(entityId);
+        }
+    }
+    private static XName ToXName(string xid)
+    {
+        int pos = xid.LastIndexOfAny(new char[] { '/', '#' });
+        return XName.Get(xid.Substring(pos + 1), xid.Substring(0, pos + 1));
+    }
+    private void NewInverseRelation(string tty, string invPred)
+    {
+        XElement xitem = new XElement(ToXName(tty),
+            new XAttribute("owner", user),
+            new XElement(ToXName(invPred), 
+                new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", entityId))
+            );
+        XElement x = db.PutItem(xitem);
+
+        Build(entityId);
     }
 }

@@ -17,13 +17,13 @@ namespace FactographData.r
             this.Tp = tp;
             this.Props = props;
         }
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder($"r({Id}, {Tp}");
-            foreach (var p in Props) { sb.Append(", "); sb.Append(p.ToString()); }
-            sb.Append(')');
-            return sb.ToString();
-        }
+        //public override string ToString()
+        //{
+        //    StringBuilder sb = new StringBuilder($"r({Id}, {Tp}");
+        //    foreach (var p in Props) { sb.Append(", "); sb.Append(p.ToString()); }
+        //    sb.Append(')');
+        //    return sb.ToString();
+        //}
         // =================== Самое главное: генерация дерева по шаблону ==========
         public static Rec Build(RRecord r, Rec shablon, IOntology ontology, Func<string, RRecord?> getRecord)
         {
@@ -475,20 +475,20 @@ namespace FactographData.r
             this.Pred = pred;
             this.Values = values;
         }
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder("t(");
-            bool firsttime = true;
-            foreach (var v in Values)
-            {
-                if (!firsttime) sb.Append(", ");
-                firsttime = false;
-                sb.Append($"\"{v.Text}\"");
-                if (v.Lang != null) sb.Append("^^" + v.Lang);
-            }
-            sb.Append(')');
-            return sb.ToString();
-        }
+        //public override string ToString()
+        //{
+        //    StringBuilder sb = new StringBuilder("t(");
+        //    bool firsttime = true;
+        //    foreach (var v in Values)
+        //    {
+        //        if (!firsttime) sb.Append(", ");
+        //        firsttime = false;
+        //        sb.Append($"\"{v.Text}\"");
+        //        if (v.Lang != null) sb.Append("^^" + v.Lang);
+        //    }
+        //    sb.Append(')');
+        //    return sb.ToString();
+        //}
     }
     public class Str : Pro
     {
@@ -502,54 +502,54 @@ namespace FactographData.r
             this.Pred = pred;
             this.Value = value;
         }
-        public override string ToString()
-        {
-            return $"\"{Value}\"";
-        }
+        //public override string ToString()
+        //{
+        //    return $"\"{Value}\"";
+        //}
     }
     public class Dir : Pro
     {
-        public Rec[] Resources { get; internal set; }
+        public Rec[] Resources { get; set; }
         public Dir(string pred, params Rec[] resources)
         {
             Pred = pred;
             Resources = resources;
         }
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder("d"+Pred+"(");
-            bool firsttime = true; 
-            foreach (var res in Resources)
-            {                
-                if (!firsttime) sb.Append(", ");
-                firsttime = false;
-                if (res != null) sb.Append(res.ToString());
-                else sb.Append("null");
-            }
-            sb.Append(')');
-            return sb.ToString(); 
-        }
+        //public override string ToString()
+        //{
+        //    StringBuilder sb = new StringBuilder("d"+Pred+"(");
+        //    bool firsttime = true; 
+        //    foreach (var res in Resources)
+        //    {                
+        //        if (!firsttime) sb.Append(", ");
+        //        firsttime = false;
+        //        if (res != null) sb.Append(res.ToString());
+        //        else sb.Append("null");
+        //    }
+        //    sb.Append(')');
+        //    return sb.ToString(); 
+        //}
     }
     public class Inv : Pro
     {
-        public Rec[] Sources { get; internal set; }
+        public Rec[] Sources { get; set; }
         public Inv(string pred, params Rec[] sources)
         {
             Pred = pred;
             Sources = sources;
         }
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder("i"+Pred+"(");
-            bool firsttime = true;
-            foreach (var res in Sources)
-            {
-                if (!firsttime) sb.Append(", ");
-                firsttime = false;
-                sb.Append(res.ToString());
-            }
-            sb.Append(')');
-            return sb.ToString();
-        }
+        //public override string ToString()
+        //{
+        //    StringBuilder sb = new StringBuilder("i"+Pred+"(");
+        //    bool firsttime = true;
+        //    foreach (var res in Sources)
+        //    {
+        //        if (!firsttime) sb.Append(", ");
+        //        firsttime = false;
+        //        sb.Append(res.ToString());
+        //    }
+        //    sb.Append(')');
+        //    return sb.ToString();
+        //}
     }
 }

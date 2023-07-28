@@ -1,65 +1,200 @@
-﻿@using FactographData
+﻿@using System.Xml.Linq
+@using FactographData
 @using FactographData.r
 @inject FactographData.IFDataService db
 
 <table class="mat-elevation-z5 bor" style="">
     <tr class="bor">
-        @foreach (var p in fieldsdirects[0])
+        @foreach (var p in Trees[0].Props.Where(p => p is Str | p is Tex | p is Dir).ToArray())
         {
             string pred = p.Pred;
             if (pred == "http://fogid.net/o/uri" || pred == "http://fogid.net/o/docmetainfo") { continue; }
             string label = db.ontology.LabelOfOnto(p.Pred);
             <th class="bor">@(label)</th>
         }
+        @if(user != null)
+        {
+            <th class ="bor"></th>
+        }
     </tr>
-    @foreach (var props in fieldsdirects)
+    @foreach (var tree in Trees)
     {
+        var fieldsdirects = tree.Props.Where(p => p is Str | p is Tex | p is Dir).ToArray();
         <tr class="bor">
-            @foreach (var p in props)
-            {
-                string pred = p.Pred;
-                if (pred == "http://fogid.net/o/uri" || pred == "http://fogid.net/o/docmetainfo") { continue; }
-                if (p is Str)
-                {
-                    if (db.ontology.IsEnumeration(pred))
-                    {
-                        string? s = ((Str)p).Value;
-                        <td class="bor">@(db.ontology.EnumValue(pred, s, "ru"))</td>
-                    }
-                    else
-                    {
-                        <td class="bor">@(((Str)p).Value)</td>
-                    }
-                }
-                else if (p is Tex)
-                {
-                    var t = (Tex)p;
-                    if (t != null && t.Values.Length > 0)
-                    {
-                        <td class="bor">@(((Tex)p).Values[0].Text)</td>
-                    }
-                    else
-                    {
-                        <td class="bor"></td>
-                    }
-                }
-                else if (p is Dir)
-                {
-                    var d = (Dir)p;
-                    var resources = d.Resources;
-                    <td class="bor">
-                        @foreach (var r in resources)
+            @if (erecord != null && tree.Id == erecord.Id)
+            { // Редактирование ячеек
+                <td colspan="@(fieldsdirects.Length + 1)" style="border:dashed;">
+                    <table border="1" width="100%">
+                        @* Это рядки записи, предназначенной для редактирования *@
+@*                        @foreach (var c in erecord.Props.Where(p => Allowed(p.Prop, null)))
                         {
-                            if (r == null)
-                            { // Видимо висящая ссылка
-                                <span>[нет ссылки]</span>                                
-                            }  
-                            else
-                            {
-                                string path = contro + r.Id;
-                                <a href="@(path)">@(r.GetText("http://fogid.net/o/name"))</a>
-                            }
+                            <tr>
+                                <td>@(db.ontology.LabelOfOnto(c.Prop))</td>
+                                @if (c is RField)
+                                {
+                                    RField f = (RField)c;
+                                    // ~~~~~~~~~~~~ выделяем вариант перечислимого и создаем под него элемент ~~~~~~
+                                    if (db.ontology.IsEnumeration(c.Prop))
+                                    {
+                                        var states = db.ontology.EnumPairs(c.Prop, "ru");
+                                        <td>
+                                            <select @onchange="@(e => SelectChangeHandler(e.Value, c))">
+                                                <option value=""></option>
+                                                @foreach (var item in states)
+                                                {
+                                                    if (f.Value == item.Key)
+                                                    {
+                                                        <option selected="selected" value="@item.Key">@item.Value</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.Key">@item.Value</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <input @bind="f.Value" />
+                                        </td>
+                                    }
+
+                                }
+                                else if (c is RDirect)
+                                {
+                                    var rr = ((RDirect)c).DRec;
+                                    if (rr != null)
+                                    {
+                                        <td>
+                                            <a href="javascript:void(0)" @onclick="@(e =>LinkClick(rr.Id))">@(rr.GetName())</a>
+                                            &nbsp;
+                                            <a href="javascript:void(0)" @onclick="@(e => DeleteLink(c.Prop))">x</a>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        if (searchlinkprop == c.Prop)
+                                        {
+                                            var typps = db.ontology.RangesOfProp(c.Prop)
+                                                .SelectMany(t => db.ontology.DescendantsAndSelf(t))
+                                                .Distinct();
+                                            <td style="background-color: antiquewhite;">
+                                                <Family.Components.Search onSelected="(rid) => LinkRecord((string)rid)"
+                                                                                typs="@(typps.ToArray())" user="@user" />
+                                          
+                                                <span style="color:violet;">Search component</span>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td style="background-color: antiquewhite;">
+                                                <a href="javascript:void(0)" @onclick="@(e => SearchLink(c.Prop))">связ.</a>
+                                            </td>
+                                        }
+                                    }
+                                }
+                            </tr>
                         }
+*@
+                        @foreach (var p in etree.Props.Where(p => p.Pred != inverseProp))
+                        {
+                            <tr>
+                                <td>@(db.ontology.LabelOfOnto(p.Pred))</td>
+                                @if (p is Tex)
+                                {
+                                    Tex te = (Tex)p;
+                                    // У нас будет поле редактирования и поле языка
+                                    // Начнем с простого: поле языка - только ru
+                                    if (te.Values.Length == 0)
+                                    {
+                                        <td>te.Values.Length == 0</td>
+                                    }
+                                    else
+                                    {
+                                        TextLan tt = te.Values[0];
+                                        <td>
+                                            <input type="text" @bind="tt.Text" />
+                                            &nbsp;
+                                            <span>@(tt.Lang)</span>
+                                        </td>
+
+                                    }
+                                }
+                                else
+                                {
+                                    <td>Это спец таблица</td>
+                                }
+                            </tr>
+                        }
+                        <tr>
+                            <td colspan="2">
+                                <button @onclick="Ok">ok</button>
+                                <button @onclick="Cancel">cancel</button>
+                            </td>
+                        </tr>
+                    </table>
+
+                </td>
+            }
+            else
+            { // Обычный ряд значений
+                //string idd = tree.Id;
+                @foreach (var p in tree.Props.Where(p => p is Str | p is Tex | p is Dir).ToArray())
+                {
+                    string pred = p.Pred;
+                    if (pred == "http://fogid.net/o/uri" || pred == "http://fogid.net/o/docmetainfo") { continue; }
+                    if (p is Str)
+                    {
+                        if (db.ontology.IsEnumeration(pred))
+                        {
+                            string? s = ((Str)p).Value;
+                            <td class="bor">@(db.ontology.EnumValue(pred, s, "ru"))</td>
+                        }
+                        else
+                        {
+                            <td class="bor">@(((Str)p).Value)</td>
+                        }
+                    }
+                    else if (p is Tex)
+                    {
+                        var t = (Tex)p;
+                        if (t != null && t.Values.Length > 0)
+                        {
+                            <td class="bor">@(((Tex)p).Values[0].Text)</td>
+                        }
+                        else
+                        {
+                            <td class="bor"></td>
+                        }
+                    }
+                    else if (p is Dir)
+                    {
+                        var d = (Dir)p;
+                        var resources = d.Resources;
+                        <td class="bor">
+                            @foreach (var r in resources)
+                            {
+                                if (r == null)
+                                { // Видимо висящая ссылка
+                                    <span>[нет ссылки]</span>                                
+                                }  
+                                else
+                                {
+                                    string path = contro + r.Id;
+                                    <a href="@(path)">@(r.GetText("http://fogid.net/o/name"))</a>
+                                }
+                            }
+                        </td>
+                    }
+                }
+                @if (user != null)
+                {
+                    <td class="bor">
+                        <a href="javascript:void(0)" @onclick="@(e =>EdClick(tree.Id))">ред.</a>
+                        <span> | </span>
+                        <a href="javascript:void(0)" @onclick="@(e =>DelItemClick(tree.Id))">x</a>
                     </td>
                 }
             }
@@ -72,9 +207,188 @@
 
 @code {
     [Parameter]
-    public Pro[][] fieldsdirects { get; set; }
+    public Rec[]? Trees { get; set; }
     [Parameter]
     public string contro { get; set; } = "index/";
     [Parameter]
     public int level { get; set; }
+    [Parameter]
+    public string? user { get; set; }
+    [Parameter]
+    public string? inverseProp { get; set; }
+    [Parameter]
+    public EventCallback onDelete { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        erecord = null;
+        etree = null;
+    }
+
+    private async Task DelItemClick(string id)
+    {
+        await onDelete.InvokeAsync(id);
+    }
+
+
+
+    // ========== Раздел редактирования записи в таблице ==========
+    // Копия записи для редактирования, если null, то нет записи для редактирования
+    private RRecord? erecord = null;
+    private Rec? etree = null;
+    private void EdClick(string id)
+    {
+        if (erecord != null) return; // Не реагировать на гиперссылку если не закончено редактирование какой-то записи
+
+        // Создадим редактируемую запись
+        erecord = db.GetRRecord(id, false);
+        // еще раз не реагируем
+        if (erecord == null) return;
+
+        // Создадим шаблон редактирования. Сначала вычислим набор предикатов записи
+        string[] dprops = db.ontology.GetDirectPropsByType(erecord.Tp).ToArray();
+        // Этот шаблон мы заполним данными, распределяя данные erecord по нему. 
+        // Функция вычисления позиции предиката в массиве propsdirect
+        Func<string, int> indexOfPred = pred =>
+        {
+            var first = dprops.Select((pre, ind) => new Tuple<string, int>(pre, ind))
+            .FirstOrDefault(pi => pi.Item1 == pred);
+            if (first == null) return -1;
+            return first.Item2;
+        };
+        // Сначала вычислим количество данных, попадающих в каждую позицию.
+        int[] ndata = Enumerable.Repeat<int>(0, dprops.Length).ToArray();
+        foreach (var prop in erecord.Props)
+        {
+            int pos = indexOfPred(prop.Prop);
+            if (pos == -1) continue;
+            ndata[pos] += 1;
+        }
+        // собственно шаблон
+        Pro?[] propsdirect = dprops.Select((pid, i) =>
+        {
+            var os = db.ontology.OntoSpec
+                .FirstOrDefault(o => o.Id == pid);
+            if (os == null) return null;
+            if (os.Tp == "DatatypeProperty")
+            {
+                var tt = db.ontology.RangesOfProp(pid).FirstOrDefault();
+                bool istext = tt == "http://fogid.net/o/text" ? true : false;
+                if (istext) return new Tex(pid, new TextLan[ndata[i]]);
+                else return new Str(pid); // только одна строка с этим предикатом
+            }
+            else if (os.Tp == "ObjectProperty")
+            {
+                var tt = db.ontology.RangesOfProp(pid).FirstOrDefault();
+                if (tt == null) return null;
+                return new Dir(pid, new Rec[ndata[i]]);
+            }
+            return (Pro?)null;
+        }).ToArray();
+        // Теперь перенесем данные в propsdirect. Из счетчиков будем вычитать .Where(pr => pr != null)
+        foreach (var prop in erecord.Props)
+        {
+            int pos = indexOfPred(prop.Prop);
+            if (pos == -1) continue;
+            Pro? p = propsdirect[pos];
+            if (p is Tex)
+            {
+                Tex t = (Tex)p;
+                if (!(prop is RField)) throw new Exception("Err:298349");
+                RField field = (RField)prop;
+                t.Values[t.Values.Length - ndata[pos]] = new TextLan(field.Value, field.Lang);
+            }
+            else if (p is Str)
+            {
+                Str s = (Str)p;
+                if (!(prop is RField)) throw new Exception("Err:298350");
+                RField field = (RField)prop;
+                s.Value = field.Value;
+            }
+            else if (p is Dir)
+            {
+                Dir d = (Dir)p;
+                if (!(prop is RLink)) throw new Exception("Err:298351");
+                RLink direct = (RLink)prop;
+                RRecord? resrec = db.GetRRecord(direct.Resource, false);
+                Rec? trec = null;
+                if (resrec != null)
+                {
+                    trec = new Rec(resrec.Id, resrec.Tp, new Tex("http://fogid.net/o/name",
+                        resrec.Props
+                        .Where(p => p.Prop == "http://fogid.net/o/name")
+                        .Cast<RField>()
+                        .Select(f => new TextLan(f.Value, f.Lang))
+                        .ToArray()));
+                }
+                d.Resources[d.Resources.Length - ndata[pos]] = trec; // ???
+            }
+            ndata[pos] -= 1;
+        }
+        // TODO: надо убрать пустышки из propsdirect
+        var pd = propsdirect.Where(p => p != null).Cast<Pro>().ToArray();
+        // В итоге, оформляем дерево
+        etree = new Rec(erecord.Id, erecord.Tp, pd);
+    }
+
+    // Редактирование прямой ссылки
+    private string? searchlinkprop = null;
+    private string? searchsubitem = null;
+    private void SearchLink(string prop) { searchlinkprop = prop; }
+    private void LinkRecord(string rid)
+    {
+        RRecord? extRec = db.GetRRecord(rid, false);
+        var erec = new RRecord
+            {
+                Id = erecord.Id,
+                Tp = erecord.Tp,
+                Props = erecord.Props.Select(p => p.Prop != searchlinkprop ? p :
+                    new RDirect
+                    {
+                        Prop = searchlinkprop,
+                        DRec = new RRecord
+                        {
+                            Id = rid,
+                            Tp = extRec.Tp,
+                            Props = extRec.Props
+                        }
+                    }).ToArray()
+            };
+        erecord = erec;
+        searchlinkprop = null;
+        searchsubitem = null;
+
+    }
+    private void DeleteLink(string prop)
+    {
+        var erec = new RRecord
+            {
+                Id = erecord.Id,
+                Tp = erecord.Tp,
+                Props = erecord.Props.Select(p => p.Prop != prop ? p : new RDirect { Prop = prop, DRec = null }).ToArray()
+            };
+        erecord = erec;
+    }
+    private void LinkClick(string id)
+    {
+        
+    }
+
+    // Фиксация и отмена редактирования
+    private void Ok()
+    {
+        erecord = null;
+    }
+    private void Cancel() { erecord = null; }
+
+    private void SelectChangeHandler(object e, RProperty bindProperty)
+    {
+        ((RField)bindProperty).Value = e.ToString();
+    }
+    private static bool Allowed(string prop, string? forbidden) =>
+        prop != forbidden &&
+        prop != "http://fogid.net/o/uri" &&
+        prop != "http://fogid.net/o/docmetainfo";
+
 }
