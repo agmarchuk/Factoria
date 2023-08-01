@@ -57,9 +57,12 @@
         bywords = false;
         await onSelected.InvokeAsync(id);
     }
-    private async Task NewItemClick(string id)
+    private async Task NewItemClick(string ty)
     {
-        await onNewItem.InvokeAsync(new Tuple<string, string?>(id, searchstring));
+        if (searchstring != null)
+        {
+            await onNewItem.InvokeAsync(new Tuple<string, string>(ty, searchstring));
+        }
         searchstring = null;
     }
     protected override void OnParametersSet()

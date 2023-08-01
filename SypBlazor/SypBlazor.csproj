@@ -7,14 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\config.xml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="MatBlazor" Version="2.10.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FactographData\FactographData.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\" />
   </ItemGroup>
 </Project>

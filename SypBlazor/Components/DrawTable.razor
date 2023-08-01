@@ -1,4 +1,5 @@
-﻿@using System.Xml.Linq
+﻿@using System.Collections.Generic
+@using System.Xml.Linq
 @using FactographData
 @using FactographData.r
 @inject FactographData.IFDataService db
@@ -23,119 +24,20 @@
         <tr class="bor">
             @if (erecord != null && tree.Id == erecord.Id)
             { // Редактирование ячеек
+                IEnumerable<Pro> eprops;
+                if (inverseProp != null)
+                {
+                    var d = new Dir(inverseProp, new Rec[] { new Rec(focusId, "") });
+                    eprops = fieldsdirects.Append(d);
+                }
+                else { eprops = fieldsdirects; }
+                Rec tree_toedit = new Rec(tree.Id, tree.Tp, eprops.ToArray());
                 <td colspan="@(fieldsdirects.Length + 1)" style="border:dashed;">
-                    <table border="1" width="100%">
-                        @* Это рядки записи, предназначенной для редактирования *@
-@*                        @foreach (var c in erecord.Props.Where(p => Allowed(p.Prop, null)))
-                        {
-                            <tr>
-                                <td>@(db.ontology.LabelOfOnto(c.Prop))</td>
-                                @if (c is RField)
-                                {
-                                    RField f = (RField)c;
-                                    // ~~~~~~~~~~~~ выделяем вариант перечислимого и создаем под него элемент ~~~~~~
-                                    if (db.ontology.IsEnumeration(c.Prop))
-                                    {
-                                        var states = db.ontology.EnumPairs(c.Prop, "ru");
-                                        <td>
-                                            <select @onchange="@(e => SelectChangeHandler(e.Value, c))">
-                                                <option value=""></option>
-                                                @foreach (var item in states)
-                                                {
-                                                    if (f.Value == item.Key)
-                                                    {
-                                                        <option selected="selected" value="@item.Key">@item.Value</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="@item.Key">@item.Value</option>
-                                                    }
-                                                }
-                                            </select>
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <td>
-                                            <input @bind="f.Value" />
-                                        </td>
-                                    }
-
-                                }
-                                else if (c is RDirect)
-                                {
-                                    var rr = ((RDirect)c).DRec;
-                                    if (rr != null)
-                                    {
-                                        <td>
-                                            <a href="javascript:void(0)" @onclick="@(e =>LinkClick(rr.Id))">@(rr.GetName())</a>
-                                            &nbsp;
-                                            <a href="javascript:void(0)" @onclick="@(e => DeleteLink(c.Prop))">x</a>
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        if (searchlinkprop == c.Prop)
-                                        {
-                                            var typps = db.ontology.RangesOfProp(c.Prop)
-                                                .SelectMany(t => db.ontology.DescendantsAndSelf(t))
-                                                .Distinct();
-                                            <td style="background-color: antiquewhite;">
-                                                <Family.Components.Search onSelected="(rid) => LinkRecord((string)rid)"
-                                                                                typs="@(typps.ToArray())" user="@user" />
-                                          
-                                                <span style="color:violet;">Search component</span>
-                                            </td>
-                                        }
-                                        else
-                                        {
-                                            <td style="background-color: antiquewhite;">
-                                                <a href="javascript:void(0)" @onclick="@(e => SearchLink(c.Prop))">связ.</a>
-                                            </td>
-                                        }
-                                    }
-                                }
-                            </tr>
-                        }
-*@
-                        @foreach (var p in etree.Props.Where(p => p.Pred != inverseProp))
-                        {
-                            <tr>
-                                <td>@(db.ontology.LabelOfOnto(p.Pred))</td>
-                                @if (p is Tex)
-                                {
-                                    Tex te = (Tex)p;
-                                    // У нас будет поле редактирования и поле языка
-                                    // Начнем с простого: поле языка - только ru
-                                    if (te.Values.Length == 0)
-                                    {
-                                        <td>te.Values.Length == 0</td>
-                                    }
-                                    else
-                                    {
-                                        TextLan tt = te.Values[0];
-                                        <td>
-                                            <input type="text" @bind="tt.Text" />
-                                            &nbsp;
-                                            <span>@(tt.Lang)</span>
-                                        </td>
-
-                                    }
-                                }
-                                else
-                                {
-                                    <td>Это спец таблица</td>
-                                }
-                            </tr>
-                        }
-                        <tr>
-                            <td colspan="2">
-                                <button @onclick="Ok">ok</button>
-                                <button @onclick="Cancel">cancel</button>
-                            </td>
-                        </tr>
-                    </table>
-
+                    <EditTable etree="@tree_toedit" user="@user"
+                        inverseProp="@inverseProp"
+                        onNewItem="stss => NewItem(((Tuple<string, string>)stss).Item1, ((Tuple<string, string>)stss).Item2)"
+                        onCancel="(stss) => { erecord = null; }"
+                        onOk="tr => { FixRecordChanges((Rec)tr); erecord = null; }" />
                 </td>
             }
             else
@@ -215,6 +117,8 @@
     [Parameter]
     public string? user { get; set; }
     [Parameter]
+    public string? focusId { get; set; }
+    [Parameter]
     public string? inverseProp { get; set; }
     [Parameter]
     public EventCallback onDelete { get; set; }
@@ -241,10 +145,18 @@
     {
         if (erecord != null) return; // Не реагировать на гиперссылку если не закончено редактирование какой-то записи
 
-        // Создадим редактируемую запись
-        erecord = db.GetRRecord(id, false);
+        // Создадим редактируемую запись. 
+        RRecord? rec = db.GetRRecord(id, false);
         // еще раз не реагируем
-        if (erecord == null) return;
+        if (rec == null) return;
+        // Делаю редактируемую запись. TODO:похоже, имеются обратные свойства
+        erecord = new RRecord
+        {
+            Id = rec.Id,
+            Tp = rec.Tp,
+            Props = rec.Props
+            .Where(pr => pr is RField || pr is RLink).ToArray()
+        };
 
         // Создадим шаблон редактирования. Сначала вычислим набор предикатов записи
         string[] dprops = db.ontology.GetDirectPropsByType(erecord.Tp).ToArray();
@@ -331,6 +243,61 @@
         // В итоге, оформляем дерево
         etree = new Rec(erecord.Id, erecord.Tp, pd);
     }
+
+    private void NewItem(string searchtype, string searchstring)
+    {
+        if (string.IsNullOrEmpty(searchstring) || string.IsNullOrEmpty(searchtype)) { return; }
+        int pos = searchtype.LastIndexOf('/');
+        string local = searchtype.Substring(pos + 1);
+        string nsname = searchtype.Substring(0, pos + 1);
+        XElement xitem = new XElement(XName.Get(local, nsname),
+            new XAttribute("owner", user),
+            new XElement(XName.Get("name", "http://fogid.net/o/"), searchstring));
+        XElement x = db.PutItem(xitem);
+        StateHasChanged();
+    }
+
+    private void FixRecordChanges(Rec rec)
+    {
+        if (rec != null && rec.Id != null && user != null)
+        {
+            // Делаем Xml-объект
+            XElement xrec = new XElement(OAData.Adapters.ONames.ToXName(rec.Tp),
+                new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", rec.Id),
+                new XAttribute("owner", user),
+                rec.Props.SelectMany<Pro, XElement>(p =>
+                {
+                    if (p is Tex)
+                    {
+                        Tex t = (Tex)p;
+                        return t.Values.Select(v => new XElement(OAData.Adapters.ONames.ToXName(p.Pred),
+                            new XText(v.Text),
+                           string.IsNullOrEmpty(v.Lang) ? new XAttribute("{http://www.w3.org/XML/1998/namespace}lang", "ru") :
+                           new XAttribute("{http://www.w3.org/XML/1998/namespace}lang", v.Lang)));
+                    }
+                    else if (p is Str)
+                    {
+                        Str s = (Str)p;
+                        return Enumerable.Repeat(new XElement(OAData.Adapters.ONames.ToXName(p.Pred), s.Value),
+                            (s.Value == null || string.IsNullOrEmpty(s.Value)) ? 0 : 1); // Если нет значения, то не будет поля
+                    }
+                    else if (p is Dir)
+                    {
+                        Dir d = (Dir)p;
+                        if (d.Resources != null && d.Resources.Length > 0)
+                        {
+                            return d.Resources.Select(r => new XElement(OAData.Adapters.ONames.ToXName(p.Pred),
+                            new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", r.Id)));
+                        }
+                        else return new XElement[0];
+                    }
+                    else return new XElement[0];
+                }).Where(x => x != null),
+                null);
+            db.PutItem(xrec);
+        }
+    }
+
 
     // Редактирование прямой ссылки
     private string? searchlinkprop = null;

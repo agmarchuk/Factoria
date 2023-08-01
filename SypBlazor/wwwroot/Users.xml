@@ -25,4 +25,9 @@
 		<password>145</password>
 		<role>User</role>
 	</user>
+  <user>
+    <name>peterbogatykh</name>
+    <password>belyaev</password>
+    <role>User</role>
+  </user>
 </users>

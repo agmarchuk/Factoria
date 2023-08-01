@@ -10,5 +10,10 @@ namespace OAData.Adapters
         public const string fog = "http://fogid.net/o/";
         public static XName xmllang = "{http://www.w3.org/XML/1998/namespace}lang";
 
+        public static XName ToXName(string xid)
+        {
+            int pos = xid.LastIndexOfAny(new char[] { '/', '#' });
+            return XName.Get(xid.Substring(pos + 1), xid.Substring(0, pos + 1));
+        }
     }
 }

@@ -1,10 +1,10 @@
 ﻿@using System.Collections.Generic
 @using System.Linq
+@using System.Xml.Linq
 @using FactographData
 @using FactographData.r
 @inject FactographData.IFDataService db
 
-<h3>EditTable</h3>
 <table border="1" width="100%">
     @if (etree != null)
     {
@@ -50,6 +50,8 @@
                         }
                     }
                     // === конец
+                    // Есть следующие ситуации: а) вообще нет текстовых вариантов; б) есть вариант ru 
+                    // в) есть вариант en, г) Есть оба варианта. Еще надо "сжать" ru и пустой                    
                     TextLan? tl_current = ind == -1 ? null : t.Values[ind]; 
                     <td>
                         <select @onchange="(ChangeEventArgs args) => onChSelect(i, args)">
@@ -132,107 +134,109 @@
                     }
                     else
                     {
+                        // В это месте, для хендлера onNewItem есть еще дополнительная информация вида:
+                        // d.Pred - имя предиката прямой ссылки для данной записи. Отработать onSelected
+                        // можно и нужно после появления идентификатора нового айтема. Заталкиваю его в параметры 
                         var typps = db.ontology.RangesOfProp(d.Pred)
                             .SelectMany(t => db.ontology.DescendantsAndSelf(t))
                             .Distinct().ToArray();
                         <td></td>
                         <td style="background-color: antiquewhite;">
                             <SypBlazor.Components.SearchPanel typs="@typps" user="@user"
-                                onNewItem="stss => NewItemClick((Tuple<string, string>)stss)" 
-                                onSelected="idd => OnSelected((string)idd, d.Pred)" />
+                                onNewItem="stss => NewItemClick((Tuple<string, string>)stss, d.Pred)" 
+                                onSelected="idd => OnSelected((string)idd, d.Pred)" 
+                                />
                         </td>                        
                     }
-                    @*
-                    if (rr != null)
-                    {
-                        <td>
-                            <a href="javascript:void(0)" @onclick="@(e =>LinkClick(rr.Id))">@(rr.GetName())</a>
-                            &nbsp;
-                            <a href="javascript:void(0)" @onclick="@(e => DeleteLink(c.Prop))">x</a>
-                        </td>
-                    }
-                    else
-                    {
-                        if (searchlinkprop == c.Prop)
-                        {
-                            var typps = db.ontology.RangesOfProp(c.Prop)
-                                .SelectMany(t => db.ontology.DescendantsAndSelf(t))
-                                .Distinct();
-                            <td style="background-color: antiquewhite;">
-                                <Family.Components.Search onSelected="(rid) => LinkRecord((string)rid)"
-                                                                typs="@(typps.ToArray())" user="@user" />
-                            </td>
-                        }
-                        else
-                        {
-                            <td style="background-color: antiquewhite;">
-                                <a href="javascript:void(0)" @onclick="@(e => SearchLink(c.Prop))">связ.</a>
-                            </td>
-                        }
-                    }
-                    *@
                 }                
             </tr>
         }
         <tr>
             <td colspan="3">
-                <button @onclick="@(args => onOk())">ok</button>&nbsp;
-                <button @onclick="onCancel">cancel</button>&nbsp;
+                <MatBlazor.MatButton @onclick="@(args => onOkClick())" Outlined="true">ok</MatBlazor.MatButton>&nbsp;
+                <MatBlazor.MatButton @onclick="@(onCancelClick)" Outlined="true">cancel</MatBlazor.MatButton>&nbsp;
             </td>
         </tr>
     }
 </table>
-<div>@(look)</div>
 
 @code {
     [Parameter]
-    public Rec? etree { get; set; }
+    public Rec etree { get; set; } = new Rec("", "");
     [Parameter]
     public string? inverseProp { get; set; }
     [Parameter]
     public string? user { get; set; }
     [Parameter]
     public EventCallback onNewItem { get; set; }
+    [Parameter]
+    public EventCallback onCancel { get; set; }
+    [Parameter]
+    public EventCallback onOk { get; set; }
 
+    private string look = "";
+    private async Task onOkClick()
+    {
+        await onOk.InvokeAsync(etree);
+    }
+    private async Task onCancelClick()
+    {
+        await onCancel.InvokeAsync();
+    }
+    // Обработка выбора селектроа языка. Имеется номер поля, в args запрятоно значение селектора, напр. "ru"
     private void onChSelect(int nom, ChangeEventArgs args)
     {
-
+        string? lang = (string?)(args?.Value);
+        // Выделим свойство номер nom
+        Pro pr = etree.Props[nom];
+        // Это должно быть свойство типа Tex
+        Tex te = (Tex)pr;
+        // поищу есть ли свойство с заданным языком
+        TextLan? curr_new = te.Values.FirstOrDefault(tl => tl.Lang == lang);
+        if (curr_new == null)
+        {
+            // Надо сформировать новое значение и добавить в массив свойств
+            curr_new = new TextLan("", lang);
+            TextLan[] vals = te.Values.Append(curr_new).ToArray();
+            te.Values = vals;
+        }
     }
     private void OnSelected(string idd, string pred)
     {
         Dir di = (Dir)etree.Props.First(pr => pr is Dir && pr.Pred == pred);
         var rr = db.GetRRecord(idd, false);
         if (rr == null) return;
-        var nm = rr.GetName();
+        //var nm = rr.GetName();
+        string nm = "";
+        string lan = "";
+        foreach (var pr in rr.Props.Where(p => p is RField && p.Prop == "http://fogid.net/o/name"))
+        {
+            RField f = (RField)pr;
+            if (f.Lang == "ru") { nm = f.Value; lan = f.Lang; break; }
+            if (f.Lang == "en") { nm = f.Value; lan = f.Lang; }
+            else if (f.Lang != "en") { nm = f.Value; lan = f.Lang; }
+        }
         di.Resources = new Rec[] { new Rec(rr.Id, rr.Tp, 
-            new Pro[] { new Tex("http://fogid.net/o/name", new TextLan(nm, "")) }) };
+            new Pro[] { new Tex("http://fogid.net/o/name", new TextLan(nm, lan)) }) };
+        //StateHasChanged();
     }
-    private string look; 
-    private void onOk()
-    {
-        look = "onOK";
-    }
-    private void onCancel()
-    {
-
-    }
-    private TextLan?[] tlangs = new TextLan[0];
+    //private TextLan?[] tlangs = new TextLan[0];
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
         if (etree != null)
         {
             // Создаю массив tlangs 
-            tlangs = etree.Props
-                .Where(p => p.Pred != inverseProp && !(p is Inv))
-                .Select(p =>
-                {
-                    if (p is Tex)
-                    {
-                        return new TextLan("", "");
-                    }
-                    else return (TextLan?)null;
-                }).ToArray();
+            //tlangs = etree.Props
+            //    .Where(p => p.Pred != inverseProp && !(p is Inv))
+            //    .Select(p =>
+            //    {
+            //        if (p is Tex)
+            //        {
+            //            return new TextLan("", "");
+            //        }
+            //        else return (TextLan?)null;
+            //    }).ToArray();
 
         }
     }
@@ -258,14 +262,23 @@
             }).ToArray()
         );
         etree = etr;
-    }
-    private void NewItemPair(Tuple<string, string> stss) // на входе пара: тип и образец
-    {
-        
-    }
-    private async Task NewItemClick(Tuple<string, string> stss)
-    {
-        await onNewItem.InvokeAsync(stss);
+        StateHasChanged();
     }
 
+    //private async Task NewItemClick(Tuple<string, string> stss, string pred) // на входе пара: тип и образец и ид предиката
+    //{
+    //    // Посылаю кортеж из трех элементов: тип записи, поисковая строка, предикат прямой связи
+    //    await onNewItem.InvokeAsync(stss);
+    //}
+    private void NewItemClick(Tuple<string, string> stss, string pred) // на входе пара: тип и образец и ид предиката
+    {
+        string ty = stss.Item1;
+        string ss = stss.Item2;
+        XElement xitem = new XElement(OAData.Adapters.ONames.ToXName(ty),
+            new XAttribute("owner", user),
+            new XElement("{http://fogid.net/o/}name", ss));
+        XElement x = db.PutItem(xitem);
+        string nid = x.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about").Value;
+        this.OnSelected(nid, pred);
+    }
 }

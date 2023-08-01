@@ -11,51 +11,10 @@
 @* ========= Тестовая область ========= *@
 @if (tree == null)
 {
-    navManager.NavigateTo("index/test2_631_1002");
-} else 
-{
-    <SypBlazor.Components.EditTable etree="tree" />
-    <hr />
-}
+    //navManager.NavigateTo("index/test2_631_1002");
+} 
 @* ========= конец ========= *@
 
-@*<div>
-    <input @bind="searchstring" style="height:24px; margin-top:10px;margin-bottom:10px;" />
-    <select @bind="stype" style="height: 24px; margin-top: 10px; margin-bottom: 10px; ">
-        <option value=""></option>
-        @foreach (var typ in typs.Where(t => db.ontology.LabelOfOnto(t) != null)) //TODO: Надо бы более корректно...
-        {
-            <option value="@typ">@(db.ontology.LabelOfOnto(typ))</option>
-        }
-    </select>
-    <span>расш.<input type="checkbox" @bind="bywords" /></span>
-</div>
-
-@if (!string.IsNullOrEmpty(searchstring))
-{
-    foreach (var rec in db.SearchRRecords(searchstring, bywords))
-    {
-        string tp = rec.Tp;
-        if (stype != null && stype != tp) { continue; }
-        var date = rec.GetField("http://fogid.net/o/from-date");
-        <div>
-            <span>@(db.ontology.LabelOfOnto(tp))</span>&nbsp;
-            <a href="index/@(rec.Id)">@(rec.GetName())</a>
-            @if (date != null && date.Length > 3)
-            {
-                <span>&nbsp; @(date.Substring(0,4))</span>
-            }
-        </div>
-    }
-    if (user != null && !string.IsNullOrEmpty(stype) && db.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj").Contains(stype))
-    {
-        <div>
-        <a href="javascript:void(0)" @onclick="@(e =>NewItem(stype))">нов.</a>
-        </div>
-    }
-    <hr/>
-}
-*@
 <SypBlazor.Components.SearchPanel typs="@typs" user="@user"
     onNewItem="stss => NewItem(((Tuple<string, string>)stss).Item1, ((Tuple<string, string>)stss).Item2)" 
     onSelected="id => OnSelected((string)id)"    />
@@ -63,8 +22,6 @@
 
 @if (tree != null)
 {
-@*    Pro[][] fieldsdirects = new Pro[][]
-        { tree.Props.Where(p => p is Str | p is Tex | p is Dir).ToArray() };*@    
     var invProps = tree.Props.Where(p => p is Inv).Cast<Inv>().ToArray();
     <div>
         <span style="color:green;">@(db.ontology.LabelOfOnto(tree.Tp))</span>
@@ -199,7 +156,7 @@
                                         </div>
                                     }
                                     <SypBlazor.Components.DrawTable Trees="@(inv_items)" level="1" user="@user" 
-                                        inverseProp="@(iProp.Pred)"
+                                        inverseProp="@(iProp.Pred)" focusId="@(entityId)"
                                         onDelete="(id) => Delete((string)id)" />
                                 }
                             }
@@ -222,7 +179,13 @@
     }
 
 }
-<div>user=@(user)</div>
+<table>
+    <tr>
+        <td style="width:100px;"><hr/></td>
+        <td>@(user)</td>
+        <td width="100%"><hr /></td>
+    </tr>
+</table>
 
 @code {
     [Parameter] // Фокусная запись
@@ -231,10 +194,8 @@
     public string? eid { get; set; }
 
     private string[] typs = new string[0];
-    //private string? stype { get; set; }
-    //private string all = "";
-    //private string? searchstring { get; set; }
-    //private bool bywords { get; set; }
+
+    private bool toview = true;
 
     // группа параметров состояния
     struct AppState
@@ -346,6 +307,48 @@
 
     private string? user = null;
     private string? look;
+
+    private void FixRecordChanges(Rec rec)
+    {
+        Func<string, XName> toXName = (string sname) =>
+        {
+            int pos = sname.LastIndexOfAny(new char[] { '/', '#' } );
+            return XName.Get(sname.Substring(pos + 1), sname.Substring(0, pos + 1));
+        };
+        if (rec != null && rec.Id != null && user != null)
+        {
+            // Делаем Xml-объект
+            XElement xrec = new XElement(toXName(rec.Tp),
+                new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", rec.Id),
+                new XAttribute("owner", user),
+                rec.Props.SelectMany<Pro, XElement>(p =>
+                {
+                    if (p is Tex)
+                    {
+                        Tex t = (Tex)p;
+                        return t.Values.Select(v => new XElement(toXName(p.Pred),
+                            new XText(v.Text),
+                           string.IsNullOrEmpty(v.Lang) ? new XAttribute("{http://www.w3.org/XML/1998/namespace}lang", "ru") :
+                           new XAttribute("{http://www.w3.org/XML/1998/namespace}lang", v.Lang)));
+                    }
+                    else if (p is Str)
+                    {
+                        Str s = (Str)p;
+                        return Enumerable.Repeat(new XElement(toXName(p.Pred), s.Value), 1);
+                    }
+                    else if (p is Dir)
+                    {
+                        Dir d = (Dir)p;
+                        return d.Resources.Select(r => new XElement(toXName(p.Pred), 
+                            new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", r.Id)));
+                    }
+                    else return new XElement[0];
+                }).Where(x => x != null),
+                null);
+            db.PutItem(xrec);
+        }
+    }
+
     protected override async Task OnParametersSetAsync()
     {
         var st = await authStateProvider.GetAuthenticationStateAsync();
@@ -405,11 +408,12 @@
             new XAttribute("owner", user), 
             new XElement(XName.Get("name", "http://fogid.net/o/"), searchstring));
         XElement x = db.PutItem(xitem);
-        string? nid = x?.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
-        if (nid != null)
-        {
-            navManager.NavigateTo("index/" + nid);
-        }
+        //string? nid = x?.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
+        //if (nid != null)
+        //{
+        //    navManager.NavigateTo("index/" + nid);
+        //}
+        StateHasChanged();
     }
     private void Delete(string id)
     {
@@ -427,16 +431,16 @@
             Build(entityId);
         }
     }
-    private static XName ToXName(string xid)
-    {
-        int pos = xid.LastIndexOfAny(new char[] { '/', '#' });
-        return XName.Get(xid.Substring(pos + 1), xid.Substring(0, pos + 1));
-    }
+    //private static XName ToXName(string xid)
+    //{
+    //    int pos = xid.LastIndexOfAny(new char[] { '/', '#' });
+    //    return XName.Get(xid.Substring(pos + 1), xid.Substring(0, pos + 1));
+    //}
     private void NewInverseRelation(string tty, string invPred)
     {
-        XElement xitem = new XElement(ToXName(tty),
+        XElement xitem = new XElement(OAData.Adapters.ONames.ToXName(tty),
             new XAttribute("owner", user),
-            new XElement(ToXName(invPred), 
+            new XElement(OAData.Adapters.ONames.ToXName(invPred),
                 new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", entityId))
             );
         XElement x = db.PutItem(xitem);
