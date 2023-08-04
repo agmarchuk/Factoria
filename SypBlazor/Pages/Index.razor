@@ -157,7 +157,9 @@
                                     }
                                     <SypBlazor.Components.DrawTable Trees="@(inv_items)" level="1" user="@user" 
                                         inverseProp="@(iProp.Pred)" focusId="@(entityId)"
-                                        onDelete="(id) => Delete((string)id)" />
+                                        onDelete="(id) => Delete((string)id)"
+                                        toextendrecord="@toextendrecord"
+                                        />
                                 }
                             }
                             else
@@ -177,6 +179,7 @@
         }
         </table>
     }
+    @if (toextendrecord != null) toextendrecord = null; // Сомнительное решение, направленное на однократное срабатывание...
 
 }
 <table>
@@ -195,7 +198,7 @@
 
     private string[] typs = new string[0];
 
-    private bool toview = true;
+    private string? toextendrecord = null;
 
     // группа параметров состояния
     struct AppState
@@ -408,12 +411,12 @@
             new XAttribute("owner", user), 
             new XElement(XName.Get("name", "http://fogid.net/o/"), searchstring));
         XElement x = db.PutItem(xitem);
-        //string? nid = x?.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
-        //if (nid != null)
-        //{
-        //    navManager.NavigateTo("index/" + nid);
-        //}
-        StateHasChanged();
+        string? nid = x?.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
+        if (nid != null)
+        {
+            navManager.NavigateTo("index/" + nid);
+        }
+        //StateHasChanged();
     }
     private void Delete(string id)
     {
@@ -444,7 +447,7 @@
                 new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", entityId))
             );
         XElement x = db.PutItem(xitem);
-
+        toextendrecord = x.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
         Build(entityId);
     }
 }
