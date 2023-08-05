@@ -539,7 +539,7 @@ namespace OAData.Adapters
                 if (node != null)
                 {
                     ((object[])node)[2] = ((object[])((object[])node)[2]).Cast<object[]>()
-                        .Where(x => (int)x[0] != 3 || (string)((object[])x[1])[1] != nrec[0] || (string)((object[])x[1])[0] != prop)
+                        .Where(x => (int)x[0] != 3 || (string)((object[])x[1])[1] != (string)nrec[0] || (string)((object[])x[1])[0] != prop)
                         .ToArray();
                     //if (indyn)
                     //{

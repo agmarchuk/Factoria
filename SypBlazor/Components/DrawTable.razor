@@ -3,6 +3,7 @@
 @using FactographData
 @using FactographData.r
 @inject FactographData.IFDataService db
+@inject IJSRuntime js
 
 <table class="mat-elevation-z5 bor" style="">
     <tr class="bor">
@@ -37,7 +38,7 @@
                         inverseProp="@inverseProp"
                         onNewItem="stss => NewItem(((Tuple<string, string>)stss).Item1, ((Tuple<string, string>)stss).Item2)"
                         onCancel="(stss) => { erecord = null; }"
-                        onOk="tr => { FixRecordChanges((Rec)tr); erecord = null; }" />
+                        onOk="tr => { FixRecordChanges((Rec)tr); erecord = null; StateHasChanged(); }" />
                 </td>
             }
             else
@@ -64,7 +65,16 @@
                         var t = (Tex)p;
                         if (t != null && t.Values.Length > 0)
                         {
-                            <td class="bor">@(((Tex)p).Values[0].Text)</td>
+                            if (issysobj && t.Pred == "http://fogid.net/o/name")
+                            {
+                                <td class="bor">
+                                    <a href="index/@(tree.Id)"> @(((Tex)p).Values[0].Text) </a>
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="bor">@(((Tex)p).Values[0].Text)</td>
+                            }
                         }
                         else
                         {
@@ -91,7 +101,7 @@
                         </td>
                     }
                 }
-                @if (user != null)
+                @if (user != null && !issysobj)
                 {
                     <td class="bor">
                         <a href="javascript:void(0)" @onclick="@(e =>EdClick(tree.Id))">ред.</a>
@@ -126,6 +136,8 @@
     public EventCallback onDelete { get; set; }
     [Parameter]
     public string? toextendrecord { get; set; }
+    [Parameter]
+    public bool issysobj { get; set; } = false;
 
     protected override void OnParametersSet()
     {
@@ -141,7 +153,16 @@
 
     private async Task DelItemClick(string id)
     {
-        await onDelete.InvokeAsync(id);
+        //TODO: а может так "крестик" проверять?
+        RRecord? rec = db.GetRRecord(id, true);
+        if (rec != null && rec.Props.All(p => p is not RInverseLink))
+        {
+            await onDelete.InvokeAsync(id);
+        }
+        else
+        {
+             await js.InvokeVoidAsync("alert", "Can't delete record");
+        }
     }
 
 
