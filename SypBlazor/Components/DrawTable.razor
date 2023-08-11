@@ -32,13 +32,38 @@
                     eprops = fieldsdirects.Append(d);
                 }
                 else { eprops = fieldsdirects; }
-                Rec tree_toedit = new Rec(tree.Id, tree.Tp, eprops.ToArray());
+                Rec tree_toedit = new Rec(tree.Id, tree.Tp, eprops
+                    .Select<Pro, Pro>(ep =>
+                    {
+                        if (ep is Tex)
+                        {
+                            Tex t = (Tex)ep;
+                            return new Tex(t.Pred, t.Values
+                                .Select(tl => new TextLan(tl.Text, tl.Lang)).ToArray());
+                        }
+                        if (ep is Str)
+                        {
+                            Str s = (Str)ep;
+                            return new Str(s.Pred, s.Value);
+                        }
+                        if (ep is not Dir) throw new Exception("err: 21928");
+                        Dir d = (Dir)ep;
+                        return new Dir(d.Pred, d.Resources
+                            .Select(r => new Rec(r.Id, r.Tp, r.Props.Where(p => p.Pred == "http://fogid.net/o/name").ToArray())).ToArray());
+                }).ToArray());
                 <td colspan="@(fieldsdirects.Length + 1)" style="border:dashed;">
-                    <EditTable etree="@tree_toedit" user="@user"
+@*                    <EditTable etree="@tree_toedit" user="@user"
                         inverseProp="@inverseProp"
                         onNewItem="stss => NewItem(((Tuple<string, string>)stss).Item1, ((Tuple<string, string>)stss).Item2)"
                         onCancel="(stss) => { erecord = null; }"
                         onOk="tr => { FixRecordChanges((Rec)tr); erecord = null; StateHasChanged(); }" />
+*@
+                    <EditRow etree="@tree_toedit" user="@user"
+                       inverseProp="@inverseProp"
+                       onNewItem="stss => NewItem(((Tuple<string, string>)stss).Item1, ((Tuple<string, string>)stss).Item2)"
+                       onCancel="OnCancelEdit"
+                       onOk="tr => OnOkEdit((Rec)tr)" />
+
                 </td>
             }
             else
@@ -65,15 +90,17 @@
                         var t = (Tex)p;
                         if (t != null && t.Values.Length > 0)
                         {
+                            var tl = t.GetValue("ru");
+                            string text = tl == null ? "" : tl.Text;
                             if (issysobj && t.Pred == "http://fogid.net/o/name")
                             {
                                 <td class="bor">
-                                    <a href="index/@(tree.Id)"> @(((Tex)p).Values[0].Text) </a>
+                                    <a href="index/@(tree.Id)"> @(text) </a>
                                 </td>
                             }
                             else
                             {
-                                <td class="bor">@(((Tex)p).Values[0].Text)</td>
+                                <td class="bor">@(text)</td>
                             }
                         }
                         else
@@ -135,6 +162,10 @@
     [Parameter]
     public EventCallback onDelete { get; set; }
     [Parameter]
+    public EventCallback onCancel { get; set; }
+    [Parameter]
+    public EventCallback onOk { get; set; }
+    [Parameter]
     public string? toextendrecord { get; set; }
     [Parameter]
     public bool issysobj { get; set; } = false;
@@ -151,6 +182,20 @@
 
     }
 
+    private async Task OnCancelEdit()
+    {
+        erecord = null;
+        etree = null;
+        await onCancel.InvokeAsync();
+    }
+    private async Task OnOkEdit(Rec rec)
+    {
+        FixRecordChanges(rec); 
+        erecord = null;
+        etree = null;
+        await onOk.InvokeAsync();
+        //StateHasChanged();
+    }
     private async Task DelItemClick(string id)
     {
         //TODO: а может так "крестик" проверять?

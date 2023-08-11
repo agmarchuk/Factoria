@@ -90,7 +90,11 @@
 
         }
     }
-    <SypBlazor.Components.DrawTable Trees="@(new Rec[] { tree })" onDelete="(id) => Delete((string)id)" user="@user" />
+    <SypBlazor.Components.DrawTable Trees="@(new Rec[] { tree })" 
+        onDelete="(id) => Delete((string)id)"
+        onCancel="() => StateHasChanged()"
+        onOk="() => Build(entityId)"
+        user="@user" />
     @if ( true || invProps.Length > 0) //TODO: надо разобраться почему нет пустых обратных списков свойств
     {
         <table style="border:none;">
@@ -162,6 +166,8 @@
                                     <SypBlazor.Components.DrawTable Trees="@(inv_items)" level="1" user="@user" 
                                         inverseProp="@(iProp.Pred)" focusId="@(entityId)"
                                         onDelete="(id) => Delete((string)id)"
+                                        onOk="() => Build(entityId)"
+                                        onCancel="() => StateHasChanged()"
                                         toextendrecord="@toextendrecord"
                                         issysobj="@issysobj"
                                         />
@@ -423,7 +429,9 @@
         string nsname = searchtype.Substring(0, pos + 1);
         XElement xitem = new XElement(XName.Get(local, nsname),
             new XAttribute("owner", user), 
-            new XElement(XName.Get("name", "http://fogid.net/o/"), searchstring));
+            new XElement(XName.Get("name", "http://fogid.net/o/"), 
+                new XAttribute("{http://www.w3.org/XML/1998/namespace}lang", "ru"),
+                searchstring));
         XElement x = db.PutItem(xitem);
         string? nid = x?.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
         if (nid != null)

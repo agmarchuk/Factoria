@@ -105,7 +105,7 @@ namespace FactographData.r
                 else if (pros[nom] is Tex)
                 {
                     var f = (RField)p;
-                    ((Tex)pros[nom]).Values[pos[nom]] = new TextLan(f.Value, f.Lang);
+                    ((Tex)pros[nom]).Values[pos[nom]] = new TextLan(f.Value, string.IsNullOrEmpty(f.Lang)? "ru": f.Lang);
                     pos[nom]++;
                 }
                 else if (pros[nom] is Dir)
@@ -475,20 +475,16 @@ namespace FactographData.r
             this.Pred = pred;
             this.Values = values;
         }
-        //public override string ToString()
-        //{
-        //    StringBuilder sb = new StringBuilder("t(");
-        //    bool firsttime = true;
-        //    foreach (var v in Values)
-        //    {
-        //        if (!firsttime) sb.Append(", ");
-        //        firsttime = false;
-        //        sb.Append($"\"{v.Text}\"");
-        //        if (v.Lang != null) sb.Append("^^" + v.Lang);
-        //    }
-        //    sb.Append(')');
-        //    return sb.ToString();
-        //}
+        public TextLan? GetValue(string def_lang)
+        {
+            TextLan? val = null;
+            foreach (TextLan v in Values)
+            {
+                if (v.Lang == def_lang) { val = v; break; }
+                else val = v;
+            }
+            return val;
+        }
     }
     public class Str : Pro
     {

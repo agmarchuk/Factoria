@@ -57,7 +57,9 @@ namespace FactographData
                             if (pred == null) return null;
                             if (p.Name == "field")
                             {
-                                return new RField { Prop = pred, Value = p.Value, Lang = "ru" };
+                                XAttribute? la = p.Attribute("{http://www.w3.org/XML/1998/namespace}lang");
+                                return new RField { Prop = pred, Value = p.Value, 
+                                    Lang = (la == null ? "" : la.Value) };
                             }
                             else if (p.Name == "direct")
                             {
