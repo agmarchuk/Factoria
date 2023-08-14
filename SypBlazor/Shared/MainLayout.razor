@@ -1,9 +1,18 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Family.Authentication
 @inherits LayoutComponentBase
+@inject IConfiguration configuration
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager navManager
 @inject FactographData.IFDataService db
+
+@if (configuration != null)
+{
+    hea = configuration.GetSection("App:header").Value; 
+    subhea = configuration.GetSection("App:subheader").Value;
+    var lo = configuration.GetSection("App:logo").Value;
+    if (!string.IsNullOrEmpty(lo)) logo = lo;
+}
 
 <PageTitle>SypBlazor</PageTitle>
 
@@ -38,13 +47,11 @@
             <div class="container-fluid" style="padding-left:0px; padding-top:0px;">
                 <a class="navbar-brand" href="#">
                     @*<img src="FlyingBirdsSmall.jpg" alt="" width="268" height="64" style="">*@
-                    <img src="SYPlogo.png" alt="" height="60" style="">
+                    <img src="@(logo)" alt="" height="58" style="">
                 </a>
                 <div class="navbar-text">
-                    <!-- <span style="color: black; font-size:larger; font-weight: bold;">Семейный архив</span>
-                    <span>Марчуки, Беляевы, Кириковы, Петерсоны и др.</span> -->
-                    <span style="color: black; font-size:larger; font-weight: bold;">Летняя школа юных программистов</span>
-                    <span>архив ЛШЮП 1976-2023</span>
+                    <span style="color: black; font-size:larger; font-weight: bold;">@(hea)</span>
+                    <span>@(subhea)</span>
                 </div>
 
 @*                <form class="d-flex">
@@ -79,18 +86,21 @@
 
     private bool expandSubNav;
 
+    private string? hea = "";
+    private string? subhea = "";
+    private string logo = "logo1.jpg";
     // Authorization
     private async Task ClickLogin()
     {
         collapseNavMenu = false;
         Console.WriteLine("collapse false");
-        navManager.NavigateTo("/login/", true);
+        navManager.NavigateTo("login/", true);
     }
     private async Task Logout()
     {
         var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
         await customAuthStateProvider.UpdateAuthenticationState(null);
-        navManager.NavigateTo("/index", true);
+        navManager.NavigateTo("index", true);
     }
 
     private bool loaddone = false;
@@ -103,7 +113,7 @@
     {
         loaddone = false;
         collapseNavMenu = false;
-        navManager.NavigateTo("/index", true);       
+        navManager.NavigateTo("index", true);       
     }
     private string? user = null;
     private bool toedit { get { return user != null; } }
