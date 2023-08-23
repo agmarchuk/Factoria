@@ -152,18 +152,16 @@
                                 else
                                 {
                                     bool issysobj = false;
-                                    if (user != null)
-                                    {
-                                    }
                                     var tty = iProp.Sources[0].Tp;
                                     var pre = iProp.Pred;
-                                    if (!db.ontology.AncestorsAndSelf(tty).Contains("http://fogid.net/o/sys-obj"))
+                                    if (user != null)
                                     {
                                         <div>
                                             <a href="javascript:void(0)" @onclick="@(e =>NewInverseRelation(tty, pre))">нов.</a>
                                         </div>
                                     }
-                                    else { issysobj = true; }
+                                    if (db.ontology.AncestorsAndSelf(tty).Contains("http://fogid.net/o/sys-obj"))
+                                    { issysobj = true; }
                                     <SypBlazor.Components.DrawTable Trees="@(inv_items)" level="1" user="@user"
                                             inverseProp="@(iProp.Pred)" focusId="@(entityId)"
                                         onDelete="(id) => Delete((string)id)"

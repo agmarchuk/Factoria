@@ -12,9 +12,12 @@
     subhea = configuration.GetSection("App:subheader").Value;
     var lo = configuration.GetSection("App:logo").Value;
     if (!string.IsNullOrEmpty(lo)) logo = lo;
+    title = configuration.GetSection("App:title").Value;
+    var ico = configuration.GetSection("App:icon").Value;
+    if (!string.IsNullOrEmpty(ico)) icon = ico;
 }
 
-<PageTitle>SypBlazor</PageTitle>
+<PageTitle>@title</PageTitle>
 
 <div class="page">
     @if (expandSubNav)
@@ -89,6 +92,8 @@
     private string? hea = "";
     private string? subhea = "";
     private string logo = "logo1.jpg";
+    private string icon = "favicon.png";
+    private string? title = "";
     // Authorization
     private async Task ClickLogin()
     {
