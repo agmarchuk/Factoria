@@ -87,6 +87,11 @@
                 string sr = "docs/GetPdf?u=" + uri;
                 <embed src="@sr" width="100%" height="800" />
             }
+            else if (uri != null)
+            {
+                string sr = "docs/GetDoc?u=" + uri;
+                <div style="margin-bottom:10px;"><a href="@sr">Получить копию</a></div>
+            }
 
         }
     }

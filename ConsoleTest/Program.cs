@@ -1,15 +1,39 @@
-﻿using FactographData;
+﻿using System.Xml.Linq;
+using System.IO;
+using FactographData;
 using ConsoleTest;
 
-struct Person
-{
-    public int id;
-    public string name;
-    public int age;
-}
 partial class Program
 {
     public static void Main()
+    {
+        Console.WriteLine("Start Main3");
+        // Беру RDF-базу данных
+        XElement xdb = XElement.Load(@"D:\Home\FactographProjects\syp_cassettes\SypCassete\meta\SypCassete_current.fog");
+        FileStream fs = new FileStream(@"D:\Home\data\syp_data.pl", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+        TextWriter tw = new StreamWriter(fs);
+
+        // Атрибуты rdf:about и rdf:resource преобразуются в атомы
+        // <Elem rdf:about="."> преобразуется в type(about, Elem).
+        // подэлемент <pred rdf:resource="." /> преобразуется в pred(about, resource).
+        // подэлемент <pred>текст</pred> преобразуется в pred(about, 'текст').
+
+        foreach (var xelement in xdb.Elements())
+        {
+            string about = xelement.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about").Value;
+            tw.WriteLine($"type({about}, {xelement.Name}).");
+        }
+
+        tw.Close();
+    }
+
+    struct Person
+    {
+        public int id;
+        public string name;
+        public int age;
+    }
+    public static void Main2()
     {
         Console.WriteLine("Start serialization tests");
         int npersons = 1_000_000;
@@ -17,7 +41,7 @@ partial class Program
         IEnumerable<Person> persons = Enumerable.Range(0, npersons)
             .Select(i => new Person { id = i, name = "" + i, age = 33 });
 
-        FileStream fs = new FileStream(@"C:\Home\data\serial1.bin", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+        FileStream fs = new FileStream(@"D:\Home\data\serial1.bin", FileMode.OpenOrCreate, FileAccess.ReadWrite);
         BinaryReader br = new BinaryReader(fs);
         BinaryWriter bw = new BinaryWriter(fs);
 

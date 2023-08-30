@@ -61,6 +61,14 @@ namespace SypBlazor.Controllers
             var q = path.Replace("documents/normal", "originals");
             return PhysicalFile(q + ".pdf", "application/pdf");
         }
+        [HttpGet("docs/GetDoc")]
+        public IActionResult GetDoc(string u)
+        {
+            string? path = db.GetOriginalPath(u);
+            if (path == null) return NotFound();
+            int pos = path.LastIndexOf(".");
+            return PhysicalFile(path, "application/" + path.Substring(pos+1));
+        }
 
     }
 

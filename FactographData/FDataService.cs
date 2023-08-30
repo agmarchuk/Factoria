@@ -523,6 +523,24 @@ namespace FactographData
             string path = cass_dir + subpath + last10;
             return path;
         }
+        public string? GetOriginalPath(string u)
+        {
+            if (u == null) return null;
+            u = System.Web.HttpUtility.UrlDecode(u);
+            var cass_dir = CassDirPath(u);
+            if (cass_dir == null) return null;
+            string last10 = u.Substring(u.Length - 10);
+            string dnom = last10.Substring(0, 6);
+            string fnom = last10.Substring(6);
+            string subpath = "/originals" + dnom;
+            string path = cass_dir + subpath;
+
+            var dinfo = new System.IO.DirectoryInfo(cass_dir + subpath);
+            var qu = dinfo.GetFiles(fnom + ".*");
+            if (qu.Length == 0) return null;
+
+            return qu[0].FullName;
+        }
 
 
         // Доступ ка базе данных
