@@ -87,7 +87,7 @@
                 string sr = "docs/GetPdf?u=" + uri;
                 <embed src="@sr" width="100%" height="800" />
             }
-            else if (uri != null)
+            else if (uri != null && (docmetainfo == null || !docmetainfo.Contains("application/fog"))) // Все типы документов кроме .fog
             {
                 string sr = "docs/GetDoc?u=" + uri;
                 <div style="margin-bottom:10px;"><a href="@sr">Получить копию</a></div>
@@ -143,11 +143,20 @@
                                                 }
                                                 else
                                                 {
+                                                    var dmiprop = tr.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/docmetainfo");
+                                                    string? dmi = ((Str?)dmiprop)?.Value;
                                                     <div class="photo mat-elevation-z5">
-                                                        <span>@(db.ontology.LabelOfOnto(tr.Tp))</span>
-                                                        <a href="index/@tr.Id/@entityId">
-                                                            @(tr.GetText("http://fogid.net/o/name"))
-                                                        </a>
+                                                        <span>@(db.ontology.LabelOfOnto(tr.Tp))&nbsp;</span>
+                                                        @if (dmi != null && dmi.Contains("application/fog"))
+                                                        {
+                                                            <span>fog</span>                                                            
+                                                        }
+                                                        else
+                                                        {
+                                                            <a href="index/@tr.Id/@entityId">
+                                                                @(tr.GetText("http://fogid.net/o/name"))
+                                                            </a>
+                                                        }
                                                     </div>
                                                 }
                                             }
@@ -261,7 +270,15 @@
             {
                 shablon = new Rec(null, rrec.Tp,
                     new Tex("http://fogid.net/o/name"),
-                    inv_parts["http://fogid.net/o/in-collection"]
+                    //inv_parts["http://fogid.net/o/in-collection"]
+                    new Inv("http://fogid.net/o/in-collection",
+                        new Rec(null, "http://fogid.net/o/collection-member",
+                            new Dir("http://fogid.net/o/collection-item",
+                                new Rec(null, null,
+                                    new Tex("http://fogid.net/o/name"),
+                                    new Str("http://fogid.net/o/uri"),
+                                    new Str("http://fogid.net/o/docmetainfo"))
+                                    )))
                     );
             }
             else if (false && rrec.Tp == "http://fogid.net/o/photo-doc")
@@ -405,7 +422,8 @@
                 new Rec(null, "http://fogid.net/o/collection-member",
                     new Dir("http://fogid.net/o/collection-item",
                         new Rec(null, "http://fogid.net/o/photo-doc",
-                            new Str("http://fogid.net/o/uri")),
+                            new Str("http://fogid.net/o/uri"),
+                            new Str("http://fogid.net/o/docmetainfo")),
                         new Rec(null, null,
                             new Tex("http://fogid.net/o/name"))
                             ))));

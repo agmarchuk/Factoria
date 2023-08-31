@@ -67,7 +67,11 @@ namespace SypBlazor.Controllers
             string? path = db.GetOriginalPath(u);
             if (path == null) return NotFound();
             int pos = path.LastIndexOf(".");
-            return PhysicalFile(path, "application/" + path.Substring(pos+1));
+            int pos1 = path.LastIndexOfAny(new char[] { '/', '\\' });
+            string filename = path.Substring(pos1 + 1);
+            return PhysicalFile(path, 
+                "application/" + path.Substring(pos+1),
+                filename);
         }
 
     }
