@@ -9,10 +9,7 @@
 @inject NavigationManager navManager
 
 @* ========= Тестовая область ========= *@
-@if (tree == null)
-{
-    //navManager.NavigateTo("index/test2_631_1002");
-} 
+<div><a href="index/start_page">Тест</a></div>
 @* ========= конец ========= *@
 
 <SypBlazor.Components.SearchPanel typs="@typs" user="@user"
@@ -398,20 +395,33 @@
         var st = await authStateProvider.GetAuthenticationStateAsync();
         user = st.User.Identity?.Name;
         //look = user;
-        await base.OnParametersSetAsync();
+        //await base.OnParametersSetAsync();
         var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
-    }
-    protected override void OnParametersSet()
-    {
+
         if (typs.Length == 0) typs = db.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj").ToArray();
         if (entityId != null)
         {
-            BuildParts();
-            Build(entityId);
-            //searchstring = null;
-            StateHasChanged();
+            RRecord? rrec = db.GetRRecord(entityId, false);
+            if (rrec != null)
+            {
+                BuildParts();
+                Build(entityId);
+                //searchstring = null;
+                StateHasChanged();
+            }
         }
     }
+    //protected override void OnParametersSet()
+    //{
+    //    if (typs.Length == 0) typs = db.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj").ToArray();
+    //    if (entityId != null)
+    //    {
+    //        BuildParts();
+    //        Build(entityId);
+    //        //searchstring = null;
+    //        StateHasChanged();
+    //    }
+    //}
     // Шаблоны обратных свойств, размещенные по обратным предикатам
     private Dictionary<string, Inv> inv_parts = new Dictionary<string, Inv>();
     private void BuildParts()
