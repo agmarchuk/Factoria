@@ -21,7 +21,8 @@ namespace FactographData
             Console.WriteLine("mag: FDataService Constructing " + DateTime.Now);
             path = "wwwroot/";
             Init(path);
-            ontology = new RXOntology(path + "ontology_iis-v13.xml");
+            string ontology_path = path + "Ontology_iis-v14.xml";
+            ontology = new RXOntology(ontology_path);
             if (adapter is UpiAdapter)
             {
                 _tbuilder = new TRecordBuilder((UpiAdapter)this.adapter, ontology);

@@ -106,103 +106,114 @@
             string pred = iProp.Pred;
             Rec[] inv_items = iProp.Sources.Where(g => g != null)
                 .ToArray();
-                if (user != null || inv_items.Length > 0)
-                {
-                    <tr valign="top">
-                        <td>
-                            <span style="color:green;">@(db.ontology.InvLabelOfOnto(pred))</span>
-                        </td>
-                        <td>
-                            @if (inv_items.Length > 0)
-                            {
-                                var fidis = inv_items.Select(item => item.Props).ToArray();
-                                if (pred == "http://fogid.net/o/in-collection" || pred == "http://fogid.net/o/reflected")
+            if (user != null || inv_items.Length > 0)
+            {
+                <tr valign="top">
+                    <td>
+                        <span style="color:green;">@(db.ontology.InvLabelOfOnto(pred))</span>
+                    </td>
+                    <td>
+                        @if (inv_items.Length > 0)
+                        {
+                            var fidis = inv_items.Select(item => item.Props).ToArray();
+                            if (pred == "http://fogid.net/o/in-collection" 
+                                || pred == "http://fogid.net/o/reflected"
+                                || pred == "http://fogid.net/o/partItem") // TODO: Можно было бы выделить функцию 
                                 {
-                                    <div>
-                                        @foreach (var fidi in fidis)
+                                <div>
+                                    @foreach (var fidi in fidis)
+                                    {
+                                        string dirpred = pred == "http://fogid.net/o/reflected" ?
+                                            "http://fogid.net/o/in-doc" :
+                                            (pred =="http://fogid.net/o/partItem" ? 
+                                                "http://fogid.net/o/inDocument" : 
+                                                "http://fogid.net/o/collection-item"); // TODO: Можно было бы поизящнее
+                                        Dir? di = (Dir?)(fidi.FirstOrDefault(p => p is Dir && p.Pred == dirpred));
+                                        if (di != null && di.Resources.Length > 0 && di.Resources[0] != null)
                                         {
-                                            string dirpred = pred == "http://fogid.net/o/reflected" ?
-                                                "http://fogid.net/o/in-doc" : "http://fogid.net/o/collection-item";
-                                            Dir? di = (Dir?)(fidi.FirstOrDefault(p => p is Dir && p.Pred == dirpred));
-                                            if (di != null && di.Resources.Length > 0 && di.Resources[0] != null)
+                                            var tr = di.Resources[0];
+                                            var uriprop = tr.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/uri");
+                                            string? uri = ((Str?)uriprop)?.Value;
+                                            if (tr.Tp == "http://fogid.net/o/photo-doc")
                                             {
-                                                var tr = di.Resources[0];
-                                                var uriprop = tr.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/uri");
-                                                string? uri = ((Str?)uriprop)?.Value;
-                                                if (tr.Tp == "http://fogid.net/o/photo-doc")
-                                                {
-                                                    string sr = "docs/GetImage?u=" + uri + "&s=small";
-                                                    <div class="photo mat-elevation-z5">
+                                                string sr = "docs/GetImage?u=" + uri + "&s=small";
+                                                <div class="photo mat-elevation-z5">
+                                                    <a href="index/@tr.Id/@entityId">
+                                                    <img src="@(sr)" alt="" />
+                                                    </a>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                var dmiprop = tr.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/docmetainfo");
+                                                string? dmi = ((Str?)dmiprop)?.Value;
+                                                <div class="photo mat-elevation-z5">
+                                                    <span>
+                                                        <input type="checkbox" />
+                                                        @(db.ontology.LabelOfOnto(tr.Tp))
+                                                    </span>
+                                                    @if (dmi != null && dmi.Contains("application/fog"))
+                                                    {
+                                                        <span>fog</span>                                                            
+                                                    }
+                                                    else
+                                                    {
                                                         <a href="index/@tr.Id/@entityId">
-                                                        <img src="@(sr)" alt="" />
+                                                            @(tr.GetText("http://fogid.net/o/name"))
                                                         </a>
-                                                    </div>
-                                                }
-                                                else
-                                                {
-                                                    var dmiprop = tr.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/docmetainfo");
-                                                    string? dmi = ((Str?)dmiprop)?.Value;
-                                                    <div class="photo mat-elevation-z5">
-                                                        <span>@(db.ontology.LabelOfOnto(tr.Tp))&nbsp;</span>
-                                                        @if (dmi != null && dmi.Contains("application/fog"))
-                                                        {
-                                                            <span>fog</span>                                                            
-                                                        }
-                                                        else
-                                                        {
-                                                            <a href="index/@tr.Id/@entityId">
-                                                                @(tr.GetText("http://fogid.net/o/name"))
-                                                            </a>
-                                                        }
-                                                    </div>
-                                                }
+                                                    }
+                                                </div>
                                             }
                                         }
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                bool issysobj = false;
+                                var tty = iProp.Sources[0].Tp;
+                                var pre = iProp.Pred;
+                                if (user != null)
+                                {
+                                    <div>
+                                        <a href="javascript:void(0)" @onclick="@(e =>NewInverseRelation(tty, pre))">новый</a>
+                                    </div>
+                                }
+                                if (db.ontology.AncestorsAndSelf(tty).Contains("http://fogid.net/o/sys-obj"))
+                                { issysobj = true; }
+                                <SypBlazor.Components.DrawTable Trees="@(inv_items)" level="1" user="@user"
+                                        inverseProp="@(iProp.Pred)" focusId="@(entityId)"
+                                    onDelete="(id) => Delete((string)id)"
+                                    onOk="() => Build(entityId)"
+                                    onCancel="() => StateHasChanged()"
+                                    toextendrecord="@toextendrecord"
+                                    issysobj="@issysobj"
+                                    />
+                            }
+                        }
+                        else
+                        {
+                            if (user != null)
+                            {
+                                string pre = iProp.Pred;
+                                string tty = db.ontology.DomainsOfProp(pre).First();
+                                if (!db.ontology.AncestorsAndSelf(tty).Contains("http://fogid.net/o/sys-obj") &&
+                                    !( pred == "http://fogid.net/o/in-collection"
+                                    || pred == "http://fogid.net/o/reflected"
+                                    || pred == "http://fogid.net/o/partItem"))
+                                {
+                                    <div>
+                                        <a href="javascript:void(0)" @onclick="@(e =>NewInverseRelation(tty, pre))">нов.</a>
                                     </div>
                                 }
                                 else
                                 {
-                                    bool issysobj = false;
-                                    var tty = iProp.Sources[0].Tp;
-                                    var pre = iProp.Pred;
-                                    if (user != null)
-                                    {
-                                        <div>
-                                            <a href="javascript:void(0)" @onclick="@(e =>NewInverseRelation(tty, pre))">нов.</a>
-                                        </div>
-                                    }
-                                    if (db.ontology.AncestorsAndSelf(tty).Contains("http://fogid.net/o/sys-obj"))
-                                    { issysobj = true; }
-                                    <SypBlazor.Components.DrawTable Trees="@(inv_items)" level="1" user="@user"
-                                            inverseProp="@(iProp.Pred)" focusId="@(entityId)"
-                                        onDelete="(id) => Delete((string)id)"
-                                        onOk="() => Build(entityId)"
-                                        onCancel="() => StateHasChanged()"
-                                        toextendrecord="@toextendrecord"
-                                        issysobj="@issysobj"
-                                        />
+                                    <div>
+                                        -
+                                    </div>
                                 }
                             }
-                            else
-                            {
-                                if (user != null)
-                                {
-                                    string pre = iProp.Pred;
-                                    string tty = db.ontology.DomainsOfProp(pre).First();
-                                    if (!db.ontology.AncestorsAndSelf(tty).Contains("http://fogid.net/o/sys-obj"))
-                                    {
-                                        <div>
-                                            <a href="javascript:void(0)" @onclick="@(e =>NewInverseRelation(tty, pre))">нов.</a>
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <div>
-                                            -
-                                        </div>
-                                    }
-                                }
-                            }
+                        }
                     </td>
                 </tr>
             }
@@ -219,7 +230,11 @@
         <td width="100%"><hr /></td>
     </tr>
 </table>
-
+<div>selected:</div>
+@foreach (string se in selected)
+{
+    <span>@(se) &nbsp;</span>
+}
 @code {
     [Parameter] // Фокусная запись
     public string? entityId { get; set; }
@@ -229,6 +244,9 @@
     private string[] typs = new string[0];
 
     private string? toextendrecord = null;
+
+    // Список отобранных отношений к документам, строки - идентификаторы, это идентификаторы отношений 
+    private List<string> selected = new List<string>();
 
     // группа параметров состояния
     struct AppState
@@ -267,7 +285,6 @@
             {
                 shablon = new Rec(null, rrec.Tp,
                     new Tex("http://fogid.net/o/name"),
-                    //inv_parts["http://fogid.net/o/in-collection"]
                     new Inv("http://fogid.net/o/in-collection",
                         new Rec(null, "http://fogid.net/o/collection-member",
                             new Dir("http://fogid.net/o/collection-item",
@@ -275,7 +292,14 @@
                                     new Tex("http://fogid.net/o/name"),
                                     new Str("http://fogid.net/o/uri"),
                                     new Str("http://fogid.net/o/docmetainfo"))
+                                    ))),
+                    new Inv("http://fogid.net/o/collection-item",
+                        new Rec(null, "http://fogid.net/o/collection-member",
+                            new Dir("http://fogid.net/o/in-collection",
+                                new Rec(null, null,
+                                    new Tex("http://fogid.net/o/name"))
                                     )))
+
                     );
             }
             else if (false && rrec.Tp == "http://fogid.net/o/photo-doc")
