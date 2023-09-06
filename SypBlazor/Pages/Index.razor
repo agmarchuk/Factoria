@@ -115,14 +115,21 @@
                     <td>
                         @if (inv_items.Length > 0)
                         {
-                            var fidis = inv_items.Select(item => item.Props).ToArray();
+                            //var fidis = inv_items.Select(item => item.Props).ToArray();
                             if (pred == "http://fogid.net/o/in-collection" 
                                 || pred == "http://fogid.net/o/reflected"
                                 || pred == "http://fogid.net/o/partItem") // TODO: Можно было бы выделить функцию 
                                 {
                                 <div>
-                                    @foreach (var fidi in fidis)
+                                    @if(selected.Count > 0)
                                     {
+                                        <div>
+
+                                        </div>
+                                    }
+                                    @foreach (var item in inv_items)
+                                    {
+                                        var fidi = item.Props;
                                         string dirpred = pred == "http://fogid.net/o/reflected" ?
                                             "http://fogid.net/o/in-doc" :
                                             (pred =="http://fogid.net/o/partItem" ? 
@@ -135,8 +142,9 @@
                                             var uriprop = tr.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/uri");
                                             string? uri = ((Str?)uriprop)?.Value;
                                             string st = ""; 
-                                            //if (selected.Contains(fidi.Id)) st = "border:solid thick; border-color:aqua;";
+                                            if (selected.Contains(item.Id)) st = "border:solid thick; border-color:aqua;";
                                             <div class="photo mat-elevation-z5" style="@(st)">
+                                                <input type="checkbox" @onchange="e => ToSelect(item.Id)" style="position:absolute;margin-top:-10px;margin-left:-10px;" />
                                             @if (tr.Tp == "http://fogid.net/o/photo-doc")
                                             {
                                                 string sr = "docs/GetImage?u=" + uri + "&s=small";
@@ -247,7 +255,11 @@
 
     // Список отобранных отношений к документам, строки - идентификаторы, это идентификаторы отношений 
     private List<string> selected = new List<string>();
-    
+    private void ToSelect(string idd)
+    {
+        if (selected.Contains(idd)) selected.Remove(idd);
+        else selected.Add(idd);
+    }
 
     // группа параметров состояния
     struct AppState
@@ -417,7 +429,6 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        selected.Add("ref1578");
         var st = await authStateProvider.GetAuthenticationStateAsync();
         user = st.User.Identity?.Name;
         //look = user;
