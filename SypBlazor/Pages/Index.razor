@@ -4,6 +4,8 @@
 @using FactographData
 @using FactographData.r
 @using Family.Authentication;
+@using SypBlazor.Components;
+
 @inject FactographData.IFDataService db
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager navManager
@@ -115,70 +117,12 @@
                     <td>
                         @if (inv_items.Length > 0)
                         {
-                            ClearRelations();
-                                //var fidis = inv_items.Select(item => item.Props).ToArray();
                             if (pred == "http://fogid.net/o/in-collection" 
                                 || pred == "http://fogid.net/o/reflected"
                                 || pred == "http://fogid.net/o/partItem") // TODO: Можно было бы выделить функцию 
-                                {                                    
-                                <div>
-                                    @if(selected.Count > 0 || true)
-                                    {
-                                        <div>
-                                            <a href="javascript:void(0)" @onclick="OnCopy">copy</a> |
-                                            <a href="javascript:void(0)" @onclick="OnCut">cut</a>
-                                        </div>
-                                    }
-                                    @foreach (var item in inv_items)
-                                    {
-                                        var fidi = item.Props;
-                                        string dirpred = pred == "http://fogid.net/o/reflected" ?
-                                            "http://fogid.net/o/in-doc" :
-                                            (pred =="http://fogid.net/o/partItem" ? 
-                                                "http://fogid.net/o/inDocument" : 
-                                                "http://fogid.net/o/collection-item"); // TODO: Можно было бы поизящнее
-                                        Dir? di = (Dir?)(fidi.FirstOrDefault(p => p is Dir && p.Pred == dirpred));
-                                        if (di != null && di.Resources.Length > 0 && di.Resources[0] != null)
-                                        {
-                                            var tr = di.Resources[0];
-                                            var uriprop = tr.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/uri");
-                                            string? uri = ((Str?)uriprop)?.Value;
-                                            string st = ""; 
-                                            if (selected.Any(re => re.Id == item.Id)) st = "border:solid thick; border-color:aqua;";
-                                            int position = AddRelation(dirpred, item);
-
-                                            <div class="photo mat-elevation-z5" style="@(st)">
-                                            <input type="checkbox" style="position:absolute;margin-top:-10px;margin-left:-10px;" > 
-                                            @if (tr.Tp == "http://fogid.net/o/photo-doc")
-                                            {
-                                                string sr = "docs/GetImage?u=" + uri + "&s=small";
-                                                <a href="index/@tr.Id/@entityId">
-                                                <img src="@(sr)" alt="" />
-                                                </a>
-                                                
-                                            }
-                                            else
-                                            {
-                                                var dmiprop = tr.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/docmetainfo");
-                                                string? dmi = ((Str?)dmiprop)?.Value;
-                                                    <span>
-                                                        @(db.ontology.LabelOfOnto(tr.Tp))
-                                                    </span>
-                                                    @if (dmi != null && dmi.Contains("application/fog"))
-                                                    {
-                                                        <span>fog</span>                                                           
-                                                    }
-                                                    else
-                                                    {
-                                                        <a href="index/@tr.Id/@entityId">
-                                                            @(tr.GetText("http://fogid.net/o/name"))
-                                                        </a>
-                                                    }
-                                            }
-                                            </div>
-                                        }
-                                    }
-                                </div>
+                            {
+                                <SypBlazor.Components.Shakhmatka entytyId="@entityId" 
+                                    inv_pred="@pred" inv_items="@inv_items" />                                    
                             }
                             else
                             {
@@ -200,7 +144,7 @@
                                     onCancel="() => StateHasChanged()"
                                     toextendrecord="@toextendrecord"
                                     issysobj="@issysobj"
-                                    />
+                                    ></SypBlazor.Components.DrawTable>
                             }
                         }
                         else
@@ -242,11 +186,7 @@
         <td width="100%"><hr /></td>
     </tr>
 </table>
-<div>selected:</div>
-@foreach (var se in selected)
-{
-    <span>@(se.Id) &nbsp;</span>
-}
+
 @code {
     [Parameter] // Фокусная запись
     public string? entityId { get; set; }
@@ -257,55 +197,6 @@
 
     private string? toextendrecord = null;
 
-    // Список отобранных отношений (не только к документам)
-    private string selectedtype = ""; // Типы отношений
-    private string selecteddirect = ""; // предикат указателя на документ
-    private List<Rec> selected = new List<Rec>();
-    private string[] selectedObjs = new string[0];
-    //private bool che = false;
-    private List<bool> mask = new List<bool>();
-    private List<Rec> relations = new List<Rec>();
-
-    private void ClearRelations()
-    {
-        relations = new List<Rec>();
-        mask = new List<bool>();
-    }
-    private int AddRelation(string dirpred, Rec? rel)
-    {
-        if (rel == null) return -1;
-        if (rel.Tp != selectedtype || dirpred != selecteddirect)
-        {
-            selectedtype = rel.Tp;
-            selecteddirect = dirpred;
-            relations = new List<Rec>();
-            mask = new List<bool>();
-        }
-        int pos = relations.Count;
-        relations.Add(rel);
-        mask.Add(false);
-        return pos;
-    }
-    private void OnCopy()
-    {
-        var so = selected.Select(rel => rel.Props
-            .FirstOrDefault(p => p is Dir && p.Pred == selecteddirect))
-            .Where(d => d != null && d is Dir)
-            .Cast<Dir>()
-            .Select(d => d.Resources)
-            .Where(recs => recs != null && recs.Count() > 0)
-            .Select(recs => recs[0].Id)
-            .Where(id => id != null)
-            .Cast<string>()
-            .ToArray();
-        selectedObjs = so;
-        selected = new List<Rec>();
-        Build(entityId);
-    }
-    private void OnCut()
-    {
-
-    }
 
     // группа параметров состояния
     struct AppState
