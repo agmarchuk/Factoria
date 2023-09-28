@@ -4,51 +4,36 @@
 @inject FactographData.IFDataService db
 
 <div>
-    @if(selected.Count > 0 || true)
-    {
-        <div>
-            <a href="javascript:void(0)" @onclick="OnCopy">copy</a> |
-            <a href="javascript:void(0)" @onclick="OnCut">cut</a>
-        </div>
-    }
     @foreach (var item in inv_items)
     {
         var fidi = item.Props;
-        string dirinv_pred = inv_pred == "http://fogid.net/o/reflected" ?
-            "http://fogid.net/o/in-doc" :
-            (inv_pred =="http://fogid.net/o/partItem" ? 
-                "http://fogid.net/o/inDocument" : 
-                "http://fogid.net/o/collection-item"); // TODO: Можно было бы поизящнее
+        string dirinv_pred = dir_pred;
         Dir? di = (Dir?)(fidi.FirstOrDefault(p => p is Dir && p.Pred == dirinv_pred));
         if (di != null && di.Resources.Length > 0 && di.Resources[0] != null)
         {
             var tr = di.Resources[0];
             var uriprop = tr.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/uri");
             string? uri = ((Str?)uriprop)?.Value;
-            string st = ""; 
-            if (selected.Any(re => re.Id == item.Id)) st = "border:solid thick; border-color:aqua;";
-            int position = AddRelation(dirinv_pred, item);
-
-            <div class="photo mat-elevation-z5" style="@(st)">
-            <input type="checkbox" style="position:absolute;margin-top:-10px;margin-left:-10px;" > 
-            @if (tr.Tp == "http://fogid.net/o/photo-doc")
-            {
-                string sr = "docs/GetImage?u=" + uri + "&s=small";
-                <a href="index/@tr.Id/@entityId">
-                <img src="@(sr)" alt="" />
-                </a>
-                
-            }
-            else
-            {
-                var dmiprop = tr.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/docmetainfo");
-                string? dmi = ((Str?)dmiprop)?.Value;
+            string? cb_n = System.Net.WebUtility.UrlEncode(item.Id);
+            string cb_name = cb_n ?? "unknown";
+            <div class="photo mat-elevation-z5" style="">
+                @if (tr.Tp == "http://fogid.net/o/photo-doc")
+                {
+                    string sr = "docs/GetImage?u=" + uri + "&s=small";
+                    <a href="index/@tr.Id/@entityId">
+                        <img src="@(sr)" alt="" />
+                    </a>
+                }
+                else
+                {
+                    var dmiprop = tr.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/docmetainfo");
+                    string? dmi = ((Str?)dmiprop)?.Value;
                     <span>
                         @(db.ontology.LabelOfOnto(tr.Tp))
                     </span>
                     @if (dmi != null && dmi.Contains("application/fog"))
                     {
-                        <span>fog</span>                                                           
+                        <span>fog</span>
                     }
                     else
                     {
@@ -56,55 +41,24 @@
                             @(tr.GetText("http://fogid.net/o/name"))
                         </a>
                     }
-            }
+                }
             </div>
         }
     }
 </div>
 
-@code{
+@code {
     [Parameter]
     public string entityId { get; set; }
     [Parameter]
-    public string inv_pred { get; set; }
+    public string dir_pred { get; set; }
     [Parameter]
     public Rec[] inv_items { get; set; }
 
     // Список отобранных отношений (не только к документам)
     private string selectedtype = ""; // Типы отношений
     private string selecteddirect = ""; // предикат указателя на документ
-    private List<Rec> selected = new List<Rec>();
-    private string[] selectedObjs = new string[0];
-    //private bool che = false;
-    private List<bool> mask = new List<bool>();
-    private List<Rec> relations = new List<Rec>();
-
-    private void ClearRelations()
-    {
-        relations = new List<Rec>();
-        mask = new List<bool>();
-    }
-    private int AddRelation(string dirinv_pred, Rec? rel)
-    {
-        if (rel == null) return -1;
-        if (rel.Tp != selectedtype || dirinv_pred != selecteddirect)
-        {
-            selectedtype = rel.Tp;
-            selecteddirect = dirinv_pred;
-            relations = new List<Rec>();
-            mask = new List<bool>();
-        }
-        int pos = relations.Count;
-        relations.Add(rel);
-        mask.Add(false);
-        return pos;
-    }
-    private void OnCopy()
-    {
-    }
-    private void OnCut()
-    {
-
-    }
 
 }
+
+

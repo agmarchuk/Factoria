@@ -11,7 +11,18 @@
 @inject NavigationManager navManager
 
 @* ========= Тестовая область ========= *@
-<div><a href="index/start_page">Тест</a></div>
+<div>
+    <a href="index/start_page">Тест</a>
+    @if (user != null) 
+    {
+        if (buff_cnt > 0)
+        {
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span>В <a href="Index/@(buff_id)">буфере</a>: @(buff_cnt) элементов</span>
+            <a href="javascript:void(0)" @onclick="ClearBuffer"> x </a>
+        }
+    }
+</div>
 @* ========= конец ========= *@
 
 <SypBlazor.Components.SearchPanel typs="@typs" user="@user"
@@ -115,36 +126,69 @@
                         <span style="color:green;">@(db.ontology.InvLabelOfOnto(pred))</span>
                     </td>
                     <td>
-                        @if (inv_items.Length > 0)
+                        @if (inv_items.Length > 0 || user != null)
                         {
                             if (pred == "http://fogid.net/o/in-collection" 
                                 || pred == "http://fogid.net/o/reflected"
-                                || pred == "http://fogid.net/o/partItem") // TODO: Можно было бы выделить функцию 
+                                || pred == "http://fogid.net/o/inDocument") // TODO: Можно было бы выделить функцию 
                             {
-                                <SypBlazor.Components.Shakhmatka entytyId="@entityId" 
-                                    inv_pred="@pred" inv_items="@inv_items" />                                    
+                                string? dir_pred = null;
+                                if (pred == "http://fogid.net/o/in-collection") dir_pred = "http://fogid.net/o/collection-item";
+                                else if (pred == "http://fogid.net/o/reflected") dir_pred = "http://fogid.net/o/in-doc";
+                                    else if (pred == "http://fogid.net/o/inDocument") dir_pred = "http://fogid.net/o/partItem";
+
+                                if (dir_pred != null && user != null)
+                                {
+
+                                        string tty =
+                                         pred == "http://fogid.net/o/in-collection" ?
+                                            "http://fogid.net/o/collection-member" :
+                                        (pred == "http://fogid.net/o/reflected" ?
+                                            "http://fogid.net/o/reflection" :
+                                        (pred == "http://fogid.net/o/inDocument" ?
+                                            "http://fogid.net/o/DocumentPart" : ("typeerr 4493"))); //TODO: Нужен корректный выход
+
+                                    @if (buff_cnt > 0)
+                                    {
+                                        <div>
+                                            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                            <a href="javascript:void(0)" @onclick="@(e =>AddInverseRelations(tty, pred, dir_pred))">Добавить</a>
+                                            <span> &nbsp; из буфера</span>
+                                        </div>
+                                    }
+                                    <SypBlazor.Components.Shakhmatka_edit entityId="@entityId"
+                                            dir_pred="@dir_pred" inv_items="@inv_items" user="@user" />
+                                }
+                                else
+                                {
+                                    <SypBlazor.Components.Shakhmatka entityId="@entityId"
+                                            dir_pred="@dir_pred" inv_items="@inv_items" />
+                                }
                             }
-                            else
+                            else if (true || iProp.Sources.Length > 0)
                             {
                                 bool issysobj = false;
-                                var tty = iProp.Sources[0].Tp;
                                 var pre = iProp.Pred;
+                                //var tty = iProp.Sources[0].Tp;
+                                string tty = db.ontology.DomainsOfProp(pre).First();
                                 if (user != null)
                                 {
                                     <div>
-                                        <a href="javascript:void(0)" @onclick="@(e =>NewInverseRelation(tty, pre))">новый</a>
-                                    </div>
+                                        <a href="javascript:void(0)" @onclick="@(e =>NewInverseRelation(tty, pre))">нов.</a>
+                                        </div>
                                 }
                                 if (db.ontology.AncestorsAndSelf(tty).Contains("http://fogid.net/o/sys-obj"))
                                 { issysobj = true; }
-                                <SypBlazor.Components.DrawTable Trees="@(inv_items)" level="1" user="@user"
+                                if (inv_items.Length > 0)
+                                {
+                                    <SypBlazor.Components.DrawTable Trees="@(inv_items)" level="1" user="@user"
                                         inverseProp="@(iProp.Pred)" focusId="@(entityId)"
-                                    onDelete="(id) => Delete((string)id)"
-                                    onOk="() => Build(entityId)"
-                                    onCancel="() => StateHasChanged()"
-                                    toextendrecord="@toextendrecord"
-                                    issysobj="@issysobj"
-                                    ></SypBlazor.Components.DrawTable>
+                                        onDelete="(id) => Delete((string)id)"
+                                        onOk="() => Build(entityId)"
+                                        onCancel="() => StateHasChanged()"
+                                        toextendrecord="@toextendrecord"
+                                        issysobj="@issysobj"></SypBlazor.Components.DrawTable>
+                                }
                             }
                         }
                         else
@@ -156,7 +200,7 @@
                                 if (!db.ontology.AncestorsAndSelf(tty).Contains("http://fogid.net/o/sys-obj") &&
                                     !( pred == "http://fogid.net/o/in-collection"
                                     || pred == "http://fogid.net/o/reflected"
-                                    || pred == "http://fogid.net/o/partItem"))
+                                    || pred == "http://fogid.net/o/inDocument"))
                                 {
                                     <div>
                                         <a href="javascript:void(0)" @onclick="@(e =>NewInverseRelation(tty, pre))">нов.</a>
@@ -195,7 +239,7 @@
 
     private string[] typs = new string[0];
 
-    private string? toextendrecord = null;
+    private string? toextendrecord = null; // Я забыл для чего это...
 
 
     // группа параметров состояния
@@ -364,10 +408,23 @@
         }
     }
 
+    private string? buff_id = null;
+    private int buff_cnt = 0;
+
     protected override async Task OnParametersSetAsync()
     {
         var st = await authStateProvider.GetAuthenticationStateAsync();
         user = st.User.Identity?.Name;
+        if (user != null) 
+        {
+            buff_id = "buffer_" + user;
+            var buff = db.GetRRecord(buff_id, true);
+            buff_cnt = 0;
+            if (buff != null)
+            {
+                buff_cnt = buff.Props.Where(p => p is RInverseLink).Count();
+            }
+    }
         //look = user;
         //await base.OnParametersSetAsync();
         var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
@@ -476,6 +533,74 @@
             );
         XElement x = db.PutItem(xitem);
         toextendrecord = x.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
+        Build(entityId);
+    }
+
+    private void ClearBuffer()
+    {
+        // Выясняем есть ли такой элемент
+        RRecord? rRecord = db.GetRRecord(buff_id, true);
+        // Если есть, то чистим, если нет, то заводим
+        if (rRecord != null)
+        {
+            // выделяем членов
+            string[] members = rRecord.Props.Select<RProperty, string?>(p =>
+                {
+                    if (p is RInverseLink && p.Prop == "http://fogid.net/o/in-collection")
+                        return ((RInverseLink)p).Source;
+                    return null;
+                })
+                .Where(r => r != null)
+                .Cast<string>()
+                .ToArray();
+            // чистим
+            foreach (var member in members)
+            {
+                db.PutItem(new XElement("delete",
+                    new XAttribute("owner", user),
+                    new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", member)));
+            }
+        }
+    }
+
+    // Добавление обратных отношений к айтемам из буфера
+    // tty - тип псевдосущности отношения
+    // invPred - обратный предикат по пути от фокусной сущности к отношению
+    // dirPred - прямой предикат от отношению к "удаленной" сущности
+    private void AddInverseRelations(string tty, string invPred, string dirPred)
+    {
+        if (user == null || buff_id == null) return;
+        RRecord? rRecord = db.GetRRecord(buff_id, true);
+        if (rRecord == null) return;
+        // Выделяю идентификаторы элементов коллекции
+        string[] members = rRecord.Props.Select<RProperty, string?>(p =>
+            {
+                if (p is RInverseLink && p.Prop == "http://fogid.net/o/in-collection")
+                    return ((RInverseLink)p).Source;
+                return null;
+            })
+            .Where(r => r != null)
+            .Cast<string>()
+            .ToArray();
+        // Прохожусь по элементам коллекции
+        foreach (string mId in members)
+        {
+            // Находим запись collection-member
+            RRecord? mRec = db.GetRRecord(mId, false);
+            if (mRec == null) continue;
+            string dir = mRec.GetDirectResource("http://fogid.net/o/collection-item");
+            if (dir == null) continue;
+            // Формируем команду добавления и добавляем в db
+            XElement xitem = new XElement(OAData.Adapters.ONames.ToXName(tty),
+                new XAttribute("owner", user),
+                new XElement(OAData.Adapters.ONames.ToXName(invPred),
+                    new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", entityId)),
+                new XElement(OAData.Adapters.ONames.ToXName(dirPred),
+                    new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", dir))
+                );
+            XElement x = db.PutItem(xitem);
+        }
+        //toextendrecord = x.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
         Build(entityId);
     }
 }

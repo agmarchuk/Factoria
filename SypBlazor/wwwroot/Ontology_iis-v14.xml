@@ -835,8 +835,8 @@
   <ObjectProperty rdf:about="http://fogid.net/o/inDocument" priority="m" essential="yes">
     <label xml:lang="ru">в сборке</label>
     <label xml:lang="en">in document</label>
-    <inverse-label xml:lang="ru">раздел</inverse-label>
-    <inverse-label xml:lang="en">part</inverse-label>
+    <inverse-label xml:lang="ru">разделы</inverse-label>
+    <inverse-label xml:lang="en">parts</inverse-label>
     <domain rdf:resource="http://fogid.net/o/DocumentPart"/>
     <range rdf:resource="http://fogid.net/o/document"/>
   </ObjectProperty>
