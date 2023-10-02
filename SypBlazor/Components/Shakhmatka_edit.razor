@@ -3,7 +3,7 @@
 
 @inject FactographData.IFDataService db
 
-    <form method="get" action="docs/cpycut">
+    <form method="post" action="docs/cpycut">
         <input type="hidden" name="entityId" value="@(System.Net.WebUtility.UrlEncode(entityId))" />
         <input type="hidden" name="dir_pred" value="@(System.Net.WebUtility.UrlEncode(dir_pred))" />
         @if (user != null && inv_items.Count() > 0)

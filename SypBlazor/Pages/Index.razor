@@ -32,6 +32,7 @@
 
 @if (tree != null)
 {
+    bool hasdocimage = false;
     var invProps = tree.Props.Where(p => p is Inv).Cast<Inv>().ToArray();
     <div>
         <span style="color:green;">@(db.ontology.LabelOfOnto(tree.Tp))</span>
@@ -76,11 +77,13 @@
         if (tree.Tp == "http://fogid.net/o/photo-doc")
         {
             string sr = "docs/GetImage?u=" + uri + "&s=normal";
+            hasdocimage = true;
             <img src="@sr" />
 
         }
         else if (tree.Tp == "http://fogid.net/o/video-doc")
         {
+            hasdocimage = true;
             string sr = "docs/GetVideo?u=" + uri + "&s=normal";
             <video width="480" controls>
                 <source type="video/webm" src='@(sr + "&ext=webm")' />
@@ -94,6 +97,7 @@
             string? docmetainfo = ((Str?)tree.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/docmetainfo"))?.Value;
             if (docmetainfo != null && docmetainfo.Contains("application/pdf"))
             {
+                hasdocimage = true;
                 string sr = "docs/GetPdf?u=" + uri;
                 <embed src="@sr" width="100%" height="800" />
             }
@@ -105,6 +109,36 @@
 
         }
     }
+
+    // ========    Это вставка НИЖНЕЙ полоски пред. след. к документу =========
+    @if (externalId != null && hasdocimage)
+    {
+        string pr = "index/" + prev + "/" + externalId;
+        string d = "index/" + externalId;
+        string nx = "index/" + next + "/" + externalId;
+        <div style="text-align: center;">
+            <NavLink href="@d">к источнику</NavLink>
+            &nbsp;
+            @if (prev == null)
+            {
+                <span>пред.</span>
+            }
+            else
+            {
+                <NavLink href="@pr"><span>пред.</span></NavLink>
+            }
+            &nbsp;
+            @if (next == null)
+            {
+                <span>след.</span>
+            }
+            else
+            {
+                <NavLink href="@nx"><span>след.</span></NavLink>
+            }
+        </div>
+    }
+
     <SypBlazor.Components.DrawTable Trees="@(new Rec[] { tree })" 
         onDelete="(id) => Delete((string)id)"
         onCancel="() => StateHasChanged()"
@@ -136,7 +170,15 @@
                                 if (pred == "http://fogid.net/o/in-collection") dir_pred = "http://fogid.net/o/collection-item";
                                 else if (pred == "http://fogid.net/o/reflected") dir_pred = "http://fogid.net/o/in-doc";
                                     else if (pred == "http://fogid.net/o/inDocument") dir_pred = "http://fogid.net/o/partItem";
-
+                                if (pred == "http://fogid.net/o/inDocument")
+                                {  // Посортируем части
+                                    Rec[] query = inv_items.OrderBy<Rec, string>(r =>
+                                    {
+                                            var pg = r.GetStr("http://fogid.net/o/pageNumbers");
+                                            return pg == null ? "" : pg;
+                                    }).ToArray();
+                                    inv_items = query;                                        
+                                }
                                 if (dir_pred != null && user != null)
                                 {
 
@@ -424,7 +466,7 @@
             {
                 buff_cnt = buff.Props.Where(p => p is RInverseLink).Count();
             }
-    }
+        }
         //look = user;
         //await base.OnParametersSetAsync();
         var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
@@ -582,9 +624,21 @@
             .Where(r => r != null)
             .Cast<string>()
             .ToArray();
-        // Прохожусь по элементам коллекции
-        foreach (string mId in members)
+        // Возможно, нам понадобится добавок в виде значения атрибута pageNumbers
+        // Вычислим начальное значение
+        int pn_initial = 1001;
+        if (tty == "http://fogid.net/o/DocumentPart" && entityId != null)
         {
+            // прочитаем обратные ссылки
+            RRecord? rtest = db.GetRRecord(entityId, true);
+            if (rtest != null) pn_initial += rtest.Props.Count(p =>
+                p is RInverseLink && p.Prop == "http://fogid.net/o/inDocument");
+        }
+        // Прохожусь по элементам коллекции
+        foreach (var pair in members.Select<string, Tuple<int, string>>((s, i) => new Tuple<int, string>(i, s)))
+        {
+            int ind = pair.Item1;
+            string mId = pair.Item2;
             // Находим запись collection-member
             RRecord? mRec = db.GetRRecord(mId, false);
             if (mRec == null) continue;
@@ -598,6 +652,9 @@
                 new XElement(OAData.Adapters.ONames.ToXName(dirPred),
                     new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", dir))
                 );
+            // добавим страницу, если надо
+            if (tty == "http://fogid.net/o/DocumentPart") 
+                xitem.Add(new XElement("{http://fogid.net/o/}pageNumbers", "" + (pn_initial + ind)));
             XElement x = db.PutItem(xitem);
         }
         //toextendrecord = x.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;

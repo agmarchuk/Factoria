@@ -24,18 +24,18 @@ namespace SypBlazor.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
-        [HttpGet("docs/cpycut")]
+        [HttpPost("docs/cpycut")]
         public IActionResult cpycut()
         {
             // Прием параметров запроса
-            string entityId = WebUtility.UrlDecode(Request.Query["entityId"]);
-            string dir_pred = WebUtility.UrlDecode(Request.Query["dir_pred"]);
-            string? user = Request.Query["user"];
+            string entityId = WebUtility.UrlDecode(Request.Form["entityId"]);
+            string dir_pred = WebUtility.UrlDecode(Request.Form["dir_pred"]);
+            string? user = Request.Form["user"];
             if (user == null) goto Out; //{ user = WebUtility.UrlDecode(user); }
             bool tocut = false;
             bool tocopy = false;
             List<string> relationIds = new List<string>();
-            var query = this.HttpContext.Request.Query;
+            var query = this.HttpContext.Request.Form;
             foreach (var item in query)
             {
                 if      (item.Key == "copy") tocopy = true;

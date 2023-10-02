@@ -2,10 +2,39 @@
 using System.IO;
 using FactographData;
 using ConsoleTest;
+using System.Xml.Serialization;
 
 partial class Program
 {
+    /// <summary>
+    /// Программа осуществляет присоединение к фактографической базе данных и обеспечвает
+    /// выполнение методов доступа. 
+    /// Сервису данных подается директория (path должен заканчиваться /) в которой должны
+    /// находится два файла: config.xml и онтология Ontology_iis-v14.xml
+    /// В файле конфигуратора config.xml имеется connectionstring с указанием протокола upi 
+    /// (единственный вариант) и папки для базы данных:
+    ///     <database connectionstring="upi:D:\Home\data\upi\"/>
+    /// Перед запуском программы папка должна быть создана и очищена!
+    /// Кроме того, в конфигураторе перечисляются используемые кассеты, напр:
+    ///     <LoadCassette>D:\Home\FactographProjects\syp_cassettes\SypCassete</LoadCassette>
+    /// Перед запуском, кассеты должны раполагаться на указанных местах!
+    /// </summary>
     public static void Main()
+    {
+        Console.WriteLine("Start FactographData use sample.");
+        IFDataService db = new FDataService("../../../wwwroot/");
+        //db.Reload(); // Это действие необходмо если меняется набор кассет
+
+        // Поиск записей по имени
+        var records = db.SearchRRecords("марчук", false);
+        foreach (var record in records)
+        {
+            Console.WriteLine($"{record.Tp} {record.Id} {record.GetName()} {record.Props.Count()}");
+        }
+
+        Console.ReadKey();
+    }
+    public static void Main3()
     {
         Console.WriteLine("Start Main3");
         // Беру RDF-базу данных

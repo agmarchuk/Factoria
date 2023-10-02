@@ -13,20 +13,22 @@ namespace FactographData
 {
     public class FDataService : IFDataService
     {
-        public TTreeBuilder ttreebuilder;
-        public TTreeBuilder TreeBuilder { get { return ttreebuilder; } }
-        
-        public FDataService()
+        //public TTreeBuilder ttreebuilder;
+        //public TTreeBuilder TreeBuilder { get { return ttreebuilder; } }
+
+        public FDataService() : this("wwwroot/") { }
+        public FDataService(string path)
         {
+            this.path = path;
             Console.WriteLine("mag: FDataService Constructing " + DateTime.Now);
-            path = "wwwroot/";
+            //path = "wwwroot/";
             Init(path);
             string ontology_path = path + "Ontology_iis-v14.xml";
             ontology = new RXOntology(ontology_path);
             if (adapter is UpiAdapter)
             {
                 _tbuilder = new TRecordBuilder((UpiAdapter)this.adapter, ontology);
-                ttreebuilder = new TTreeBuilder((UpiAdapter)this.adapter, ontology);
+                //ttreebuilder = new TTreeBuilder((UpiAdapter)this.adapter, ontology);
                 // var qqq = ttreebuilder.GetTTree("famwf1233_1001");
             }
         }
