@@ -17,13 +17,6 @@ namespace FactographData.r
             this.Tp = tp;
             this.Props = props;
         }
-        //public override string ToString()
-        //{
-        //    StringBuilder sb = new StringBuilder($"r({Id}, {Tp}");
-        //    foreach (var p in Props) { sb.Append(", "); sb.Append(p.ToString()); }
-        //    sb.Append(')');
-        //    return sb.ToString();
-        //}
         // =================== Самое главное: генерация дерева по шаблону ==========
         public static Rec Build(RRecord r, Rec shablon, IOntology ontology, Func<string, RRecord?> getRecord)
         {
@@ -450,22 +443,6 @@ namespace FactographData.r
     public abstract class Pro
     {
         public string Pred { get; internal set; } = "";
-        //public string? Val 
-        //{ 
-        //    get 
-        //    {
-        //        if ( this is Tex)
-        //        {
-        //            var tex = (Tex)this;
-        //            return tex.Values.FirstOrDefault(t => t.Lang == "ru")?.Text;
-        //        }
-        //        else if (this is Str)
-        //        {
-        //            return ((Str)this).Value;
-        //        }
-        //        else { return null; }
-        //    }
-        //}
     }
     public class Tex : Pro
     {
@@ -498,10 +475,6 @@ namespace FactographData.r
             this.Pred = pred;
             this.Value = value;
         }
-        //public override string ToString()
-        //{
-        //    return $"\"{Value}\"";
-        //}
     }
     public class Dir : Pro
     {
@@ -511,20 +484,6 @@ namespace FactographData.r
             Pred = pred;
             Resources = resources;
         }
-        //public override string ToString()
-        //{
-        //    StringBuilder sb = new StringBuilder("d"+Pred+"(");
-        //    bool firsttime = true; 
-        //    foreach (var res in Resources)
-        //    {                
-        //        if (!firsttime) sb.Append(", ");
-        //        firsttime = false;
-        //        if (res != null) sb.Append(res.ToString());
-        //        else sb.Append("null");
-        //    }
-        //    sb.Append(')');
-        //    return sb.ToString(); 
-        //}
     }
     public class Inv : Pro
     {
@@ -534,18 +493,5 @@ namespace FactographData.r
             Pred = pred;
             Sources = sources;
         }
-        //public override string ToString()
-        //{
-        //    StringBuilder sb = new StringBuilder("i"+Pred+"(");
-        //    bool firsttime = true;
-        //    foreach (var res in Sources)
-        //    {
-        //        if (!firsttime) sb.Append(", ");
-        //        firsttime = false;
-        //        sb.Append(res.ToString());
-        //    }
-        //    sb.Append(')');
-        //    return sb.ToString();
-        //}
     }
 }

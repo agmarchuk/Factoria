@@ -44,7 +44,7 @@ namespace FactographData
         // ============ Работа с RRecord - могут (должны) быть переопределены ===========
         RRecord? GetRRecord(string id, bool addinverse)
         {
-            XElement xrec = GetItemByIdBasic(id, true);
+            XElement xrec = GetItemByIdBasic(id, addinverse);
             if (xrec != null && xrec.Attribute("id")!= null && xrec.Attribute("type") != null)
             {
                 RRecord rr = new RRecord
@@ -106,7 +106,9 @@ namespace FactographData
                             }
                             if (p.Name == "inverse")
                             {
-                                return new RInverseLink { Prop = pred, Source = p.Element("record").Attribute("id").Value };
+                                //return new RInverseLink { Prop = pred, Source = p.Element("record").Attribute("id").Value };
+                                // Базово, в поиске нет обратных отношений
+                                return null;
                             }
                             else return null;
                         })
