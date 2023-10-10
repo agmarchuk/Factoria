@@ -198,14 +198,13 @@
                                             <span> &nbsp; из буфера</span>
                                         </div>
                                     }
-                                    <SypBlazor.Components.Shakhmatka_edit entityId="@entityId"
-                                            dir_pred="@dir_pred" inv_items="@inv_items" user="@user" />
+
                                 }
                                 else
                                 {
-                                    <SypBlazor.Components.Shakhmatka entityId="@entityId"
-                                            dir_pred="@dir_pred" inv_items="@inv_items" />
                                 }
+                                <SypBlazor.Components.Shakhmat entityId="@entityId"
+                                        dir_pred="@dir_pred" inv_items="@inv_items" user="@user" />
                             }
                             else if (true || iProp.Sources.Length > 0)
                             {

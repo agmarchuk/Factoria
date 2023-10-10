@@ -1,0 +1,149 @@
+﻿@using FactographData
+@using FactographData.r
+
+@inject FactographData.IFDataService db
+
+<form method="post" action="docs/cpycut">
+    @if (user != null)
+    {
+        <input type="hidden" name="entityId" value="@(System.Net.WebUtility.UrlEncode(entityId))" />
+        <input type="hidden" name="dir_pred" value="@(System.Net.WebUtility.UrlEncode(dir_pred))" />
+    }
+    @if (user != null && inv_items.Count() > 0)
+    {   //TODO: наверное правильно будет "спрятать" идентификатор пользователя...
+        <input type="hidden" name="user" value="@(System.Net.WebUtility.UrlEncode(user))" />
+        <div>
+
+            <input type="submit" name="copy" value="Копировать">
+            &nbsp;
+            <input type="submit" name="cut" value="Забрать">
+            &nbsp;
+            в буфер.&nbsp;
+            <input type="reset">
+        </div>
+    }
+
+    <div>
+        @foreach (var item in inv_items)
+        {
+            var fidi = item.Props;
+            string dirinv_pred = dir_pred;
+            Dir? di = (Dir?)(fidi.FirstOrDefault(p => p is Dir && p.Pred == dirinv_pred));
+            if (di != null && di.Resources.Length > 0 && di.Resources[0] != null)
+            {
+                var tr = di.Resources[0];
+                var uriprop = tr.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/uri");
+                string? uri = ((Str?)uriprop)?.Value;
+
+                var dmiprop = tr.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/docmetainfo");
+                string? dmi = ((Str?)dmiprop)?.Value;
+                if (dmi != null && dmi.Contains("application/fog")) { continue; }
+
+                string st = "";
+                if (selected.Any(re => re.Id == item.Id)) st = "border:solid thick; border-color:aqua;";
+                //int position = AddRelation(dirinv_pred, item);
+                string? cb_n = System.Net.WebUtility.UrlEncode(item.Id);
+                string cb_name = cb_n ?? "unknown";
+                // Малая композиция состоит из спецификатора, uri и подпись
+                string specificator = "";
+                string podpis = "podpis";
+                string name = tr.GetText("http://fogid.net/o/name") ?? "";
+                string description = tr.GetText("http://fogid.net/o/name") ?? "";
+                string descr = description ?? name;
+                @if (tr.Tp == "http://fogid.net/o/photo-doc")
+                {
+                }
+                else
+                {
+                    specificator = db.ontology.LabelOfOnto(tr.Tp);
+                }
+
+                <div class="photo mat-elevation-z5" style="@(st)">
+                    @if (!string.IsNullOrEmpty(specificator))
+                    {
+                        <div>
+                            @(specificator)
+                        </div>
+                    }
+                    <div>
+                        @if (user != null)
+                        {
+                            <input type="checkbox" name="@(cb_name)" style="position:absolute;margin-top:-10px;margin-left:-10px;" />
+                        }
+                        @if (uri != null)
+                        {
+                            string sr = "docs/GetImage?u=" + uri + "&s=small";
+                            string enlarge = "docs/GetImage?u=" + uri + "&s=normal";
+                            <a href="index/@tr.Id/@entityId">
+                                <img src="@(sr)" title="@(name)" />
+                            </a>
+                            <a href="@(enlarge)" target="_external"
+                            style="position:absolute;margin-bottom:-10px;margin-left:0px;">+</a>
+                        }
+                        else
+                        {
+                            string nam = name.Substring(0, Math.Min(name.Length-1, 30));
+                            <a href="index/@tr.Id/@entityId" title="@(descr)">
+                                @(nam)
+                            </a>
+                        }
+                    </div>
+                    <div>
+                        подпись
+                    </div>
+                    
+                </div>
+            }
+        }
+    </div>
+</form>
+
+
+@code {
+    [Parameter]
+    public string entityId { get; set; }
+    [Parameter]
+    public string dir_pred { get; set; }
+    [Parameter]
+    public Rec[] inv_items { get; set; }
+    [Parameter]
+    public string? user { get; set; }
+
+    // Список отобранных отношений (не только к документам)
+    private string selectedtype = ""; // Типы отношений
+    private string selecteddirect = ""; // предикат указателя на документ
+    private List<Rec> selected = new List<Rec>();
+    private string[] selectedObjs = new string[0];
+    //private bool che = false;
+    private List<bool> mask = new List<bool>();
+    private List<Rec> relations = new List<Rec>();
+
+    private void ClearRelations()
+    {
+        relations = new List<Rec>();
+        mask = new List<bool>();
+    }
+    private int AddRelation(string dirinv_pred, Rec? rel)
+    {
+        if (rel == null) return -1;
+        if (rel.Tp != selectedtype || dirinv_pred != selecteddirect)
+        {
+            selectedtype = rel.Tp;
+            selecteddirect = dirinv_pred;
+            relations = new List<Rec>();
+            mask = new List<bool>();
+        }
+        int pos = relations.Count;
+        relations.Add(rel);
+        mask.Add(false);
+        return pos;
+    }
+    private void OnCopy()
+    {
+    }
+    private void OnCut()
+    {
+
+    }
+
+}
