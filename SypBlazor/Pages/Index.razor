@@ -146,7 +146,7 @@
         user="@user" />
     @if ( true || invProps.Length > 0) //TODO: надо разобраться почему нет пустых обратных списков свойств
     {
-        <table style="border:none;">
+        <table style="">
 
         @foreach (var iProp in invProps)
         {
@@ -159,7 +159,7 @@
                     <td>
                         <span style="color:green;">@(db.ontology.InvLabelOfOnto(pred))</span>
                     </td>
-                    <td>
+                    <td style="">
                         @if (inv_items.Length > 0 || user != null)
                         {
                             if (pred == "http://fogid.net/o/in-collection" 
@@ -316,7 +316,7 @@
         if (rrec != null)
         {
             Rec shablon;
-            if (db.ontology.DescendantsAndSelf("http://fogid.net/o/collection").Contains(rrec.Tp))
+            if (false && db.ontology.DescendantsAndSelf("http://fogid.net/o/collection").Contains(rrec.Tp))
             {
                 shablon = new Rec(null, rrec.Tp,
                     new Tex("http://fogid.net/o/name"),

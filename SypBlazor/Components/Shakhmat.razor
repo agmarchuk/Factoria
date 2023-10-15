@@ -3,7 +3,7 @@
 
 @inject FactographData.IFDataService db
 
-<form method="post" action="docs/cpycut">
+<form method="post" action="docs/cpycut" >
     @if (user != null)
     {
         <input type="hidden" name="entityId" value="@(System.Net.WebUtility.UrlEncode(entityId))" />
@@ -23,18 +23,17 @@
         </div>
     }
 
-    <div>
+    <div style="display:flex;flex-wrap:wrap;width:100%; ">
         @foreach (var item in inv_items)
         {
             var fidi = item.Props;
             string dirinv_pred = dir_pred;
+            string? fromdate = item.GetStr("http://fogid.net/o/from-date");
             Dir? di = (Dir?)(fidi.FirstOrDefault(p => p is Dir && p.Pred == dirinv_pred));
             if (di != null && di.Resources.Length > 0 && di.Resources[0] != null)
             {
                 var tr = di.Resources[0];
-                var uriprop = tr.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/uri");
-                string? uri = ((Str?)uriprop)?.Value;
-
+                if (fromdate == null) fromdate = tr.GetStr("http://fogid.net/o/from-date");
                 var dmiprop = tr.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/docmetainfo");
                 string? dmi = ((Str?)dmiprop)?.Value;
                 if (dmi != null && dmi.Contains("application/fog")) { continue; }
@@ -46,29 +45,48 @@
                 string cb_name = cb_n ?? "unknown";
                 // Малая композиция состоит из спецификатора, uri и подпись
                 string specificator = "";
-                string podpis = "podpis";
+                string podpis = fromdate ?? "";
+                if (podpis.Length > 4) podpis = podpis.Substring(0, 4);
                 string name = tr.GetText("http://fogid.net/o/name") ?? "";
                 string description = tr.GetText("http://fogid.net/o/name") ?? "";
                 string descr = description ?? name;
+
+                string? uri = tr.GetStr("http://fogid.net/o/uri");
+
+                @if (db.ontology.DescendantsAndSelf("http://fogid.net/o/document").Contains(tr.Tp))
+                {
+                    RRecord? rrec = db.GetRRecord(tr.Id ?? "noname", false);
+                    uri = rrec?.GetField("http://fogid.net/o/uri");
+                    if (uri == null && tr.Tp == "http://fogid.net/o/document")
+                    {
+                        // снова вычисляю, а можно было бы поставить true ранее
+                        rrec = db.GetRRecord(tr.Id ?? "noname", true);
+                        //var parts = rrec.Props
+                        //    .Where(p => p is Inver).GetMultiInverse("http://fogid.net/o/inDocument")
+                    }
+                }
                 @if (tr.Tp == "http://fogid.net/o/photo-doc")
                 {
+                        
                 }
                 else
                 {
+                    uri = null;
                     specificator = db.ontology.LabelOfOnto(tr.Tp);
                 }
 
-                <div class="photo mat-elevation-z5" style="@(st)">
+                <div class="photo mat-elevation-z5" style=" @(st)">
+                    @*class="photo mat-elevation-z5" *@
+                    <div style="height:10px; font-size:smaller;">
+                        @(specificator)
+                    </div>
                     @if (!string.IsNullOrEmpty(specificator))
                     {
-                        <div>
-                            @(specificator)
-                        </div>
                     }
                     <div>
                         @if (user != null)
                         {
-                            <input type="checkbox" name="@(cb_name)" style="position:absolute;margin-top:-10px;margin-left:-10px;" />
+                            <input type="checkbox" name="@(cb_name)" style="position:absolute;margin-top:0px;margin-left:-20px;" />
                         }
                         @if (uri != null)
                         {
@@ -88,16 +106,14 @@
                             </a>
                         }
                     </div>
-                    <div>
-                        подпись
+                    <div style="font-size:smaller;">
+                        @(podpis)
                     </div>
-                    
                 </div>
             }
         }
     </div>
 </form>
-
 
 @code {
     [Parameter]
