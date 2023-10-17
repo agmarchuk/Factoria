@@ -26,6 +26,6 @@ namespace FactographData
         KeyValuePair<string, string>[] EnumPairs(string prop, string lang);
         Dictionary<string, string[]> ParentsDictionary { get; }
 
-        RProperty[] ReorderFieldsDirects(RRecord record, string lang);
+        //RProperty[] ReorderFieldsDirects(RRecord record, string lang);
     }
 }

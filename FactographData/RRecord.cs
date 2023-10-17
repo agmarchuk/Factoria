@@ -9,61 +9,37 @@ namespace FactographData
 {
     public class RRecord
     {
-        public string Id { get; set; }
-        public string Tp { get; set; }
-        public RProperty[] Props { get; set; }
-        //public string Label { get; set; } // поле понадобится для хранения метки
-        //public override string ToString()
-        //{
-        //    var query = Props.Select(p =>
-        //    {
-        //        string prop = p.Prop;
-        //        if (p is RField)      return "f^{<" + prop + ">, \"" + ((RField)p).Value + "\"}";
-        //        else if (p is RLink) return "l^{<" + prop + ">, <" + ((RLink)p).Resource + ">}";
-        //        // Добавленный вариант обратной ссылки
-        //        else if (p is RInverseLink) return "il^{<" + prop + ">, <" + ((RInverseLink)p).Source + ">}";
-        //        else if (p is RDirect) return "d^{<" + prop + ">, " + ((RDirect)p).DRec.ToString() + "}";
-        //        /*else if (p is RDirect)*/ return "i^{<" + prop + ">, " + ((RInverse)p).IRec.ToString() + "}";
-        //    }).Aggregate((a, s) => a + ", " + s);
-        //    return "{ <" + Id + ">, <" + Tp + ">, " + "[" +       query      + "]}";
-        //}
-        public string GetField(string propName)
+        public string Id { get; private set; } = string.Empty;
+        public string Tp { get; private set; } = string.Empty;
+        public RProperty[] Props { get; private set; } = new RProperty[0];
+        private IFDataService db;
+        public RRecord(string id, string tp, RProperty[] props, IFDataService db)
         {
-            return ((RField)this.Props.FirstOrDefault(p => p is RField && p.Prop == propName))?.Value;
+            Id = id;
+            Tp = tp;
+            Props = props;
+            this.db = db;
         }
-        public string GetField(int propind)
+
+        public string? GetField(string propName)
         {
-            return ((RField)this.Props[propind])?.Value;
+            RProperty? query = Props.FirstOrDefault(p => p is RField && p.Prop == propName);
+            return query == null ? null : ((RField)query).Value;
         }
-        public string GetDirectResource(string propName)
+        public string? GetDirectResource(string propName)
         {
             var prop = this.Props.FirstOrDefault(p => p.Prop == propName);
             if (prop == null) return null;
             if (prop is RLink) return ((RLink)prop).Resource;
-            if (prop is RDirect) return ((RDirect)prop).DRec?.Id;
             return null;
         }
-        public RRecord GetDirect(string propName)
+        public RRecord? GetDirect(string propName)
         {
             if (propName == null) return null;
-            var prop = this.Props.FirstOrDefault(p => p?.Prop == propName);
+            var prop = this.Props.FirstOrDefault(p => p is RLink && p.Prop == propName);
             if (prop == null) return null;
-            if (prop is RDirect) return ((RDirect)prop).DRec;
-            return null;
-        }
-        public RRecord GetDirect(int propind)
-        {
-            var prop = Props[propind];
-            if (prop == null) return null;
-            if (prop is RDirect) return ((RDirect)prop).DRec;
-            return null;
-        }
-        public RRecord[] GetMultiInverse(int propind)
-        {
-            var prop = Props[propind];
-            if (prop == null) return new RRecord[0];
-            if (prop is RMultiInverse) return ((RMultiInverse)prop).IRecs;
-            return new RRecord[0];
+            string resource = ((RLink)prop).Resource;
+            return db.GetRRecord(resource, false);
         }
 
         public string GetName()
@@ -121,6 +97,11 @@ namespace FactographData
             return obj.Prop.GetHashCode() ^ obj.Resource.GetHashCode();
         }
     }
+    // Расширение вводится на странице 11 пособия "Делаем фактографию"
+    public class RInverseLink : RProperty
+    {
+        public string Source { get; set; }
+    }
 
 
     // Custom comparer for the RRecord class
@@ -148,27 +129,20 @@ namespace FactographData
         }
     }
 
-    // Расширение вводится на странице 11 пособия "Делаем фактографию"
-    public class RInverseLink : RProperty
-    {
-        public string Source { get; set; }
-    }
-
     // Новое расширение
     public class RDirect : RProperty
     {
         public RRecord DRec { get; set; }
     }
-    public class RInverse : RProperty
-    {
-        public RRecord IRec { get; set; }
-    }
-
-    // Еще более новое расширение
-    public class RMultiInverse : RProperty
-    {
-        public RRecord[] IRecs { get; set; }
-    }
+    //public class RInverse : RProperty
+    //{
+    //    public RRecord IRec { get; set; }
+    //}
+    //// Еще более новое расширение
+    //public class RMultiInverse : RProperty
+    //{
+    //    public RRecord[] IRecs { get; set; }
+    //}
 
     // Специальное расширение для описателей перечислимых  
     public class RState : RProperty

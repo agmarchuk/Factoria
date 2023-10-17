@@ -207,17 +207,12 @@ namespace FactographData
             {
                 // Входными элементами являются: Class, DatatypeProperty, ObjectProperty, EnumerationType
 
-                // Во всех случаях, в выходной поток направляется RRecord, причем тип записи совпадает с именем элемента,
-                // идентификатор - берется из rdf:about
-                RRecord rec = new RRecord();
-                rec.Tp = ename(el);
-                rec.Id = el.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about").Value;
 
-                // 
+                string recId = el.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about").Value;
 
                 var subcl = el.Element("SubClassOf")?.Attribute(rdf + "resource")?.Value;
                 var myClasses = getSubClasses(el, xontology);
-                parentsDictionary.Add(rec.Id, myClasses);
+                parentsDictionary.Add(recId, myClasses);
 
                 List<RProperty> propsList = new List<RProperty>();
                 // el.Elements("label").Select(l => new RField() { Prop = "Label", Value = l.Value })
@@ -255,9 +250,13 @@ namespace FactographData
                 propsList.AddRange(el.Elements("range").Select(x => new RLink { Prop = "range", Resource = x.Attribute(rdf + "resource").Value }));
 
 
-
-                rec.Props = propsList.ToArray();
-
+                // Во всех случаях, в выходной поток направляется RRecord, причем тип записи совпадает с именем элемента,
+                // идентификатор - берется из rdf:about
+                RRecord rec = new RRecord(
+                    recId,
+                    ename(el),
+                    propsList.ToArray(),
+                    null);
                 resultList.Add(rec);
 
             }
@@ -331,77 +330,77 @@ namespace FactographData
         /// </summary>
         /// <param name="record"></param>
         /// <returns></returns>
-        public RProperty[] ReorderFieldsDirects(RRecord record, string lang)
-        {
-            // Определяем тип, по нему номер спецификации, по нему спецификацию из rontology. Назовем ее columns
-            string tp = record.Tp;
-            int nom = dicOnto[tp];
-            var columns = rontology[nom];
-            Dictionary<string, int> dicProps = dicsProps[nom];
+        //public RProperty[] ReorderFieldsDirects(RRecord record, string lang)
+        //{
+        //    // Определяем тип, по нему номер спецификации, по нему спецификацию из rontology. Назовем ее columns
+        //    string tp = record.Tp;
+        //    int nom = dicOnto[tp];
+        //    var columns = rontology[nom];
+        //    Dictionary<string, int> dicProps = dicsProps[nom];
 
-            // Определяем количество полей, строим результирующий массив
-            RProperty[] res_arr = new RProperty[dicProps.Count()];
+        //    // Определяем количество полей, строим результирующий массив
+        //    RProperty[] res_arr = new RProperty[dicProps.Count()];
 
-            // Проходимся по колонкам, заполняем элементы res_arr пустыми значениями 
-            // TODO: можно эти массивы вычислить заранее, но стоит ли? Все равно для работы потебутеся копия
-            foreach (var col in columns.Props)
-            {
-                if (col is RLink)
-                {
-                    RLink rl = (RLink)col;
-                    int n = dicProps[rl.Resource];
-                    if (rl.Prop == "DatatypeProperty") res_arr[n] = new RField { Prop = rl.Resource };
-                    else if (rl.Prop == "ObjectProperty") res_arr[n] = new RDirect { Prop = rl.Resource };
-                    else throw new Exception("Err: 931891");
-                }
-            }
+        //    // Проходимся по колонкам, заполняем элементы res_arr пустыми значениями 
+        //    // TODO: можно эти массивы вычислить заранее, но стоит ли? Все равно для работы потебутеся копия
+        //    foreach (var col in columns.Props)
+        //    {
+        //        if (col is RLink)
+        //        {
+        //            RLink rl = (RLink)col;
+        //            int n = dicProps[rl.Resource];
+        //            if (rl.Prop == "DatatypeProperty") res_arr[n] = new RField { Prop = rl.Resource };
+        //            else if (rl.Prop == "ObjectProperty") res_arr[n] = new RDirect { Prop = rl.Resource };
+        //            else throw new Exception("Err: 931891");
+        //        }
+        //    }
 
-            // Пройдемся по свойствам обрабатываемой записи rrecord, значения скопируем в выходной массив на соответствующей позиции
-            foreach (var p in record.Props)
-            {
-                if (p == null || p is RInverse) continue;
-                if (dicProps.ContainsKey(p.Prop))
-                {
-                    int n = dicProps[p.Prop];
-                    if (p is RField)
-                    {
-                        RField f = (RField)p;
-                        // Если имеющееся значение пустое, то переписать из f Value и Lang
-                        if (((RField)res_arr[n]).Value == null)
-                        {
-                            ((RField)res_arr[n]).Value = f.Value;
-                            ((RField)res_arr[n]).Lang = f.Lang;
-                        }
-                        else // Иначе есть два варианта: всепобеждающий lang и английский
-                        {
-                            if ((((RField)res_arr[n]).Lang ?? "ru") == lang) { }
-                            else if ((f.Lang ?? "ru") == lang)
-                            {
-                                ((RField)res_arr[n]).Value = f.Value;
-                                ((RField)res_arr[n]).Lang = f.Lang;
-                            }
-                            else if (f.Lang == "en")
-                            {
-                                ((RField)res_arr[n]).Value = f.Value;
-                                ((RField)res_arr[n]).Lang = f.Lang;
-                            }
-                        }
-                    }
-                    else if (p is RDirect)
-                    {
-                        RDirect d = (RDirect)p;
-                        ((RDirect)res_arr[n]).DRec = d.DRec;
-                    }
-                }
-                else
-                {
+        //    // Пройдемся по свойствам обрабатываемой записи rrecord, значения скопируем в выходной массив на соответствующей позиции
+        //    foreach (var p in record.Props)
+        //    {
+        //        if (p == null) continue;
+        //        if (dicProps.ContainsKey(p.Prop))
+        //        {
+        //            int n = dicProps[p.Prop];
+        //            if (p is RField)
+        //            {
+        //                RField f = (RField)p;
+        //                // Если имеющееся значение пустое, то переписать из f Value и Lang
+        //                if (((RField)res_arr[n]).Value == null)
+        //                {
+        //                    ((RField)res_arr[n]).Value = f.Value;
+        //                    ((RField)res_arr[n]).Lang = f.Lang;
+        //                }
+        //                else // Иначе есть два варианта: всепобеждающий lang и английский
+        //                {
+        //                    if ((((RField)res_arr[n]).Lang ?? "ru") == lang) { }
+        //                    else if ((f.Lang ?? "ru") == lang)
+        //                    {
+        //                        ((RField)res_arr[n]).Value = f.Value;
+        //                        ((RField)res_arr[n]).Lang = f.Lang;
+        //                    }
+        //                    else if (f.Lang == "en")
+        //                    {
+        //                        ((RField)res_arr[n]).Value = f.Value;
+        //                        ((RField)res_arr[n]).Lang = f.Lang;
+        //                    }
+        //                }
+        //            }
+        //            else if (p is RDirect)
+        //            {
+        //                RDirect d = (RDirect)p;
+        //                ((RDirect)res_arr[n]).DRec = d.DRec;
+        //            }
+        //        }
+        //        else
+        //        {
 
-                }
+        //        }
 
-            }
+        //    }
 
-            return res_arr;
-        }
+        //    return res_arr;
+        //}
 
         public IEnumerable<string> RangesOfProp(string prop)
         {

@@ -48,10 +48,10 @@ namespace FactographData
             if (xrec != null && xrec.Attribute("id")!= null && xrec.Attribute("type") != null)
             {
                 RRecord rr = new RRecord
-                {
-                    Id = xrec.Attribute("id").Value,
-                    Tp = xrec.Attribute("type").Value,
-                    Props = xrec.Elements()
+                (
+                    xrec.Attribute("id")?.Value,
+                    xrec.Attribute("type")?.Value,
+                    xrec.Elements()
                         .Select<XElement, RProperty?>(p =>
                         {
                             string? pred = p.Attribute("prop")?.Value;
@@ -75,8 +75,9 @@ namespace FactographData
                         })
                         .Where(ob => ob != null)
                         .Cast<RProperty>()
-                        .ToArray()
-                };
+                        .ToArray(),
+                    this
+                );
                 return rr;
             };
             return null;
@@ -87,10 +88,10 @@ namespace FactographData
             foreach (var xrec in xrecs)
             {
                 RRecord rr = new RRecord
-                {
-                    Id = xrec.Attribute("id").Value,
-                    Tp = xrec.Attribute("type").Value,
-                    Props = xrec.Elements()
+                (
+                    xrec.Attribute("id").Value,
+                    xrec.Attribute("type").Value,
+                    xrec.Elements()
                         .Select<XElement, RProperty?>(p =>
                         {
                             string? pred = p.Attribute("prop")?.Value;
@@ -114,8 +115,9 @@ namespace FactographData
                         })
                         .Where(ob => ob != null)
                         .Cast<RProperty>()
-                        .ToArray()
-                };
+                        .ToArray(),
+                    this
+                );
                 yield return rr;
             }
         }

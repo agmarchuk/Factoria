@@ -1,5 +1,16 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+.brick {
+    width: 200px;
+    height: 200px;
+    background: #d9dabb;
+    margin: 2px;
+    text-align: center;
+}
+.pachka {
+    border-right: 6px gray solid;
+    border-bottom: 6px gray solid;
+}
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
@@ -24,6 +35,7 @@ th.bor {
     text-align: center; /* Выравнивание по центру */
     display: inline-block; /* Строчно-блочный элемент */
 }
+
 
 .photo img {
     border: 2px solid #8b8e4b; /* Параметры рамки */

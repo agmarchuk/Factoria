@@ -52,7 +52,10 @@
                 string descr = description ?? name;
 
                 string? uri = tr.GetStr("http://fogid.net/o/uri");
-
+                string? documenttype = uri == null ? null :
+                    tr.GetStr("http://fogid.net/o/docmetainfo")?.Split(';')
+                    .FirstOrDefault(s => s.StartsWith("documenttype:"))?.Substring("documenttype:".Length);
+                bool fromdoc = true;
                 @if (db.ontology.DescendantsAndSelf("http://fogid.net/o/document").Contains(tr.Tp))
                 {
                     RRecord? rrec = db.GetRRecord(tr.Id ?? "noname", false);
@@ -61,8 +64,21 @@
                     {
                         // снова вычисляю, а можно было бы поставить true ранее
                         rrec = db.GetRRecord(tr.Id ?? "noname", true);
-                        //var parts = rrec.Props
-                        //    .Where(p => p is Inver).GetMultiInverse("http://fogid.net/o/inDocument")
+                        if (rrec == null) throw new Exception("Err: 2873");
+                        RRecord? firstpart = rrec.Props
+                            .Where(p => p is RInverseLink && p.Prop == "http://fogid.net/o/inDocument")
+                        .Select(p => db.GetRRecord(((RInverseLink)p).Source, false))
+                        .OrderBy(r => r?.GetField("http://fogid.net/o/pageNumbers"))
+                        .FirstOrDefault();
+                        var doc = db.GetRRecord(firstpart.GetDirectResource("http://fogid.net/o/partItem"), false);
+                        if (doc != null && doc.Tp == "http://fogid.net/o/photo-doc")
+                        {
+                            uri = doc.GetField("http://fogid.net/o/uri");
+                            documenttype = uri == null || doc == null  ? null :
+                                doc.GetField("http://fogid.net/o/docmetainfo")?.Split(';')
+                                .FirstOrDefault(s => s.StartsWith("documenttype:"))?.Substring("documenttype:".Length);
+                            fromdoc = false;
+                        }
                     }
                 }
                 @if (tr.Tp == "http://fogid.net/o/photo-doc")
@@ -71,13 +87,12 @@
                 }
                 else
                 {
-                    uri = null;
+                    //uri = null;
                     specificator = db.ontology.LabelOfOnto(tr.Tp);
                 }
 
-                <div class="photo mat-elevation-z5" style=" @(st)">
-                    @*class="photo mat-elevation-z5" *@
-                    <div style="height:10px; font-size:smaller;">
+                <div class="brick mat-elevation-z5" style="@(st)">
+                    <div style="font-size:smaller;">
                         @(specificator)
                     </div>
                     @if (!string.IsNullOrEmpty(specificator))
@@ -86,17 +101,18 @@
                     <div>
                         @if (user != null)
                         {
-                            <input type="checkbox" name="@(cb_name)" style="position:absolute;margin-top:0px;margin-left:-20px;" />
+                            <input type="checkbox" name="@(cb_name)" style="" />
                         }
-                        @if (uri != null)
+                        @if (uri != null && documenttype != null && documenttype.StartsWith("image/"))
                         {
                             string sr = "docs/GetImage?u=" + uri + "&s=small";
                             string enlarge = "docs/GetImage?u=" + uri + "&s=normal";
+                            string cl = fromdoc ? "" : "pachka";
                             <a href="index/@tr.Id/@entityId">
-                                <img src="@(sr)" title="@(name)" />
+                                <img src="@(sr)" title="@(name)" class="@(cl)" />
                             </a>
                             <a href="@(enlarge)" target="_external"
-                            style="position:absolute;margin-bottom:-10px;margin-left:0px;">+</a>
+                            style="">+</a>
                         }
                         else
                         {

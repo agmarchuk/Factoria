@@ -226,12 +226,13 @@
         if (rec == null) return;
         // Делаю редактируемую запись. TODO:похоже, имеются обратные свойства
         erecord = new RRecord
-        {
-            Id = rec.Id,
-            Tp = rec.Tp,
-            Props = rec.Props
-            .Where(pr => pr is RField || pr is RLink).ToArray()
-        };
+        (
+            rec.Id,
+            rec.Tp,
+            rec.Props
+                .Where(pr => pr is RField || pr is RLink).ToArray(),
+            db
+        );
 
         // Создадим шаблон редактирования. Сначала вычислим набор предикатов записи
         string[] dprops = db.ontology.GetDirectPropsByType(erecord.Tp).ToArray();
@@ -379,38 +380,41 @@
     private string? searchlinkprop = null;
     private string? searchsubitem = null;
     private void SearchLink(string prop) { searchlinkprop = prop; }
+
     private void LinkRecord(string rid)
     {
         RRecord? extRec = db.GetRRecord(rid, false);
         var erec = new RRecord
-            {
-                Id = erecord.Id,
-                Tp = erecord.Tp,
-                Props = erecord.Props.Select(p => p.Prop != searchlinkprop ? p :
+            (
+                erecord.Id,
+                erecord.Tp,
+                erecord.Props.Select(p => p.Prop != searchlinkprop ? p :
                     new RDirect
                     {
                         Prop = searchlinkprop,
                         DRec = new RRecord
-                        {
-                            Id = rid,
-                            Tp = extRec.Tp,
-                            Props = extRec.Props
-                        }
-                    }).ToArray()
-            };
+                        (
+                            rid,
+                            extRec.Tp,
+                            extRec.Props,
+                            db
+                        )
+                    }).ToArray(),
+                db
+            );
         erecord = erec;
         searchlinkprop = null;
         searchsubitem = null;
-
     }
     private void DeleteLink(string prop)
     {
         var erec = new RRecord
-            {
-                Id = erecord.Id,
-                Tp = erecord.Tp,
-                Props = erecord.Props.Select(p => p.Prop != prop ? p : new RDirect { Prop = prop, DRec = null }).ToArray()
-            };
+            (
+                erecord.Id,
+                erecord.Tp,
+                erecord.Props.Select(p => p.Prop != prop ? p : new RDirect { Prop = prop, DRec = null }).ToArray(),
+                db
+            );
         erecord = erec;
     }
     private void LinkClick(string id)
