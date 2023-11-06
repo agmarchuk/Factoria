@@ -1,10 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Family.Authentication
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 @inherits LayoutComponentBase
 @inject IConfiguration configuration
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager navManager
 @inject FactographData.IFDataService db
+@inject ProtectedLocalStorage browserStorage
 
 @if (configuration != null)
 {
@@ -41,6 +43,53 @@
                     <button @onclick="OkButton">ok</button>
                 }
             </div>
+
+@*            <div>@(regime)</div>
+            <div>
+                <select @onchange='SelectRegime'>
+                    @if (regime == "home")
+                    {
+                        <option value="home" selected></option>
+                    }
+                    else
+                    {
+                        <option value="home"></option>
+                    }
+                    @if (regime == "view")
+                    {
+                        <option value="view" selected>просмотр</option>
+                    }
+                    else
+                    {
+                        <option value="view">просмотр</option>
+                    }
+                    @if (regime == "edit")
+                    {
+                        <option value="edit" selected>редактир</option>
+                    }
+                    else
+                    {
+                        <option value="edit">редактир</option>
+                    }
+                    @if (regime == "gene")
+                    {
+                        <option value="gene" selected>семья</option>
+                    }
+                    else
+                    {
+                        <option value="gene">семья</option>
+                    }
+                    @if (regime == "look")
+                    {
+                        <option value="look" selected>презентация</option>
+                    }
+                    else
+                    {
+                        <option value="look">презентация</option>
+                    }
+                </select>
+            </div>
+*@
         </div>
     }
 
@@ -68,7 +117,6 @@
 
             </div>
         </nav>
-
 
 
         <article class="content px-4">
@@ -122,14 +170,23 @@
     }
     private string? user = null;
     private bool toedit { get { return user != null; } }
-    //protected override void OnParametersSet()
-    //{
-    //    //var autask = authStateProvider.GetAuthenticationStateAsync();
-    //    //Task.WaitAll(autask);
-    //    //AuthenticationState st = autask.Result;
-    //    //user = st.User.Identity?.Name;
 
-    //    if (user != null) toedit = true;
+    //string regime = "default";
+    //protected override async void OnParametersSet()
+    //{
+    //    var regim = await ((CustomAuthenticationStateProvider)authStateProvider).ReadFromStorage("regime");
+    //    regime = regim ?? "default";
     //}
+
+    //async Task SelectRegime(ChangeEventArgs e)
+    //{
+    //    string? reg = e.Value?.ToString();
+    //    if (string.IsNullOrEmpty(reg)) reg = "default";
+    //    regime = string.IsNullOrEmpty(reg) ? "default" : reg;
+    //    //await StateMemory.SaveInStorage(browserStorage, "regime", regime);
+    //    //navManager.NavigateTo("", true);
+    //    await ((CustomAuthenticationStateProvider)authStateProvider).SaveInStorage("regime", regime);
+    //}
+
 
 }

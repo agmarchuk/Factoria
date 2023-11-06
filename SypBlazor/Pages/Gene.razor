@@ -1,0 +1,69 @@
+﻿@page "/gene/{entityId?}"
+@using System.Xml.Linq
+@using FactographData
+@using FactographData.r
+@using Family.Authentication
+@using SypBlazor
+@using SypBlazor.Components
+
+@inject FactographData.IFDataService db
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navManager
+
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage browserStorage
+
+<div>
+    <a href="index/@(entityId)">индекс</a> | <a href="fam/@(entityId)">семья</a> | семейное дерево
+</div>
+
+<SypBlazor.Components.SearchPanel typs="@typs"   
+    onSelected="id => OnSelected((string)id)" />
+
+@if (entityId != null)
+{
+    @if (father != null)
+    {
+        <div>
+            Отец: <a href="gene/@father.Id">@father.GetText("http://fogid.net/o/name")</a> @father.GetDates()
+        </div>
+    }
+    @if (mother != null)
+    {
+        <div>
+            Мать: <a href="gene/@mother.Id">@mother.GetText("http://fogid.net/o/name")</a> @mother.GetDates()
+        </div>
+    }
+    <div style="margin-top:40px;">
+        <SypBlazor.Components.GeneTreeNode entityId="@entityId" level="0" />
+    </div>
+}
+
+@code {
+    [Parameter] // Фокусная запись
+    public string? entityId { get; set; }
+
+    private string[] typs = new string[] { "http://fogid.net/o/person" };
+
+    private Rec? tree { get; set; }
+    private Rec? father = null;
+    private Rec? mother = null;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (entityId == null) return;
+        father = null;
+        mother = null;
+        tree = Rec.MkRec(entityId, db.GetRRecord, db.ontology);
+        if (tree == null) return;
+        father = Rec.MkRec(tree.GetDirect("http://fogid.net/o/father")?.Id, db.GetRRecord, db.ontology);
+        mother = Rec.MkRec(tree.GetDirect("http://fogid.net/o/mother")?.Id, db.GetRRecord, db.ontology);
+    }
+
+    // ============= Навигация
+    private void OnSelected(string id)
+    {
+        navManager.NavigateTo("gene/" + id);
+    }
+}

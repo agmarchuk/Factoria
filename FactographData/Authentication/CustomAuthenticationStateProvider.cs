@@ -7,12 +7,15 @@ namespace Family.Authentication
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider
     {
         private ProtectedSessionStorage _storage;
+        private ProtectedLocalStorage _localstorage;
         private ClaimsPrincipal _anonimous = new ClaimsPrincipal(new ClaimsIdentity());
 
-        public CustomAuthenticationStateProvider(ProtectedSessionStorage sessionStorage)
+        public CustomAuthenticationStateProvider(
+            ProtectedSessionStorage sessionStorage,
+            ProtectedLocalStorage localStorage)
         {
             _storage = sessionStorage;
-
+            _localstorage = localStorage;
         }
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
@@ -56,5 +59,21 @@ namespace Family.Authentication
             }
             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(claimsPrincipal)));
         }
+        // =========== Секция локальной памяти ============
+        public async Task SaveInStorage(string key, string value)
+        {
+            await _localstorage.SetAsync(key, value);
+        }
+        public async Task<string?> ReadFromStorage(string key)
+        {
+            var result = await _localstorage.GetAsync<string>(key);
+            var v = result.Success ? result.Value : "";
+            return v;
+        }
+        public async Task DeleteFromStorage(string key)
+        {
+            await _localstorage.DeleteAsync(key);
+        }
+
     }
 }

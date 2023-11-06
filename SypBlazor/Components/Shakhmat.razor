@@ -34,12 +34,8 @@
             {
                 var tr = di.Resources[0];
                 if (fromdate == null) fromdate = tr.GetStr("http://fogid.net/o/from-date");
-                var dmiprop = tr.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/docmetainfo");
-                string? dmi = ((Str?)dmiprop)?.Value;
-                if (dmi != null && dmi.Contains("application/fog")) { continue; }
-
-                string st = "";
-                if (selected.Any(re => re.Id == item.Id)) st = "border:solid thick; border-color:aqua;";
+                //string st = "";
+                //if (selected.Any(re => re.Id == item.Id)) st = "border:solid thick; border-color:aqua;";
                 //int position = AddRelation(dirinv_pred, item);
                 string? cb_n = System.Net.WebUtility.UrlEncode(item.Id);
                 string cb_name = cb_n ?? "unknown";
@@ -47,19 +43,27 @@
                 string specificator = "";
                 string podpis = fromdate ?? "";
                 if (podpis.Length > 4) podpis = podpis.Substring(0, 4);
-                string name = tr.GetText("http://fogid.net/o/name") ?? "";
+                string name = tr.GetText("http://fogid.net/o/name") ?? "noname";
                 string description = tr.GetText("http://fogid.net/o/name") ?? "";
                 string descr = description ?? name;
 
+                // Первая попытка получить uri и documenttype 
                 string? uri = tr.GetStr("http://fogid.net/o/uri");
                 string? documenttype = uri == null ? null :
                     tr.GetStr("http://fogid.net/o/docmetainfo")?.Split(';')
                     .FirstOrDefault(s => s.StartsWith("documenttype:"))?.Substring("documenttype:".Length);
+                if (documenttype == "application/fog") { continue; }
+
                 bool fromdoc = true;
                 @if (db.ontology.DescendantsAndSelf("http://fogid.net/o/document").Contains(tr.Tp))
                 {
+                    // вторая попытка
                     RRecord? rrec = db.GetRRecord(tr.Id ?? "noname", false);
+                    //if (rrec?.Id == "GeneTreeCass_0001_0031") { }
                     uri = rrec?.GetField("http://fogid.net/o/uri");
+                    documenttype = rrec?.GetField("http://fogid.net/o/docmetainfo")?.Split(';')
+                        .FirstOrDefault(s => s.StartsWith("documenttype:"))?.Substring("documenttype:".Length);
+                    if (documenttype == "application/fog") { continue; }
                     if (uri == null && tr.Tp == "http://fogid.net/o/document")
                     {
                         // снова вычисляю, а можно было бы поставить true ранее
@@ -70,7 +74,7 @@
                         .Select(p => db.GetRRecord(((RInverseLink)p).Source, false))
                         .OrderBy(r => r?.GetField("http://fogid.net/o/pageNumbers"))
                         .FirstOrDefault();
-                        var doc = db.GetRRecord(firstpart.GetDirectResource("http://fogid.net/o/partItem"), false);
+                        var doc = firstpart==null?null: db.GetRRecord(firstpart.GetDirectResource("http://fogid.net/o/partItem"), false);
                         if (doc != null && doc.Tp == "http://fogid.net/o/photo-doc")
                         {
                             uri = doc.GetField("http://fogid.net/o/uri");
@@ -87,43 +91,27 @@
                 }
                 else
                 {
-                    //uri = null;
+                    uri = null;
+                    documenttype = null;
                     specificator = db.ontology.LabelOfOnto(tr.Tp);
                 }
-
-                <div class="brick mat-elevation-z5" style="@(st)">
-                    <div style="font-size:smaller;">
-                        @(specificator)
+                string? sr = uri == null ? null : "docs/GetImage?u=" + uri + "&s=small";
+                string? enlarge = uri == null ? null : "docs/GetImage?u=" + uri + "&s=normal";
+                string reference = "index/" + tr.Id + "/" + entityId;
+                string regime = tr.Tp=="http://fogid.net/o/photo-doc"?"photo":"";
+                <div class="mat-elevation-z5" style="margin:6px;">
+                    <div style="">
+                        <div style="float:left">
+                            <input type="checkbox" name="@(cb_name)" />
+                        </div>
+                        <div style="float:right;">
+                            <a href="@(enlarge)" target="_external">+</a>
+                        </div>
                     </div>
-                    @if (!string.IsNullOrEmpty(specificator))
-                    {
-                    }
                     <div>
-                        @if (user != null)
-                        {
-                            <input type="checkbox" name="@(cb_name)" style="" />
-                        }
-                        @if (uri != null && documenttype != null && documenttype.StartsWith("image/"))
-                        {
-                            string sr = "docs/GetImage?u=" + uri + "&s=small";
-                            string enlarge = "docs/GetImage?u=" + uri + "&s=normal";
-                            string cl = fromdoc ? "" : "pachka";
-                            <a href="index/@tr.Id/@entityId">
-                                <img src="@(sr)" title="@(name)" class="@(cl)" />
-                            </a>
-                            <a href="@(enlarge)" target="_external"
-                            style="">+</a>
-                        }
-                        else
-                        {
-                            string nam = name.Substring(0, Math.Min(name.Length-1, 30));
-                            <a href="index/@tr.Id/@entityId" title="@(descr)">
-                                @(nam)
-                            </a>
-                        }
-                    </div>
-                    <div style="font-size:smaller;">
-                        @(podpis)
+                        <Box Prolog="@(specificator)" Epilog="@(podpis)"
+    Text="@(name)" Reference="@(reference)" PhotoUrl="@(sr)" 
+    Regime='@(regime)' />
                     </div>
                 </div>
             }

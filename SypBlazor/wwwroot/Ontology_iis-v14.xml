@@ -245,13 +245,13 @@
     <label xml:lang="ru">опубликован в</label>
     <label xml:lang="en">published in</label>
     <domain rdf:resource="http://fogid.net/o/document"/>
-    <range rdf:resource="http://fogid.net/o/URI"/>
+    <range rdf:resource="http://fogid.net/o/string"/>
   </DatatypeProperty>
   <DatatypeProperty rdf:about="http://fogid.net/o/docmetainfo" priority="d" essential="yes">
     <label xml:lang="ru">метаинформ.</label>
     <label xml:lang="en">meta info</label>
     <domain rdf:resource="http://fogid.net/o/document"/>
-    <range rdf:resource="http://fogid.net/o/URI"/>
+    <range rdf:resource="http://fogid.net/o/string"/>
   </DatatypeProperty>
   <!-- конец вставки -->
   <DatatypeProperty rdf:about="http://fogid.net/o/doc-content" priority="u">
@@ -702,7 +702,7 @@
     <label xml:lang="ru">URL-код</label>
     <label xml:lang="en">URL</label>
     <domain rdf:resource="http://fogid.net/o/url"/>
-    <range rdf:resource="http://fogid.net/o/URI"/>
+    <range rdf:resource="http://fogid.net/o/string"/>
   </DatatypeProperty>
 -->
 

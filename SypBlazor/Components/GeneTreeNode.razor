@@ -1,0 +1,92 @@
+@using FactographData
+@using FactographData.r
+@inject FactographData.IFDataService db
+
+@if (tree != null)
+{
+    <div style="margin-left:@(50*level)px; display:flex; vertical-align:middle;">
+        <img src="icons/person.gif"/>&nbsp;
+        <span>@(tree.GetStr("http://fogid.net/o/from-date")?.Substring(0, 4)) </span>&nbsp;
+        <a href="gene/@(tree.Id)">@(tree.GetText("http://fogid.net/o/name"))</a>
+
+        @foreach (var s in spouses)
+        {
+            bool fatherormother = s.GetDirect("http://fogid.net/o/father") != null || s.GetDirect("http://fogid.net/o/mother") != null;
+            if (fatherormother)
+            {
+                <img src="icons/family.jpg" style="margin-left:4px;" />
+                <span> &nbsp;</span>
+                <a href="gene/@(s.Id)" title="@(s.GetText("http://fogid.net/o/name"))">
+                    @(s.GetText("http://fogid.net/o/name"))
+                </a>
+            }
+            else
+            {
+                <a href="gene/@(s.Id)" title="@(s.GetText("http://fogid.net/o/name"))">
+                    <img src="icons/family.jpg" style="margin-left:4px;" />
+                </a>
+            }
+
+        }
+    </div>
+    @foreach (var c in children)
+    {
+        <SypBlazor.Components.GeneTreeNode entityId="@c" level="@(level + 1)" />
+    }
+}
+
+
+@code {
+    [Parameter]
+    public string? entityId { get; set; } = null;
+    [Parameter]
+    public int level { get; set; } = 0;
+
+    private Rec? tree { get; set; }
+    //private string?[] wifes = new string[0];
+    //private string?[] husbands = new string[0];
+    private Rec?[] spouses = new Rec[0]; 
+    private string?[] children = new string[0];
+
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (entityId == null) return;
+        spouses = new Rec[0];
+        children = new string[0];
+
+        tree = MkRec(entityId);
+        if (tree == null) return;
+
+        spouses = tree.GetInverse("http://fogid.net/o/husband")
+            .OrderBy(fam => fam.GetStr("http://fogid.net/o/from-date"))
+            .Select(fam => fam.GetDirect("http://fogid.net/o/wife")?.Id)
+            .Concat(
+                tree.GetInverse("http://fogid.net/o/wife")
+                .OrderBy(fam => fam.GetStr("http://fogid.net/o/from-date"))
+                .Select(fam => fam.GetDirect("http://fogid.net/o/husband")?.Id)
+            )
+            .Select(s_id => MkRec(s_id))
+            .Where(s => s != null) // Наверное можно не фильтровать...
+            .ToArray();
+
+        children = tree.GetInverse("http://fogid.net/o/father").Concat<Rec>
+        (
+            tree.GetInverse("http://fogid.net/o/mother")
+        )
+        .OrderBy(pers => pers.GetStr("from-date"))
+        .Select(r => r.Id)
+        .ToArray();
+    }
+    private Rec? MkRec(string? id)
+    {
+        if (id == null) return null;
+        RRecord? rrec = db.GetRRecord(id, true);
+        if (rrec == null) { return null; }
+        Rec shablon;
+        shablon = Rec.GetUniShablon(rrec.Tp, 2, null, db.ontology);
+        Rec tr = Rec.Build(rrec, shablon, db.ontology, idd => db.GetRRecord(idd, false));
+        return tr;
+    }
+}

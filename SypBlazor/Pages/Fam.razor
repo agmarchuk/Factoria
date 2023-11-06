@@ -1,0 +1,39 @@
+﻿@page "/fam/{entityId?}"
+@using System.Xml.Linq
+@using FactographData
+@using FactographData.r
+@using Family.Authentication
+@using SypBlazor
+@using SypBlazor.Components
+
+@inject FactographData.IFDataService db
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navManager
+
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage browserStorage
+
+<div>
+    <a href="index/@(entityId)">индекс</a> | семья | <a href="gene/@(entityId)">семейное дерево</a>
+</div>
+
+<SypBlazor.Components.SearchPanel typs="@typs"   
+    onSelected="id => OnSelected((string)id)" />
+
+@if (entityId != null)
+{
+    <SypBlazor.Components.FamTree entityId="@entityId" />
+}
+
+@code {
+    [Parameter] // Фокусная запись
+    public string? entityId { get; set; }
+
+    private string[] typs = new string[] { "http://fogid.net/o/person" };
+
+    // ============= Навигация
+    private void OnSelected(string id)
+    {
+        navManager.NavigateTo("fam/" + id);
+    }
+}

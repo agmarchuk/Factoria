@@ -126,6 +126,10 @@ namespace SypBlazor.Controllers
                 s = s == "medium" ? "normal" : "medium";
                 path = db.GetFilePath(u, s);
             }
+            if (string.IsNullOrEmpty(path)) 
+            {
+                return new EmptyResult();
+            }
             return PhysicalFile(path + ".jpg", "image/jpg");
         }
 

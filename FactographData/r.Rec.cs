@@ -298,7 +298,16 @@ namespace FactographData.r
             return shab;
         }
 
-
+        public static Rec? MkRec(string? id, Func<string?, bool, RRecord> getRRecord, IOntology ontology)
+        {
+            if (id == null) return null;
+            RRecord? rrec = getRRecord(id, true);
+            if (rrec == null) { return null; }
+            Rec shablon;
+            shablon = Rec.GetUniShablon(rrec.Tp, 2, null, ontology);
+            Rec tr = Rec.Build(rrec, shablon, ontology, idd => getRRecord(idd, false));
+            return tr;
+        }
 
         // ======= Теперь доступы =======
         public string? GetStr(string pred)
@@ -374,20 +383,45 @@ namespace FactographData.r
             return orec;
         }
         string[] months =  new string[] {"янв", "фев", "мар", "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"}; 
+        private string SmartDate(string? date)
+        {
+            if (string.IsNullOrEmpty(date)) return "";
+            string year = date.Length >= 4 ? date.Substring(0, 4) : "";
+            string month = date.Length >= 7 ? date.Substring(5, 2) : "";
+            string day = date.Length >= 10 ? date.Substring(8, 2) : "";
+            string dt = year;
+            if (!string.IsNullOrEmpty(month))
+            {
+                int imonth;
+                if (Int32.TryParse(month, out imonth) && 0 < imonth && imonth <= 12) 
+                {
+                    dt = dt + months[imonth-1];
+                    if (!string.IsNullOrEmpty(day)) dt += day; 
+                }
+            }
+            return dt;
+        }
         public string GetDates()
         {
             
             string? df = GetStr("http://fogid.net/o/from-date");
             string? dt = GetStr("http://fogid.net/o/to-date");
-            return (df == null ? "" : df) + (string.IsNullOrEmpty(dt) ? "" : "-" + dt);
+            return SmartDate(df) + (string.IsNullOrEmpty(dt) ? "" : "-" + SmartDate(dt));
         }
         public Rec? GetDirect(string pred)
         {
-            var group = Props.FirstOrDefault(p => p.Pred == pred);
-            if (group == null || !(group is Dir)) return null;
+            var group = Props.FirstOrDefault(p => p is Dir && p.Pred == pred);
+            if (group == null) return null;
             Dir dir = (Dir)group;
             if (dir.Resources.Length == 0) return null;
             return dir.Resources[0];
+        }
+        public Rec[] GetInverse(string pred)
+        {
+            var group = Props.FirstOrDefault(p => p is Inv && p.Pred == pred);
+            if (group == null) return new Rec[0];
+            Inv inv = (Inv)group;
+            return inv.Sources;
         }
 
         public static XElement RecToXML(Rec rec, string owner)

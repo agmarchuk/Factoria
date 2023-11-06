@@ -3,17 +3,23 @@
 @using System.Xml.Linq
 @using FactographData
 @using FactographData.r
-@using Family.Authentication;
-@using SypBlazor.Components;
+@using Family.Authentication
+@using SypBlazor
+@using SypBlazor.Components
 
 @inject FactographData.IFDataService db
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager navManager
 
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage browserStorage
+
+<div>
+    индекс | <a href="fam/@(entityId)">семья</a> | <a href="gene/@(entityId)">семейное дерево</a>
+</div>
 
 @* ========= Тестовая область ========= *@
 <div>
-    <a href="index/start_page">Тест</a>
     @if (user != null) 
     {
         if (buff_cnt > 0)
@@ -30,9 +36,14 @@
     onNewItem="stss => NewItem(((Tuple<string, string>)stss).Item1, ((Tuple<string, string>)stss).Item2)" 
     onSelected="id => OnSelected((string)id)"    />
 
-
 @if (tree != null)
 {
+    @if (tree.Tp == "http://fogid.net/o/person" && regime == "gene")
+    {
+        <SypBlazor.Components.GeneTree entityId="@entityId" />
+    }
+    else
+    {
     bool hasdocimage = false;
     var invProps = tree.Props.Where(p => p is Inv).Cast<Inv>().ToArray();
     <div>
@@ -263,7 +274,7 @@
         </table>
     }
     @if (toextendrecord != null) toextendrecord = null; // Сомнительное решение, направленное на однократное срабатывание...
-
+    }
 }
 <table>
     <tr>
@@ -452,7 +463,7 @@
 
     private string? buff_id = null;
     private int buff_cnt = 0;
-
+    private string regime = "default";
     protected override async Task OnParametersSetAsync()
     {
         var st = await authStateProvider.GetAuthenticationStateAsync();
@@ -467,9 +478,6 @@
                 buff_cnt = buff.Props.Where(p => p is RInverseLink).Count();
             }
         }
-        //look = user;
-        //await base.OnParametersSetAsync();
-        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
 
         if (typs.Length == 0) typs = db.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj").ToArray();
         if (entityId != null)
@@ -484,17 +492,18 @@
             }
         }
     }
-    //protected override void OnParametersSet()
+    //protected override async Task OnAfterRenderAsync(bool firstRender)
     //{
-    //    if (typs.Length == 0) typs = db.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj").ToArray();
-    //    if (entityId != null)
+    //    await base.OnAfterRenderAsync(firstRender);
+    //    if (firstRender)
     //    {
-    //        BuildParts();
-    //        Build(entityId);
-    //        //searchstring = null;
+    //        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+    //        regime = await customAuthStateProvider.ReadFromStorage("regime") ?? "default";
     //        StateHasChanged();
     //    }
     //}
+
+
     // Шаблоны обратных свойств, размещенные по обратным предикатам
     private Dictionary<string, Inv> inv_parts = new Dictionary<string, Inv>();
     private void BuildParts()

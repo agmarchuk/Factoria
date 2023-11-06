@@ -1,0 +1,58 @@
+﻿@using FactographData
+@using FactographData.r
+@inject FactographData.IFDataService db
+
+<div class="mat-elevation-z5" style="width:180px; height:180px; text-align:center; margin:0px; background-color:#d9dabb;">
+    <div style="font-size:smaller;height:20px;">
+        @(Prolog)
+    </div>
+    @*if (Regime != "photo")*@
+    @{
+        string PU = PhotoUrl;
+        string vstavka = $"background-image:url({PU});background-position:center; background-repeat:no-repeat;";
+        string usespace = Regime=="photo" ? "65%" : "80%";
+        if (string.IsNullOrEmpty(PhotoUrl)) { vstavka = ""; }
+        
+        <div style='height:@(usespace);'>
+            <div style="display:flex; text-align:center; height:100%;@(vstavka)">
+                @if (false && !string.IsNullOrEmpty(PhotoUrl))
+                {
+                    <img src="@PhotoUrl"/>
+                }
+                @if (Regime != "photo")
+                {
+                    <div style="margin:auto;">
+                    <a href="@(Reference)" style="color:red; background-color:white;background-size:contain;" title="@Text">@(Text.Substring(0, Math.Min(Text.Length, 36)))</a>
+                    </div>
+                }
+            </div>
+        </div>
+        @if (Regime == "photo")
+        {
+            <a href="@(Reference)" title="@Text">@(Text?.Substring(0, Math.Min(Text.Length, 20)))</a>
+        }
+    }
+    <div style="font-size:smaller;">
+        @(Epilog)
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Prolog { get; set; } = "";
+    [Parameter]
+    public string Epilog { get; set; } = "";
+    [Parameter]
+    public string Text { get; set; } = "";
+    [Parameter]
+    public string Reference { get; set; } = "";
+    [Parameter]
+    public string PhotoUrl { get; set; } = "";
+    [Parameter]
+    public string Regime { get; set; } = ""; //photo, coll, doc
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
+}

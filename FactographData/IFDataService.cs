@@ -42,8 +42,9 @@ namespace FactographData
         TRecordBuilder TBuilder { get; }
 
         // ============ Работа с RRecord - могут (должны) быть переопределены ===========
-        RRecord? GetRRecord(string id, bool addinverse)
+        RRecord? GetRRecord(string? id, bool addinverse)
         {
+            if (id == null) return null;
             XElement xrec = GetItemByIdBasic(id, addinverse);
             if (xrec != null && xrec.Attribute("id")!= null && xrec.Attribute("type") != null)
             {
