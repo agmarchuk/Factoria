@@ -43,9 +43,8 @@
                 string specificator = "";
                 string podpis = fromdate ?? "";
                 if (podpis.Length > 4) podpis = podpis.Substring(0, 4);
-                string name = tr.GetText("http://fogid.net/o/name") ?? "noname";
-                string description = tr.GetText("http://fogid.net/o/name") ?? "";
-                string descr = description ?? name;
+                string name = tr.GetText("http://fogid.net/o/name") ?? "";
+                string text = tr.GetText("http://fogid.net/o/doc-content") ?? "";
 
                 // Первая попытка получить uri и documenttype 
                 string? uri = tr.GetStr("http://fogid.net/o/uri");
@@ -91,10 +90,11 @@
                 }
                 else
                 {
-                    uri = null;
-                    documenttype = null;
+                    //uri = null;
+                    //documenttype = null;
                     specificator = db.ontology.LabelOfOnto(tr.Tp);
                 }
+                if (documenttype == null || !documenttype.StartsWith("image/")) { uri = null; }
                 string? sr = uri == null ? null : "docs/GetImage?u=" + uri + "&s=small";
                 string? enlarge = uri == null ? null : "docs/GetImage?u=" + uri + "&s=normal";
                 string reference = "index/" + tr.Id + "/" + entityId;
@@ -109,9 +109,9 @@
                         </div>
                     </div>
                     <div>
-                        <Box Prolog="@(specificator)" Epilog="@(podpis)"
-    Text="@(name)" Reference="@(reference)" PhotoUrl="@(sr)" 
-    Regime='@(regime)' />
+                        <Box Prolog="@(specificator)" Epilog="@(podpis)" Name="@(name)" Text="@(text)"
+                            Reference="@(reference)" PhotoUrl="@(sr)" 
+                            Regime='@(regime)' />
                     </div>
                 </div>
             }

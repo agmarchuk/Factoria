@@ -14,7 +14,7 @@
         if (string.IsNullOrEmpty(PhotoUrl)) { vstavka = ""; }
         
         <div style='height:@(usespace);'>
-            <div style="display:flex; text-align:center; height:100%;@(vstavka)">
+            <div style="display:flex; text-align:center; height:100%;@(vstavka)" title="@(Text)">
                 @if (false && !string.IsNullOrEmpty(PhotoUrl))
                 {
                     <img src="@PhotoUrl"/>
@@ -22,14 +22,14 @@
                 @if (Regime != "photo")
                 {
                     <div style="margin:auto;">
-                    <a href="@(Reference)" style="color:red; background-color:white;background-size:contain;" title="@Text">@(Text.Substring(0, Math.Min(Text.Length, 36)))</a>
+                        <a href="@(Reference)" style="color:red; background-color:white;background-size:contain;" title="@Name">@(Name.Substring(0, Math.Min(Name.Length, 36)))</a>
                     </div>
                 }
             </div>
         </div>
         @if (Regime == "photo")
         {
-            <a href="@(Reference)" title="@Text">@(Text?.Substring(0, Math.Min(Text.Length, 20)))</a>
+            <a href="@(Reference)" title="@Name">@(Name?.Substring(0, Math.Min(Name.Length, 20)))</a>
         }
     }
     <div style="font-size:smaller;">
@@ -42,6 +42,8 @@
     public string Prolog { get; set; } = "";
     [Parameter]
     public string Epilog { get; set; } = "";
+    [Parameter]
+    public string Name { get; set; } = "";
     [Parameter]
     public string Text { get; set; } = "";
     [Parameter]

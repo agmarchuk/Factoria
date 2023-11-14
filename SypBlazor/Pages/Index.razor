@@ -186,21 +186,20 @@
                                 {  // Посортируем части
                                     Rec[] query = inv_items.OrderBy<Rec, string>(r =>
                                     {
-                                            var pg = r.GetStr("http://fogid.net/o/pageNumbers");
-                                            return pg == null ? "" : pg;
+                                        var pg = r.GetStr("http://fogid.net/o/pageNumbers");
+                                        return pg == null ? "" : pg;
                                     }).ToArray();
                                     inv_items = query;                                        
                                 }
                                 if (dir_pred != null && user != null)
                                 {
-
-                                        string tty =
-                                         pred == "http://fogid.net/o/in-collection" ?
-                                            "http://fogid.net/o/collection-member" :
-                                        (pred == "http://fogid.net/o/reflected" ?
-                                            "http://fogid.net/o/reflection" :
-                                        (pred == "http://fogid.net/o/inDocument" ?
-                                            "http://fogid.net/o/DocumentPart" : ("typeerr 4493"))); //TODO: Нужен корректный выход
+                                    string tty =
+                                        pred == "http://fogid.net/o/in-collection" ?
+                                        "http://fogid.net/o/collection-member" :
+                                    (pred == "http://fogid.net/o/reflected" ?
+                                        "http://fogid.net/o/reflection" :
+                                    (pred == "http://fogid.net/o/inDocument" ?
+                                        "http://fogid.net/o/DocumentPart" : ("typeerr 4493"))); //TODO: Нужен корректный выход
 
                                     @if (buff_cnt > 0)
                                     {
@@ -210,7 +209,6 @@
                                             <span> &nbsp; из буфера</span>
                                         </div>
                                     }
-
                                 }
                                 else
                                 {
