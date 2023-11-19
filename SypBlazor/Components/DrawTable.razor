@@ -1,8 +1,8 @@
 ﻿@using System.Collections.Generic
 @using System.Xml.Linq
-@using FactographData
-@using FactographData.r
-@inject FactographData.IFDataService db
+@using Factograph.Data
+@using Factograph.Data.r
+@inject Factograph.Data.IFDataService db
 @inject IJSRuntime js
 
 <table class="mat-elevation-z5 bor" style="">
@@ -339,7 +339,7 @@
         if (rec != null && rec.Id != null && user != null)
         {
             // Делаем Xml-объект
-            XElement xrec = new XElement(OAData.Adapters.ONames.ToXName(rec.Tp),
+            XElement xrec = new XElement(Factograph.Data.Adapters.ONames.ToXName(rec.Tp),
                 new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", rec.Id),
                 new XAttribute("owner", user),
                 rec.Props.SelectMany<Pro, XElement>(p =>
@@ -347,7 +347,7 @@
                     if (p is Tex)
                     {
                         Tex t = (Tex)p;
-                        return t.Values.Select(v => new XElement(OAData.Adapters.ONames.ToXName(p.Pred),
+                        return t.Values.Select(v => new XElement(Factograph.Data.Adapters.ONames.ToXName(p.Pred),
                             new XText(v.Text),
                            string.IsNullOrEmpty(v.Lang) ? new XAttribute("{http://www.w3.org/XML/1998/namespace}lang", "ru") :
                            new XAttribute("{http://www.w3.org/XML/1998/namespace}lang", v.Lang)));
@@ -355,7 +355,7 @@
                     else if (p is Str)
                     {
                         Str s = (Str)p;
-                        return Enumerable.Repeat(new XElement(OAData.Adapters.ONames.ToXName(p.Pred), s.Value),
+                        return Enumerable.Repeat(new XElement(Factograph.Data.Adapters.ONames.ToXName(p.Pred), s.Value),
                             (s.Value == null || string.IsNullOrEmpty(s.Value)) ? 0 : 1); // Если нет значения, то не будет поля
                     }
                     else if (p is Dir)
@@ -363,7 +363,7 @@
                         Dir d = (Dir)p;
                         if (d.Resources != null && d.Resources.Length > 0)
                         {
-                            return d.Resources.Select(r => new XElement(OAData.Adapters.ONames.ToXName(p.Pred),
+                            return d.Resources.Select(r => new XElement(Factograph.Data.Adapters.ONames.ToXName(p.Pred),
                             new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", r.Id)));
                         }
                         else return new XElement[0];

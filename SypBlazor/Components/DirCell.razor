@@ -1,7 +1,7 @@
 ﻿@using System.Xml.Linq
-@using FactographData.r;
-@using FactographData;
-@inject FactographData.IFDataService db
+@using Factograph.Data.r;
+@using Factograph.Data;
+@inject Factograph.Data.IFDataService db
 
 @if (property is Dir)
 {
@@ -68,7 +68,7 @@
     {
         string ty = stss.Item1;
         string ss = stss.Item2;
-        XElement xitem = new XElement(OAData.Adapters.ONames.ToXName(ty),
+        XElement xitem = new XElement(Factograph.Data.Adapters.ONames.ToXName(ty),
             new XAttribute("owner", user),
             new XElement("{http://fogid.net/o/}name", 
                 new XAttribute("{http://www.w3.org/XML/1998/namespace}lang", "ru"), ss));

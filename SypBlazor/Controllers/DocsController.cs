@@ -1,7 +1,7 @@
-﻿using FactographData;
+﻿using Factograph.Data;
+using Factograph.Data.Adapters;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
-using OAData.Adapters;
 using System.Net;
 using System.Xml.Linq;
 using static System.Net.WebRequestMethods;
@@ -10,8 +10,8 @@ namespace SypBlazor.Controllers
 {
     public class DocsController : Controller
     {
-        private readonly FactographData.IFDataService db;
-        public DocsController(FactographData.IFDataService db) 
+        private readonly Factograph.Data.IFDataService db;
+        public DocsController(Factograph.Data.IFDataService db) 
         { 
             this.db = db; 
         }

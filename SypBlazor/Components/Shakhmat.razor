@@ -1,8 +1,15 @@
-﻿@using FactographData
-@using FactographData.r
+﻿@using Factograph.Data
+@using Factograph.Data.r
 
-@inject FactographData.IFDataService db
+@inject Factograph.Data.IFDataService db
 
+@if (inv_items.Count() > 0)
+{
+    <div>
+        <a href="javascript:void(0)" @onclick="FillCheckboxes">Выделить все</a> |
+        <a href="javascript:void(0)" @onclick="ClearCheckboxes">Сбросить все</a>
+    </div>
+}
 <form method="post" action="docs/cpycut" >
     @if (user != null)
     {
@@ -102,7 +109,14 @@
                 <div class="mat-elevation-z5" style="margin:6px;">
                     <div style="">
                         <div style="float:left">
-                            <input type="checkbox" name="@(cb_name)" />
+                            @if (filled)
+                            {
+                                <input type="checkbox" checked name="@(cb_name)" />
+                            }
+                            else
+                            {
+                                <input type="checkbox" name="@(cb_name)" />
+                            }
                         </div>
                         <div style="float:right;">
                             <a href="@(enlarge)" target="_external">+</a>
@@ -165,5 +179,20 @@
     {
 
     }
-
+    private bool filled = false;
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        filled = false;
+    }
+    private void FillCheckboxes()
+    {
+        filled = true;
+        this.StateHasChanged();
+    }
+    private void ClearCheckboxes()
+    {
+        filled = false;
+        this.StateHasChanged();
+    }
 }

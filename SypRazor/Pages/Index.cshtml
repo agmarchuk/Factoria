@@ -1,0 +1,37 @@
+﻿@page
+@model IndexModel
+
+<div>
+    <form>
+    <input name="searchstring" style="height:24px; margin-top:10px;margin-bottom:10px;" value="@Model.searchstring" />
+    <select name="stype" style="height: 24px; margin-top: 10px; margin-bottom: 10px; ">
+        <option value=""></option>
+        @foreach (var typ in Model.typs.Where(t => Model.db.ontology.LabelOfOnto(t) != null))
+        {
+            <option value="@typ">@(Model.db.ontology.LabelOfOnto(typ))</option>
+        }
+    </select>
+    <span>расш.<input type="checkbox" name="bywords" /></span>
+    <input type="submit" value="искать" />
+    </form>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.searchstring))
+{
+    var recs = Model.db.SearchRRecords(Model.searchstring, Model.bywords).ToArray();
+    Console.WriteLine($"=== {recs.Count()}");
+    foreach (var rec in Model.db.SearchRRecords(Model.searchstring, Model.bywords))
+    {
+        string tp = rec.Tp;
+        if (Model.stype != null && Model.stype != tp) { continue; }
+        var date = rec.GetField("http://fogid.net/o/from-date");
+        <div>
+            <span>@(Model.db.ontology.LabelOfOnto(tp))</span>&nbsp;
+            <a href="index/@(rec.Id)" >@(rec.GetName())</a>
+            @if (date != null && date.Length > 3)
+            {
+                <span>&nbsp; @(date.Substring(0, 4))</span>
+            }
+        </div>
+    }
+}

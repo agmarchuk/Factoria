@@ -1,9 +1,9 @@
 ﻿@using System.Collections.Generic
 @using System.Linq
 @using System.Xml.Linq
-@using FactographData
-@using FactographData.r
-@inject FactographData.IFDataService db
+@using Factograph.Data
+@using Factograph.Data.r
+@inject Factograph.Data.IFDataService db
 
 <table border="1" width="100%">
     @if (etree != null)
@@ -274,7 +274,7 @@
     {
         string ty = stss.Item1;
         string ss = stss.Item2;
-        XElement xitem = new XElement(OAData.Adapters.ONames.ToXName(ty),
+        XElement xitem = new XElement(Factograph.Data.Adapters.ONames.ToXName(ty),
             new XAttribute("owner", user),
             new XElement("{http://fogid.net/o/}name", ss));
         XElement x = db.PutItem(xitem);

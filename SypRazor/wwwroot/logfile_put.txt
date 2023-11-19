@@ -1,0 +1,870 @@
+﻿<delete rdf:about="gmar_4408" mT="2023-11-16 23:16:22Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4409" mT="2023-11-16 23:16:22Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4410" mT="2023-11-16 23:16:22Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4411" mT="2023-11-16 23:16:22Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4412" mT="2023-11-16 23:16:22Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4413" mT="2023-11-16 23:16:22Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4414" mT="2023-11-16 23:16:22Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4415" mT="2023-11-16 23:16:22Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4416" mT="2023-11-16 23:16:22Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4417" mT="2023-11-16 23:16:22Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4418" mT="2023-11-16 23:16:22Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4419" mT="2023-11-16 23:16:22Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4420" mT="2023-11-16 23:16:22Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4421" mT="2023-11-16 23:16:22Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4422" mT="2023-11-16 23:16:22Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4423" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4424" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4425" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4426" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4427" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4428" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4429" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4430" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4431" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4432" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4433" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4434" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4435" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4436" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4437" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4438" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4439" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4440" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4441" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4442" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4443" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4444" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4445" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4446" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4447" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4448" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4449" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4450" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4451" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4452" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4453" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4454" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4455" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4456" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4457" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4458" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4459" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4460" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4461" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4462" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4463" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4464" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4465" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4466" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4467" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4468" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4469" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4470" mT="2023-11-16 23:16:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4471" mT="2023-11-16 23:16:24Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4472" mT="2023-11-16 23:16:24Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="gmar_4473" mT="2023-11-16 23:16:24Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<collection-member rdf:about="Mc2816_2594" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0351" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2595" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0352" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2596" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0353" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2597" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0354" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2598" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0355" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2599" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0356" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2600" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0357" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2601" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0358" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2602" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0359" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2603" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0360" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2604" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0361" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2605" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0362" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2606" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0363" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2607" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0364" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2608" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0365" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2609" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0366" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2610" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0367" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2611" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0368" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2612" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0369" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2613" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0370" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2614" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0371" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2615" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0372" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2616" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0373" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2617" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0374" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2618" mT="2023-11-16 23:18:08Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0375" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2619" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0376" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2620" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0377" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2621" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0378" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2622" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0379" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2623" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0380" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2624" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0381" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2625" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0382" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2626" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0383" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2627" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0384" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2628" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0385" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2629" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0386" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2630" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0387" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2631" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0388" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2632" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0389" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2633" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0390" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2634" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0391" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2635" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0392" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2636" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0393" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2637" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0394" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2638" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0395" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2639" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0396" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2640" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0397" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2641" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0398" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2642" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0399" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2643" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0400" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2644" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0401" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2645" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0402" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2646" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0403" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2647" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0404" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2648" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0405" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2649" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0406" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2650" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0407" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2651" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0408" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2652" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0409" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2653" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0410" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2654" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0411" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2655" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0412" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2656" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0413" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2657" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0414" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2658" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0415" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2659" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0416" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2660" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0417" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2661" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0418" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2662" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0419" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2663" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0420" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2664" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0421" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2665" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0422" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2666" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0423" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2667" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0424" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2668" mT="2023-11-16 23:18:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0425" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2669" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0426" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2670" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0427" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2671" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0428" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2672" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0429" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2673" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0430" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2674" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0431" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2675" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0432" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2676" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0433" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2677" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0434" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2678" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0435" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2679" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0436" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2680" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0437" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2681" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0438" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2682" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0439" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2683" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0440" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2684" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0441" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2685" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0442" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2686" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0443" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2687" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0444" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2688" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0445" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2689" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0446" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2690" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0447" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2691" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0448" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2692" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0449" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2693" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0450" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2694" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0451" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2695" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0452" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2696" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0453" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2697" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0454" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2698" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0455" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2699" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0456" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2700" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0457" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2701" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="Ma_0002_0458" />
+</collection-member>
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0351" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0352" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0353" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0354" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0355" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0356" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0357" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0358" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0359" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0360" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0361" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0362" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0363" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0364" mT="2023-11-16 23:18:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0365" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0366" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0367" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0368" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0369" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0370" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0371" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0372" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0373" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0374" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0375" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0376" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0377" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0378" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0379" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0380" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0381" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0382" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0383" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0384" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0385" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0386" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0387" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0388" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0389" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0390" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0391" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0392" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0393" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0394" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0395" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0396" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0397" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0398" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0399" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0400" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0401" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0402" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0403" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0404" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0405" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0406" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0407" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0408" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0409" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0410" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0411" mT="2023-11-16 23:18:11Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0412" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0413" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0414" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0415" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0416" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0417" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0418" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0419" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0420" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0421" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0422" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0423" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0424" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0425" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0426" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0427" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0428" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0429" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0430" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0431" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0432" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0433" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0434" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0435" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0436" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0437" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0438" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0439" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0440" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0441" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0442" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0443" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0444" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0445" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0446" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0447" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0448" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0449" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0450" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0451" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0452" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0453" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0454" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0455" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0456" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0457" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_Ma_1390_Ma_0002_0458" mT="2023-11-16 23:18:12Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="cm_Ma_1390" mT="2023-11-16 23:18:29Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Ma_1390" mT="2023-11-16 23:18:31Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<document rdf:about="Ma_1963" mT="2023-11-16 23:20:14Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <name xml:lang="ru">О рыбалке на Волге</name>
+  <from-date>2012</from-date>
+</document>
+<delete rdf:about="Mc2816_2594" mT="2023-11-16 23:26:45Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2595" mT="2023-11-16 23:26:45Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2596" mT="2023-11-16 23:26:45Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2597" mT="2023-11-16 23:26:45Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2598" mT="2023-11-16 23:26:45Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2599" mT="2023-11-16 23:26:45Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2600" mT="2023-11-16 23:26:45Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2601" mT="2023-11-16 23:26:45Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2602" mT="2023-11-16 23:26:45Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2603" mT="2023-11-16 23:26:45Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2604" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2605" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2606" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2607" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2608" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2609" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2610" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2611" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2612" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2613" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2614" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2615" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2616" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2617" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2618" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2619" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2620" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2621" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2622" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2623" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2624" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2625" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2626" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2627" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2628" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2629" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2630" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2631" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2632" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2633" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2634" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2635" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2636" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2637" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2638" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2639" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2640" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2641" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2642" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2643" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2644" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2645" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2646" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2647" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2648" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2649" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2650" mT="2023-11-16 23:26:46Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2651" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2652" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2653" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2654" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2655" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2656" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2657" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2658" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2659" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2660" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2661" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2662" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2663" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2664" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2665" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2666" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2667" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2668" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2669" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2670" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2671" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2672" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2673" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2674" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2675" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2676" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2677" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2678" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2679" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2680" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2681" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2682" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2683" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2684" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2685" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2686" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2687" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2688" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2689" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2690" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2691" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2692" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2693" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2694" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2695" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2696" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2697" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2698" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2699" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2700" mT="2023-11-16 23:26:47Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2701" mT="2023-11-16 23:26:48Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<collection-member rdf:about="Mc2816_2702" mT="2023-11-16 23:28:32Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0207" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2703" mT="2023-11-16 23:28:32Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0208" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2704" mT="2023-11-16 23:28:32Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0209" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2705" mT="2023-11-16 23:28:32Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0210" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2706" mT="2023-11-16 23:28:32Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0211" />
+</collection-member>
+<delete rdf:about="Mc2816_2702" mT="2023-11-16 23:29:02Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2703" mT="2023-11-16 23:29:10Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2704" mT="2023-11-16 23:29:14Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2705" mT="2023-11-16 23:29:19Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2706" mT="2023-11-16 23:29:23Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<collection-member rdf:about="Mc2816_2707" mT="2023-11-16 23:32:59Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0207" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2708" mT="2023-11-16 23:32:59Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0208" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2709" mT="2023-11-16 23:32:59Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0209" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2710" mT="2023-11-16 23:32:59Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0210" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2711" mT="2023-11-16 23:32:59Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0211" />
+</collection-member>
+<delete rdf:about="Mc2816_2707" mT="2023-11-16 23:33:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2708" mT="2023-11-16 23:33:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2709" mT="2023-11-16 23:33:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2710" mT="2023-11-16 23:33:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2711" mT="2023-11-16 23:33:09Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<collection-member rdf:about="Mc2816_2712" mT="2023-11-16 23:35:48Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0207" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2713" mT="2023-11-16 23:35:48Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0208" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2714" mT="2023-11-16 23:35:48Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0209" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2715" mT="2023-11-16 23:35:48Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0210" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2716" mT="2023-11-16 23:35:48Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0211" />
+</collection-member>
+<delete rdf:about="Mc2816_2712" mT="2023-11-16 23:36:17Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2713" mT="2023-11-16 23:36:17Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2714" mT="2023-11-16 23:36:17Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2715" mT="2023-11-16 23:36:17Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2716" mT="2023-11-16 23:36:17Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<collection-member rdf:about="Mc2816_2717" mT="2023-11-16 23:42:38Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0207" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2718" mT="2023-11-16 23:42:38Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0208" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2719" mT="2023-11-16 23:42:38Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0209" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2720" mT="2023-11-16 23:42:38Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0210" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2721" mT="2023-11-16 23:42:38Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0211" />
+</collection-member>
+<delete rdf:about="Mc2816_2717" mT="2023-11-16 23:42:43Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2718" mT="2023-11-16 23:42:43Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2719" mT="2023-11-16 23:42:43Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2720" mT="2023-11-16 23:42:43Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2721" mT="2023-11-16 23:42:43Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<collection-member rdf:about="Mc2816_2722" mT="2023-11-17 01:49:17Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0207" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2723" mT="2023-11-17 01:49:17Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0208" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2724" mT="2023-11-17 01:49:17Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0209" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2725" mT="2023-11-17 01:49:17Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0210" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2726" mT="2023-11-17 01:49:17Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0211" />
+</collection-member>
+<delete rdf:about="Mc2816_2722" mT="2023-11-17 01:49:24Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2723" mT="2023-11-17 01:49:24Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2724" mT="2023-11-17 01:49:24Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2725" mT="2023-11-17 01:49:24Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2726" mT="2023-11-17 01:49:24Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<collection-member rdf:about="Mc2816_2727" mT="2023-11-17 01:59:59Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0207" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2728" mT="2023-11-17 01:59:59Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0208" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2729" mT="2023-11-17 01:59:59Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0209" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2730" mT="2023-11-17 01:59:59Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0210" />
+</collection-member>
+<collection-member rdf:about="Mc2816_2731" mT="2023-11-17 01:59:59Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://fogid.net/o/">
+  <in-collection rdf:resource="buffer_mag111" />
+  <collection-item rdf:resource="onmarchuk_computer_0001_0211" />
+</collection-member>
+<delete rdf:about="Mc2816_2727" mT="2023-11-17 02:00:05Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2728" mT="2023-11-17 02:00:05Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2729" mT="2023-11-17 02:00:05Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2730" mT="2023-11-17 02:00:05Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+<delete rdf:about="Mc2816_2731" mT="2023-11-17 02:00:05Z" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />

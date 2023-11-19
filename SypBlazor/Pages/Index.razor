@@ -1,13 +1,13 @@
 ﻿@page "/"
 @page "/index/{entityId?}/{eid?}"
 @using System.Xml.Linq
-@using FactographData
-@using FactographData.r
+@using Factograph.Data
+@using Factograph.Data.r
 @using Family.Authentication
 @using SypBlazor
 @using SypBlazor.Components
 
-@inject FactographData.IFDataService db
+@inject Factograph.Data.IFDataService db
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager navManager
 
@@ -273,6 +273,22 @@
     }
     @if (toextendrecord != null) toextendrecord = null; // Сомнительное решение, направленное на однократное срабатывание...
     }
+}
+else // нет дерева
+{
+    <h3>Варианты входа</h3>
+    <ul>
+        <li><a href="index/start_page">Стартовая страница</a> с набором фондов. Далее двигаться по ссылкам</li>
+        <li>Набрать поисковый запрос в формате начало ФИО или начало названия, выбрать из вариантов, далее по ссылкам</li>
+        <li><a href="index/cassetterootcollection">Кассеты (первичные материалы)</a></li>
+        <li>Найти персону и посмотреть в режиме "семья" или в режиме "семейное дерево"</li>
+    </ul>
+    <h3>Варианты участия в проекте</h3>
+    <ul>
+        <li>Написать письмо модератору <a href="mailto:mag@iis.nsk.su">Марчуку Александру Гурьевичу</a>. Замечания и предложения приветствуются.</li>
+        <li>Прислать модератору документы и информацию, соответствующие теме архива куста семей и персон, близких Гурию Ивановичу и Ольге Николаевне Марчук</li>
+        <li>Пройти небольшое обучение и получить полномочия редактирования информации архива</li>
+    </ul>
 }
 <table>
     <tr>
@@ -568,16 +584,11 @@
             Build(entityId);
         }
     }
-    //private static XName ToXName(string xid)
-    //{
-    //    int pos = xid.LastIndexOfAny(new char[] { '/', '#' });
-    //    return XName.Get(xid.Substring(pos + 1), xid.Substring(0, pos + 1));
-    //}
     private void NewInverseRelation(string tty, string invPred)
     {
-        XElement xitem = new XElement(OAData.Adapters.ONames.ToXName(tty),
+        XElement xitem = new XElement(Factograph.Data.Adapters.ONames.ToXName(tty),
             new XAttribute("owner", user),
-            new XElement(OAData.Adapters.ONames.ToXName(invPred),
+            new XElement(Factograph.Data.Adapters.ONames.ToXName(invPred),
                 new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", entityId))
             );
         XElement x = db.PutItem(xitem);
@@ -610,6 +621,8 @@
                     new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", member)));
             }
         }
+        buff_cnt = 0;
+        //navManager.NavigateTo("index/" + (entityId ?? ""));
     }
 
     // Добавление обратных отношений к айтемам из буфера
@@ -652,11 +665,11 @@
             string dir = mRec.GetDirectResource("http://fogid.net/o/collection-item");
             if (dir == null) continue;
             // Формируем команду добавления и добавляем в db
-            XElement xitem = new XElement(OAData.Adapters.ONames.ToXName(tty),
+            XElement xitem = new XElement(Factograph.Data.Adapters.ONames.ToXName(tty),
                 new XAttribute("owner", user),
-                new XElement(OAData.Adapters.ONames.ToXName(invPred),
+                new XElement(Factograph.Data.Adapters.ONames.ToXName(invPred),
                     new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", entityId)),
-                new XElement(OAData.Adapters.ONames.ToXName(dirPred),
+                new XElement(Factograph.Data.Adapters.ONames.ToXName(dirPred),
                     new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", dir))
                 );
             // добавим страницу, если надо

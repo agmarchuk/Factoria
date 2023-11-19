@@ -1,7 +1,7 @@
 ﻿using System.Xml.Linq;
 using System.IO;
-using FactographData;
-using FactographData.r;
+using Factograph.Data;
+using Factograph.Data.r;
 using System.Xml.Serialization;
 
 partial class Program
@@ -22,7 +22,7 @@ partial class Program
     public static void Main()
     {
         Console.WriteLine("Start FactographData use sample.");
-        IFDataService db = new FDataService("../../../wwwroot/");
+        IFDataService db = new Factograph.Data.FDataService("../../../wwwroot/", "../../../wwwroot/Ontology_iis-v14.xml", null);
         db.Reload(); // Это действие необходимо если меняется набор кассет
 
         // Определим процедуру вывода потока записей на консоль в формате N3

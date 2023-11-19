@@ -1,12 +1,12 @@
 ﻿@page "/gene/{entityId?}"
 @using System.Xml.Linq
-@using FactographData
-@using FactographData.r
+@using Factograph.Data
+@using Factograph.Data.r
 @using Family.Authentication
 @using SypBlazor
 @using SypBlazor.Components
 
-@inject FactographData.IFDataService db
+@inject Factograph.Data.IFDataService db
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager navManager
 

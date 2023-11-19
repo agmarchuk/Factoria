@@ -4,6 +4,7 @@ using MatBlazor;
 //using SypBlazor.Data;
 using Family.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
+using SypBlazor;
 //using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 
@@ -15,7 +16,7 @@ builder.Services.AddServerSideBlazor();
 //builder.Services.ProtectedLocalStorage();
 //builder.Services.AddScoped<StateMemory>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
-builder.Services.AddSingleton<FactographData.IFDataService, FactographData.FDataService>();
+builder.Services.AddSingleton<Factograph.Data.IFDataService, DataService>();
 builder.Services.AddSingleton<UserAccountService>();
 builder.Services.AddMatBlazor();
 
