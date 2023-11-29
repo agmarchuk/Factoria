@@ -31,8 +31,14 @@
         <td colspan="2" style="width:100%;">
             @if (s != null)
             {
-                <input type="text" @bind-value="s.Value" style="width:100%;">
-                </input>
+                if (property.Pred == "http://fogid.net/o/uri" || property.Pred == "http://fogid.net/o/docmetainfo")
+                {
+                    <input type="hidden" @bind-value="s.Value" style="width:100%;"></input>
+                }
+                else
+                {
+                    <input type="text" @bind-value="s.Value" style="width:100%;"></input>
+                }
             }
         </td>
     }

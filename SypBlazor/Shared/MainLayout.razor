@@ -24,72 +24,24 @@
 <div class="page">
     @if (expandSubNav)
     {
-        <div class="sidebar" style="position:absolute;margin-top:64px;">
+        <div class="sidebar" style="position:absolute;margin-top:64px; background-color:antiquewhite;">
             <AuthorizeView>
                 <Authorized>
                     <span style="color:white;">@(context.User.Identity?.Name)</span>
                     &nbsp;&nbsp; 
                     <a @onclick="Logout" href="javascript:void(0)">Logout</a>
+                    <div>
+                        <NavLink @onclick="Reload" href="javascript:void(0)">Перезагрузить!</NavLink>
+                        @if (loaddone)
+                        {
+                            <button @onclick="OkButton">ok</button>
+                        }
+                    </div>
                 </Authorized>
                 <NotAuthorized>
-                    <!-- <a @onclick="ClickLogin" href="javascript:void(0)">Login</a> -->
                     <NavLink @onclick="ClickLogin" class="nav-link" href="javascript:void(0)">Login</NavLink>
                 </NotAuthorized>
             </AuthorizeView>
-            <div>
-                <NavLink @onclick="Reload" href="javascript:void(0)">Перезагрузить!</NavLink>
-                @if (loaddone)
-                {
-                    <button @onclick="OkButton">ok</button>
-                }
-            </div>
-
-@*            <div>@(regime)</div>
-            <div>
-                <select @onchange='SelectRegime'>
-                    @if (regime == "home")
-                    {
-                        <option value="home" selected></option>
-                    }
-                    else
-                    {
-                        <option value="home"></option>
-                    }
-                    @if (regime == "view")
-                    {
-                        <option value="view" selected>просмотр</option>
-                    }
-                    else
-                    {
-                        <option value="view">просмотр</option>
-                    }
-                    @if (regime == "edit")
-                    {
-                        <option value="edit" selected>редактир</option>
-                    }
-                    else
-                    {
-                        <option value="edit">редактир</option>
-                    }
-                    @if (regime == "gene")
-                    {
-                        <option value="gene" selected>семья</option>
-                    }
-                    else
-                    {
-                        <option value="gene">семья</option>
-                    }
-                    @if (regime == "look")
-                    {
-                        <option value="look" selected>презентация</option>
-                    }
-                    else
-                    {
-                        <option value="look">презентация</option>
-                    }
-                </select>
-            </div>
-*@
         </div>
     }
 
@@ -170,23 +122,6 @@
     }
     private string? user = null;
     private bool toedit { get { return user != null; } }
-
-    //string regime = "default";
-    //protected override async void OnParametersSet()
-    //{
-    //    var regim = await ((CustomAuthenticationStateProvider)authStateProvider).ReadFromStorage("regime");
-    //    regime = regim ?? "default";
-    //}
-
-    //async Task SelectRegime(ChangeEventArgs e)
-    //{
-    //    string? reg = e.Value?.ToString();
-    //    if (string.IsNullOrEmpty(reg)) reg = "default";
-    //    regime = string.IsNullOrEmpty(reg) ? "default" : reg;
-    //    //await StateMemory.SaveInStorage(browserStorage, "regime", regime);
-    //    //navManager.NavigateTo("", true);
-    //    await ((CustomAuthenticationStateProvider)authStateProvider).SaveInStorage("regime", regime);
-    //}
 
 
 }

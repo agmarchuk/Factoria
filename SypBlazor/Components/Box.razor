@@ -2,54 +2,48 @@
 @using Factograph.Data.r
 @inject Factograph.Data.IFDataService db
 
-<div class="mat-elevation-z5" style="width:180px; height:180px; text-align:center; margin:0px; background-color:#d9dabb;">
-    <div style="font-size:smaller;height:20px;">
-        @(Prolog)
+<div class="mdl-shadow--4dp" style="width:200px; height:200px; text-align:center; display:flex; flex-direction: column; background: url('@(PhotoUrl)') center no-repeat; background-color:#d9dabb; background-size:contain;a">
+     <div style="margin: auto;height:@(Regime=="photo"?"100":"50")%;">
+        <span style="text-align: center; color:black; background-color: #d9dabb; background-size:contain; ">@(Prolog)</span>
     </div>
-    @*if (Regime != "photo")*@
-    @{
-        string PU = PhotoUrl;
-        string vstavka = $"background-image:url({PU});background-position:center; background-repeat:no-repeat;";
-        string usespace = Regime=="photo" ? "65%" : "80%";
-        if (string.IsNullOrEmpty(PhotoUrl)) { vstavka = ""; }
-        
-        <div style='height:@(usespace);'>
-            <div style="display:flex; text-align:center; height:100%;@(vstavka)" title="@(Text)">
-                @if (false && !string.IsNullOrEmpty(PhotoUrl))
-                {
-                    <img src="@PhotoUrl"/>
-                }
-                @if (Regime != "photo")
-                {
-                    <div style="margin:auto;">
-                        <a href="@(Reference)" style="color:red; background-color:white;background-size:contain;" title="@Name">@(Name.Substring(0, Math.Min(Name.Length, 36)))</a>
-                    </div>
-                }
-            </div>
+    @if (Regime == "photo")
+    {
+        <div style="margin: auto;height:min-content;">
+            <a href="@(Reference)" style="align-content:center; color:black; background-color: #d9dabb; background-size:contain; " title="@(Name)">
+                @(Name.Substring(0, Math.Min(Name.Length, 24)))
+            </a>
         </div>
-        @if (Regime == "photo")
-        {
-            <a href="@(Reference)" title="@Name">@(Name?.Substring(0, Math.Min(Name.Length, 20)))</a>
-        }
     }
-    <div style="font-size:smaller;">
-        @(Epilog)
+    else
+    {
+        <div style="margin: auto;height:50%;">
+            <a href="@(Reference)" style="align-content:center; color:darkred; background-color: #d9dabb; background-size:contain; " title="@(Name)">
+                @(Name.Substring(0, Math.Min(Name.Length, 24)))
+            </a>
+        </div>
+    }
+    <div style="margin: auto;height:min-content;font-size:smaller;">
+        <span style="text-align: center; color:black; background-color: #d9dabb; background-size:contain; ">
+            @(Epilog)
+        </span>
     </div>
 </div>
 
+
+
 @code {
     [Parameter]
-    public string Prolog { get; set; } = "";
+    public string Prolog { get; set; } = ""; // Текст в начале
     [Parameter]
-    public string Epilog { get; set; } = "";
+    public string Epilog { get; set; } = ""; // Текст в конце
     [Parameter]
-    public string Name { get; set; } = "";
+    public string Name { get; set; } = ""; // Текст имени объекта (носитель гиперссылки)
     [Parameter]
-    public string Text { get; set; } = "";
+    public string Text { get; set; } = ""; // Дополнительный (поясняющий) текст
     [Parameter]
-    public string Reference { get; set; } = "";
+    public string Reference { get; set; } = ""; // Ссылка по которой посылают пользователя при нажатии
     [Parameter]
-    public string PhotoUrl { get; set; } = "";
+    public string PhotoUrl { get; set; } = ""; // URL фотографии
     [Parameter]
     public string Regime { get; set; } = ""; //photo, coll, doc
 

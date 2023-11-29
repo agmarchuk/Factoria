@@ -107,21 +107,24 @@
                 string reference = "index/" + tr.Id + "/" + entityId;
                 string regime = tr.Tp=="http://fogid.net/o/photo-doc"?"photo":"";
                 <div class="mat-elevation-z5" style="margin:6px;">
-                    <div style="">
-                        <div style="float:left">
-                            @if (filled)
-                            {
-                                <input type="checkbox" checked name="@(cb_name)" />
-                            }
-                            else
-                            {
-                                <input type="checkbox" name="@(cb_name)" />
-                            }
+                    @if (user != null)
+                    {
+                        <div style="">
+                            <div style="float:left">
+                                @if (filled)
+                                {
+                                    <input type="checkbox" checked name="@(cb_name)" />
+                                }
+                                else
+                                {
+                                    <input type="checkbox" name="@(cb_name)" />
+                                }
+                            </div>
+                            <div style="float:right;">
+                                <a href="@(enlarge)" target="_external">+</a>
+                            </div>
                         </div>
-                        <div style="float:right;">
-                            <a href="@(enlarge)" target="_external">+</a>
-                        </div>
-                    </div>
+                    }
                     <div>
                         <Box Prolog="@(specificator)" Epilog="@(podpis)" Name="@(name)" Text="@(text)"
                             Reference="@(reference)" PhotoUrl="@(sr)" 

@@ -187,9 +187,29 @@
                                     Rec[] query = inv_items.OrderBy<Rec, string>(r =>
                                     {
                                         var pg = r.GetStr("http://fogid.net/o/pageNumbers");
-                                        return pg == null ? "" : pg;
+                                        return pg ?? "";
                                     }).ToArray();
                                     inv_items = query;                                        
+                                }
+                                else if (pred == "http://fogid.net/o/in-collection")
+                                {
+                                    Rec[] query = inv_items.OrderBy<Rec, string>(r =>
+                                    {
+                                        var dt = r.GetDirect("http://fogid.net/o/collection-item")?
+                                            .GetStr("http://fogid.net/o/from-date");
+                                        return dt ?? "";
+                                    }).ToArray();
+                                    inv_items = query;
+                                }
+                                else if (pred == "http://fogid.net/o/reflected")
+                                {
+                                    Rec[] query = inv_items.OrderBy<Rec, string>(r =>
+                                    {
+                                        var dt = r.GetDirect("http://fogid.net/o/in-doc")?
+                                                    .GetStr("http://fogid.net/o/from-date");
+                                        return dt ?? "";
+                                    }).ToArray();
+                                    inv_items = query;
                                 }
                                 if (dir_pred != null && user != null)
                                 {
