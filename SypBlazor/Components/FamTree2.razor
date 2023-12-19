@@ -1,0 +1,135 @@
+﻿@using Factograph.Data
+@using Factograph.Data.r
+@inject Factograph.Data.IFDataService db
+
+<h2>Семья</h2>
+
+<table style="width:100%; border: 1px;">
+    <tr>
+        <td style="width:150px;">
+            <Portretik tree="@MkRec(father?.Id)" />
+        </td>
+        <td style="width:150px;">Мать</td>
+        <td style="width:100%;">Резерв</td>
+    </tr>
+    <tr>
+        <td rowspan="2" colspan="2">
+            <div style="width:300px; height:300px; border: 1px;">
+
+            </div>
+        </td>
+        <td>More</td>
+    </tr>
+    <tr>
+        <td>Brothers</td>
+    </tr>
+    <tr>
+        <td>ребенок</td>
+        <td style="">
+            <Portretik tree="@tree" />
+        </td>
+        <td>Резерв ребенок</td>
+    </tr>
+</table>
+@* 
+@if (father != null)
+{
+    <div>
+        Отец: <a href="fam/@father.Id">@father.GetText("http://fogid.net/o/name")</a> @father.GetDates()
+    </div>
+}
+@if (mother != null)
+{
+    <div>
+        Мать: <a href="fam/@mother.Id">@mother.GetText("http://fogid.net/o/name")</a> @mother.GetDates()
+    </div>
+}
+
+<div style="margin-top:20px;">
+    <div style="float:left; border: solid orange 4px;">
+        <Portretik tree="@tree" />
+    </div>
+    @foreach (var f in wifes)
+    {
+        <div style="float:left; ">
+            <Portretik tree="@(MkRec(f))" Prolog="жена" />
+        </div>
+    }
+    @foreach (var h in husbands)
+    {
+        <div style="float:left;">
+            <Portretik tree="@(MkRec(h))" Prolog="муж" />
+        </div>
+    }
+    <div style="clear: both;" />
+</div>
+<div style="margin-top:20px;">
+    @foreach (var c in children)
+    {
+        <div style="float:left; margin-left:20px; margin-top:20px; ">
+            <Portretik tree="@(MkRec(c))" Prolog="ребенок" />
+        </div>
+    }
+    <div style="clear: both;" />
+</div>
+ *@
+@code {
+    [Parameter]
+    public string? entityId { get; set; } = null;
+
+    private Rec? tree { get; set; }
+    private Rec? father = null;
+    private Rec? mother = null;
+    private string?[] wifes = new string[0];
+    private string?[] husbands = new string[0];
+    private string[] brothers = new string[0];
+    private string?[] children = new string[0];
+
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (entityId == null) return;
+        father = null;
+        mother = null;
+        wifes = new string[0];
+        husbands = new string[0];
+        brothers = new string[0];
+        children = new string[0];
+
+        tree = Rec.MkRec(entityId, db.GetRRecord, db.ontology);
+        if (tree == null) return;
+
+        var look = tree.GetDirect("http://fogid.net/o/father")?.Id;
+        father = MkRec(tree.GetDirect("http://fogid.net/o/father")?.Id);
+        mother = MkRec(tree.GetDirect("http://fogid.net/o/mother")?.Id);
+        wifes = tree.GetInverse("http://fogid.net/o/husband")
+            .OrderBy(fam => fam.GetStr("http://fogid.net/o/from-date"))
+            .Select(fam => fam.GetDirect("http://fogid.net/o/wife")?.Id)
+            .ToArray();
+        husbands = tree.GetInverse("http://fogid.net/o/wife")
+            .OrderBy(fam => fam.GetStr("http://fogid.net/o/from-date"))
+            .Select(fam => fam.GetDirect("http://fogid.net/o/husband")?.Id)
+            .ToArray();
+        var n1 = tree.GetInverse("http://fogid.net/o/father").Count();
+        var n2 = tree.GetInverse("http://fogid.net/o/mother").Count();
+        children = tree.GetInverse("http://fogid.net/o/father").Concat<Rec>
+        (
+            tree.GetInverse("http://fogid.net/o/mother")
+        )
+        .OrderBy(pers => pers.GetStr("from-date"))
+        .Select(r => r.Id)
+        .ToArray();
+    }
+    private Rec? MkRec(string? id)
+    {
+        if (id == null) return null;
+        RRecord? rrec = db.GetRRecord(id, true);
+        if (rrec == null) { return null; }
+        Rec shablon;
+        shablon = Rec.GetUniShablon(rrec.Tp, 2, null, db.ontology);
+        Rec tr = Rec.Build(rrec, shablon, db.ontology, idd => db.GetRRecord(idd, false));
+        return tr;
+    }
+
+}

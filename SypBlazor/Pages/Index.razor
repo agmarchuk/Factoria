@@ -14,8 +14,19 @@
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedLocalStorage browserStorage
 
-<div>
-    индекс | <a href="fam/@(entityId)">семья</a> | <a href="gene/@(entityId)">семейное дерево</a>
+<div style="width:100%;display:flex;flex-direction:row;">
+     <div style="width:100%;">
+        <SypBlazor.Components.SearchPanel typs="@typs" user="@user"
+            onNewItem="stss => NewItem(((Tuple<string, string>)stss).Item1, ((Tuple<string, string>)stss).Item2)"
+            onSelected="id => OnSelected((string)id)" />
+    </div>
+
+    @if (rrec != null && rrec.Tp == "http://fogid.net/o/person")
+    {
+        <div style="width:300px;">
+            индекс | <a href="fam/@(entityId)">семья</a> | <a href="gene/@(entityId)">семейное дерево</a>
+        </div>
+    }
 </div>
 
 @* ========= Тестовая область ========= *@
@@ -32,10 +43,10 @@
 </div>
 @* ========= конец ========= *@
 
-<SypBlazor.Components.SearchPanel typs="@typs" user="@user"
+@* <SypBlazor.Components.SearchPanel typs="@typs" user="@user"
     onNewItem="stss => NewItem(((Tuple<string, string>)stss).Item1, ((Tuple<string, string>)stss).Item2)" 
     onSelected="id => OnSelected((string)id)"    />
-
+ *@
 @if (tree != null)
 {
     @if (tree.Tp == "http://fogid.net/o/person" && regime == "gene")
@@ -324,6 +335,7 @@ else // нет дерева
     [Parameter] // Внешная запись
     public string? eid { get; set; }
 
+    private RRecord? rrec;
     private string[] typs = new string[0];
 
     private string? toextendrecord = null; // Я забыл для чего это...
@@ -358,7 +370,7 @@ else // нет дерева
     {
         if (id == null) return;
         prev = null; next = null; externalId = null;
-        RRecord? rrec = db.GetRRecord(id, true);
+        rrec = db.GetRRecord(id, true);
         if (rrec != null)
         {
             Rec shablon;
@@ -516,7 +528,7 @@ else // нет дерева
         if (typs.Length == 0) typs = db.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj").ToArray();
         if (entityId != null)
         {
-            RRecord? rrec = db.GetRRecord(entityId, false);
+            rrec = db.GetRRecord(entityId, false);
             if (rrec != null)
             {
                 BuildParts();

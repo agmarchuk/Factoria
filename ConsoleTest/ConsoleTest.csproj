@@ -8,14 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!--<PackageReference Include="Polar.DB" Version="1.2.0" />-->
-    <PackageReference Include="Factograph.Data" Version="1.0.0" />
+    <ProjectReference Include="..\..\PolarDB\src\Factograph.Data\Factograph.Data.csproj" />
   </ItemGroup>
-
-  <!--<ItemGroup>
-    <Reference Include="Polar.Factograph.Data">
-      <HintPath>..\..\PolarDB\src\Polar.Factograph.Data\bin\Release\net7.0\Polar.Factograph.Data.dll</HintPath>
-    </Reference>
-  </ItemGroup>-->
 
 </Project>

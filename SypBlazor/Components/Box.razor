@@ -2,7 +2,7 @@
 @using Factograph.Data.r
 @inject Factograph.Data.IFDataService db
 
-<div class="mdl-shadow--4dp" style="width:200px; height:200px; text-align:center; display:flex; flex-direction: column; background: url('@(PhotoUrl)') center no-repeat; background-color:#d9dabb; background-size:contain;a">
+<div class="mdl-shadow--4dp" style="width:@(Width)px; height:@(Height)px; text-align:center; display:flex; flex-direction: column; background: url('@(PhotoUrl)') center no-repeat; background-color:#d9dabb; background-size:contain;a">
      <div style="margin: auto;height:@(Regime=="photo"?"100":"50")%;">
         <span style="text-align: center; color:black; background-color: #d9dabb; background-size:contain; ">@(Prolog)</span>
     </div>
@@ -46,6 +46,10 @@
     public string PhotoUrl { get; set; } = ""; // URL фотографии
     [Parameter]
     public string Regime { get; set; } = ""; //photo, coll, doc
+    [Parameter]
+    public int Width { get; set; } = 200;
+    [Parameter]
+    public int Height { get; set; } = 200;
 
     protected override void OnParametersSet()
     {

@@ -13,16 +13,18 @@
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedLocalStorage browserStorage
 
-<div>
-    <a href="index/@(entityId)">индекс</a> | семья | <a href="gene/@(entityId)">семейное дерево</a>
+<div style="width:100%;display:flex;flex-direction:row;">
+    <div style="width:100%;">
+        <SypBlazor.Components.SearchPanel typs="@typs" onSelected="id => OnSelected((string)id)" />
+    </div>
+    <div style="width:300px;">
+        <a href="index/@(entityId)">индекс</a> | семья | <a href="gene/@(entityId)">семейное дерево</a>
+    </div>
 </div>
-
-<SypBlazor.Components.SearchPanel typs="@typs"   
-    onSelected="id => OnSelected((string)id)" />
 
 @if (entityId != null)
 {
-    <SypBlazor.Components.FamTree entityId="@entityId" />
+    <SypBlazor.Components.FamTree2 entityId="@entityId" />
 }
 
 @code {
