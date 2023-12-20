@@ -7,72 +7,99 @@
 <table style="width:100%; border: 1px;">
     <tr>
         <td style="width:150px;">
-            <Portretik tree="@MkRec(father?.Id)" />
+            <Portretik tree="@MkRec(father?.Id)" Prolog="отец" />
         </td>
-        <td style="width:150px;">Мать</td>
+        <td style="width:150px;">
+            <Portretik tree="@MkRec(mother?.Id)" Prolog="мать" />
+        </td>
         <td style="width:100%;">Резерв</td>
     </tr>
     <tr>
         <td rowspan="2" colspan="2">
-            <div style="width:300px; height:300px; border: 1px;">
 
+            <BigBox Prolog="" 
+                 Name="@(tree?.GetText("http://fogid.net/o/name"))" 
+                 Dates ="@(tree?.GetDates())"
+                 PhotoUrl="@(URL)" Regime="photo" Reference=""
+                 Epilog="@(epilogue)"
+                 Width="300" Height="300" />
+
+@*             <div style="width:300px; height:300px; border: 1px; padding-top: 40px;">
+                <div style="text-align:center;font-size:large; font-weight:bold;">@(tree.GetText("http://fogid.net/o/name"))</div>
+                <div style="text-align:center;">@(tree.GetDates())</div>
+                @if (URL != null)
+                {
+                    <img src="@URL" align="left"/>
+                }
+                <div style="font-size: small;">
+                    @if (descr != null && descr.Length > 120)
+                    {
+                    <span title="@(descr)">@(descr.Substring(0, 120))</span> 
+                    }
+                    else
+                    {
+                    <span>@(descr)</span>
+                    }
+                    @if (titles.Length > 0) 
+                    {
+                        <span>
+                            &nbsp; <span style="background-color:lightsalmon; font-weight:bold;">@(titles.Length)</span> титулов/наград. 
+                        </span>
+                    }
+                    @if (reflections.Length > 0)
+                    {
+                        <span>
+                            &nbsp;Отражение в <span style="background-color:lightsalmon; font-weight:bold;">@(reflections.Length)</span> документах.
+                        </span>
+                    }
+                    @if (authorof.Length > 0)
+                    {
+                        <span>&nbsp;Автор <span style="background-color:lightsalmon; font-weight:bold;">@(authorof.Length)</span> документов.</span>
+                    }
+                </div>
+            </div>
+ *@
+        </td>
+        <td>
+            @foreach (var brId in brothers)
+            {
+                <div style="float:left; margin-left:20px; margin-top:20px; ">
+                    <Portretik tree="@(MkRec(brId))" Prolog="брат/сестра" />
+                </div>
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @foreach (var x in wifes)
+            {
+                <div style="float:left; margin-left:20px; margin-top:20px; ">
+                    <Portretik tree="@(MkRec(x))" Prolog="жена" />
+                </div>
+            }
+            @foreach (var x in husbands)
+            {
+                <div style="float:left; margin-left:20px; margin-top:20px; ">
+                    <Portretik tree="@(MkRec(x))" Prolog="муж" />
+                </div>
+            }
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3" style="">
+            <div style="margin-top:20px;">
+                @foreach (var c in children)
+                {
+                    <div style="float:left; margin-left:20px; margin-top:20px; ">
+                        <Portretik tree="@(MkRec(c))" Prolog="ребенок" />
+                    </div>
+                }
+                <div style="clear: both;" />
             </div>
         </td>
-        <td>More</td>
-    </tr>
-    <tr>
-        <td>Brothers</td>
-    </tr>
-    <tr>
-        <td>ребенок</td>
-        <td style="">
-            <Portretik tree="@tree" />
-        </td>
-        <td>Резерв ребенок</td>
     </tr>
 </table>
-@* 
-@if (father != null)
-{
-    <div>
-        Отец: <a href="fam/@father.Id">@father.GetText("http://fogid.net/o/name")</a> @father.GetDates()
-    </div>
-}
-@if (mother != null)
-{
-    <div>
-        Мать: <a href="fam/@mother.Id">@mother.GetText("http://fogid.net/o/name")</a> @mother.GetDates()
-    </div>
-}
 
-<div style="margin-top:20px;">
-    <div style="float:left; border: solid orange 4px;">
-        <Portretik tree="@tree" />
-    </div>
-    @foreach (var f in wifes)
-    {
-        <div style="float:left; ">
-            <Portretik tree="@(MkRec(f))" Prolog="жена" />
-        </div>
-    }
-    @foreach (var h in husbands)
-    {
-        <div style="float:left;">
-            <Portretik tree="@(MkRec(h))" Prolog="муж" />
-        </div>
-    }
-    <div style="clear: both;" />
-</div>
-<div style="margin-top:20px;">
-    @foreach (var c in children)
-    {
-        <div style="float:left; margin-left:20px; margin-top:20px; ">
-            <Portretik tree="@(MkRec(c))" Prolog="ребенок" />
-        </div>
-    }
-    <div style="clear: both;" />
-</div>
- *@
 @code {
     [Parameter]
     public string? entityId { get; set; } = null;
@@ -85,6 +112,16 @@
     private string[] brothers = new string[0];
     private string?[] children = new string[0];
 
+    private string? descr = null;
+    private string? uri = null;
+    private string? contenttype = null;
+    private string? URL = null;
+
+    private Rec[] titles = new Rec[0];
+    private Rec[] reflections = new Rec[0];
+    private Rec[] authorof = new Rec[0];
+
+    private string epilogue = "";
 
     protected override void OnParametersSet()
     {
@@ -103,6 +140,15 @@
         var look = tree.GetDirect("http://fogid.net/o/father")?.Id;
         father = MkRec(tree.GetDirect("http://fogid.net/o/father")?.Id);
         mother = MkRec(tree.GetDirect("http://fogid.net/o/mother")?.Id);
+
+        IEnumerable<string> brotherIds = Enumerable.Empty<string>();
+        if (father != null) brotherIds = brotherIds.Concat<string>( 
+            father.GetInverse("http://fogid.net/o/father")
+            .Select(re => re.Id));
+        if (mother != null) brotherIds = brotherIds.Concat<string>(
+            mother.GetInverse("http://fogid.net/o/mother")
+            .Select(re => re.Id));
+        brothers = brotherIds.Distinct().Except(new string[] { entityId }).ToArray();
         wifes = tree.GetInverse("http://fogid.net/o/husband")
             .OrderBy(fam => fam.GetStr("http://fogid.net/o/from-date"))
             .Select(fam => fam.GetDirect("http://fogid.net/o/wife")?.Id)
@@ -120,6 +166,45 @@
         .OrderBy(pers => pers.GetStr("from-date"))
         .Select(r => r.Id)
         .ToArray();
+
+        descr = tree.GetText("http://fogid.net/o/description") ?? "";
+        // фотка портрета
+        URL = null;
+        Func<string?, int> ground_order = (string? val) => val == "official" ? 2 :
+            (val == "portrait" ? 1 : 0);
+        var doc = tree.GetInverse("http://fogid.net/o/reflected")
+            .Select(re => (ground_order(re.GetStr("http://fogid.net/o/ground")),
+                        re.GetDirect("http://fogid.net/o/in-doc")))
+            .Where(gd => gd.Item2?.Tp == "http://fogid.net/o/photo-doc")
+            .Select(gd => (gd.Item1, gd.Item2?.GetStr("http://fogid.net/o/from-date"), gd.Item2))
+            .OrderBy(gfd => gfd.Item1)
+            .ThenBy(gfd => gfd.Item2)
+            .LastOrDefault()
+            .Item3;
+        uri = doc?.GetStr("http://fogid.net/o/uri");
+        if (uri != null) 
+        { 
+            var dmi = doc?.GetStr("http://fogid.net/o/docmetainfo");
+            if (dmi != null)
+            {
+                int pos = dmi.IndexOf("documenttype:");
+                string field = dmi.Substring(pos + "documenttype:".Length);
+                int pos2 = field.IndexOf(';');
+                contenttype = field.Substring(0, pos2);
+                if (contenttype.StartsWith("image/"))
+                {
+                    URL = "docs/GetImage?u=" + uri + "&s=small";
+                }
+            }
+        }
+        titles = tree.GetInverse("http://fogid.net/o/titled").ToArray();
+        reflections = tree.GetInverse("http://fogid.net/o/reflected").ToArray();
+        authorof = tree.GetInverse("http://fogid.net/o/author").ToArray();
+
+        epilogue = descr ?? "";
+        if (titles.Length > 0) epilogue += " " + titles.Length + "титулов/наград";
+        if (reflections.Length > 0) epilogue += " " + reflections.Length + "отражений";
+        if (authorof.Length > 0) epilogue += " автор " + authorof.Length + "документов";
     }
     private Rec? MkRec(string? id)
     {
