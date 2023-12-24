@@ -10,6 +10,7 @@
 @inject Factograph.Data.IFDataService db
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager navManager
+@inject IConfiguration configuration
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedLocalStorage browserStorage
@@ -307,7 +308,7 @@
 }
 else // нет дерева
 {
-    <h3>Варианты входа</h3>
+    @* <h3>Варианты входа</h3>
     <ul>
         <li><a href="index/start_page">Стартовая страница</a> с набором фондов. Далее двигаться по ссылкам</li>
         <li>Набрать поисковый запрос в формате начало ФИО или начало названия, выбрать из вариантов, далее по ссылкам</li>
@@ -319,7 +320,7 @@ else // нет дерева
         <li>Написать письмо модератору <a href="mailto:mag@iis.nsk.su">Марчуку Александру Гурьевичу</a>. Замечания и предложения приветствуются.</li>
         <li>Прислать модератору документы и информацию, соответствующие теме архива куста семей и персон, близких Гурию Ивановичу и Ольге Николаевне Марчук</li>
         <li>Пройти небольшое обучение и получить полномочия редактирования информации архива</li>
-    </ul>
+    </ul> *@
 }
 <table>
     <tr>
@@ -526,6 +527,11 @@ else // нет дерева
         }
 
         if (typs.Length == 0) typs = db.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj").ToArray();
+        if (entityId == null)
+        {
+            var spage = configuration.GetSection("App:start_page")?.Value;
+            if (spage != null) entityId = spage;
+        }
         if (entityId != null)
         {
             rrec = db.GetRRecord(entityId, false);
