@@ -7,10 +7,16 @@
 <table style="width:100%; border: 1px;">
     <tr>
         <td style="width:150px;">
+            @if (father != null)
+            {
             <Portretik tree="@MkRec(father?.Id)" Prolog="отец" />
+            }
         </td>
         <td style="width:150px;">
+            @if (mother != null)
+            {
             <Portretik tree="@MkRec(mother?.Id)" Prolog="мать" />
+            }
         </td>
         <td style="width:100%;">Резерв</td>
     </tr>
@@ -24,41 +30,7 @@
                  Epilog="@(epilogue)"
                  Width="300" Height="300" />
 
-@*             <div style="width:300px; height:300px; border: 1px; padding-top: 40px;">
-                <div style="text-align:center;font-size:large; font-weight:bold;">@(tree.GetText("http://fogid.net/o/name"))</div>
-                <div style="text-align:center;">@(tree.GetDates())</div>
-                @if (URL != null)
-                {
-                    <img src="@URL" align="left"/>
-                }
-                <div style="font-size: small;">
-                    @if (descr != null && descr.Length > 120)
-                    {
-                    <span title="@(descr)">@(descr.Substring(0, 120))</span> 
-                    }
-                    else
-                    {
-                    <span>@(descr)</span>
-                    }
-                    @if (titles.Length > 0) 
-                    {
-                        <span>
-                            &nbsp; <span style="background-color:lightsalmon; font-weight:bold;">@(titles.Length)</span> титулов/наград. 
-                        </span>
-                    }
-                    @if (reflections.Length > 0)
-                    {
-                        <span>
-                            &nbsp;Отражение в <span style="background-color:lightsalmon; font-weight:bold;">@(reflections.Length)</span> документах.
-                        </span>
-                    }
-                    @if (authorof.Length > 0)
-                    {
-                        <span>&nbsp;Автор <span style="background-color:lightsalmon; font-weight:bold;">@(authorof.Length)</span> документов.</span>
-                    }
-                </div>
-            </div>
- *@
+
         </td>
         <td>
             @foreach (var brId in brothers)

@@ -8,17 +8,21 @@
     </div>
     @if (Regime == "photo")
     {
+        string nam = Name ?? "noname";
+        @if (nam.Length > 24) { nam = nam.Substring(0, 24) + "..."; }
         <div style="margin: auto;height:min-content;">
             <a href="@(Reference)" style="align-content:center; color:black; background-color: #d9dabb; background-size:contain; " title="@(Name)">
-                @(Name.Substring(0, Math.Min(Name.Length, 24)))
+                @(nam)
             </a>
         </div>
     }
     else
     {
+        string nam = Name ?? "noname";
+        @if (nam.Length > 30) { nam = nam.Substring(0, 30) + "..."; }
         <div style="margin: auto;height:50%;">
             <a href="@(Reference)" style="align-content:center;color:#cc0000; background-color: #d9dabb; background-size:contain; " title="@(Name)">
-                @(Name.Substring(0, Math.Min(Name.Length, 30)))
+                @(nam)
             </a>
         </div>
     }
