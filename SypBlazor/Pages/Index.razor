@@ -123,12 +123,15 @@
             {
                 hasdocimage = true;
                 string sr = "docs/GetPdf?u=" + uri;
-                <embed src="@sr" width="100%" height="800" />
-            }
-            else if (uri != null && (docmetainfo == null || !docmetainfo.Contains("application/fog"))) // Все типы документов кроме .fog
-            {
-                string sr = "docs/GetDoc?u=" + uri;
-                <div style="margin-bottom:10px;"><a href="@sr">Получить копию</a></div>
+                    <embed src="@sr" width="100%" height="800" />
+                }
+                else if (uri != null && (docmetainfo == null || !docmetainfo.Contains("application/fog"))) // Все типы документов кроме .fog
+                {
+                    string sr = "icons/document_m.jpg";
+                    var mime = docmetainfo.Split(';')
+                            .FirstOrDefault(s => s.StartsWith("documenttype:"))?.Substring("documenttype:".Length);
+                <div>Документ [@(mime)] получить копию: </div>
+                <div style="margin-bottom:10px;"><a href="@sr"><img src="@(sr)" /></a></div>
             }
 
         }
@@ -167,14 +170,17 @@
         onDelete="(id) => Delete((string)id)"
         onCancel="() => StateHasChanged()"
         onOk="() => Build(entityId)"
+        th_noms="@th_noms"
         user="@user" />
     @if ( true || invProps.Length > 0) //TODO: надо разобраться почему нет пустых обратных списков свойств
     {
+        var allowed = SypBlazor.Data.Theme.Allowed(th_noms);
         <table style="">
 
         @foreach (var iProp in invProps)
         {
             string pred = iProp.Pred;
+            if (!allowed.Contains(pred)) { continue; }            
             Rec[] inv_items = iProp.Sources.Where(g => g != null)
                 .ToArray();
             if (user != null || inv_items.Length > 0)
@@ -266,6 +272,7 @@
                                 {
                                     <SypBlazor.Components.DrawTable Trees="@(inv_items)" level="1" user="@user"
                                         inverseProp="@(iProp.Pred)" focusId="@(entityId)"
+                                        th_noms="@th_noms"
                                         onDelete="(id) => Delete((string)id)"
                                         onOk="() => Build(entityId)"
                                         onCancel="() => StateHasChanged()"
@@ -511,6 +518,30 @@ else // нет дерева
     private string? buff_id = null;
     private int buff_cnt = 0;
     private string regime = "default";
+
+    private bool isConnected = false;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            isConnected = true;
+            await LoadStateAsync();
+            StateHasChanged();
+        }
+    }
+
+    private int[] th_noms = new int[] { 0 }; // Используемые номера тем
+
+    private async Task LoadStateAsync()
+    {
+        var result = await browserStorage.GetAsync<string>("setSbor");
+        th_noms = new int[] { 0 }; // дефолт - одна нулевая тема
+        if (result.Success && !string.IsNullOrEmpty(result.Value))
+        {
+            th_noms = result.Value.Split(' ').Where(v => !string.IsNullOrEmpty(v)).Select(v => Int32.Parse(v)).ToArray();
+        }
+    }
+
     protected override async Task OnParametersSetAsync()
     {
         var st = await authStateProvider.GetAuthenticationStateAsync();
@@ -527,6 +558,7 @@ else // нет дерева
         }
 
         if (typs.Length == 0) typs = db.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj").ToArray();
+
         if (entityId == null)
         {
             var spage = configuration.GetSection("App:start_page")?.Value;

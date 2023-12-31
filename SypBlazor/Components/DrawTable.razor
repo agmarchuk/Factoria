@@ -5,23 +5,34 @@
 @inject Factograph.Data.IFDataService db
 @inject IJSRuntime js
 
+@{
+    int ncolumns = 0;
+}
 <table class="mat-elevation-z5 bor" style="">
+    @* Построение ряда заголовков *@
     <tr class="bor">
-        @foreach (var p in Trees[0].Props.Where(p => p is Str | p is Tex | p is Dir).ToArray())
+        @foreach (var p in Trees[0].Props.Where(p => p is Str || p is Tex || p is Dir).ToArray())
         {
             string pred = p.Pred;
             if (pred == "http://fogid.net/o/uri" || pred == "http://fogid.net/o/docmetainfo") { continue; }
+            if (!allowedPredicates.Contains(pred)) { continue; }
+            ncolumns++;
             string label = db.ontology.LabelOfOnto(p.Pred);
             <th class="bor">@(label)</th>
         }
         @if(user != null)
         {
+            ncolumns++;
             <th class ="bor"></th>
         }
     </tr>
+    @* Построение множества рядов с данными *@
     @foreach (var tree in Trees)
     {
-        var fieldsdirects = tree.Props.Where(p => p is Str | p is Tex | p is Dir).ToArray();
+        var fieldsdirects = tree.Props.Where(p => (p is Str || p is Tex || p is Dir)
+        //&& allowedPredicates.Contains(p.Pred)
+        //&& !(p.Pred == "http://fogid.net/o/uri" || p.Pred == "http://fogid.net/o/docmetainfo")
+                                            ).ToArray();
         <tr class="bor">
             @if (erecord != null && tree.Id == erecord.Id)
             { // Редактирование ячеек
@@ -51,28 +62,24 @@
                         return new Dir(d.Pred, d.Resources
                             .Select(r => new Rec(r.Id, r.Tp, r.Props.Where(p => p.Pred == "http://fogid.net/o/name").ToArray())).ToArray());
                 }).ToArray());
-                <td colspan="@(fieldsdirects.Length + 1)" style="border:dashed;">
-@*                    <EditTable etree="@tree_toedit" user="@user"
-                        inverseProp="@inverseProp"
-                        onNewItem="stss => NewItem(((Tuple<string, string>)stss).Item1, ((Tuple<string, string>)stss).Item2)"
-                        onCancel="(stss) => { erecord = null; }"
-                        onOk="tr => { FixRecordChanges((Rec)tr); erecord = null; StateHasChanged(); }" />
-*@
+                <td colspan="@(ncolumns)" style="border:dashed;">
                     <EditRow etree="@tree_toedit" user="@user"
                        inverseProp="@inverseProp"
                        onNewItem="stss => NewItem(((Tuple<string, string>)stss).Item1, ((Tuple<string, string>)stss).Item2)"
                        onCancel="OnCancelEdit"
                        onOk="tr => OnOkEdit((Rec)tr)" />
-
                 </td>
             }
             else
             { // Обычный ряд значений
                 //string idd = tree.Id;
-                @foreach (var p in tree.Props.Where(p => p is Str | p is Tex | p is Dir).ToArray())
+                @foreach (var p in tree.Props.Where(p => (p is Str || p is Tex || p is Dir)
+                   //TODO: && allowedPredicates.Contains(p.Pred)
+               ).ToArray())
                 {
                     string pred = p.Pred;
                     if (pred == "http://fogid.net/o/uri" || pred == "http://fogid.net/o/docmetainfo") { continue; }
+                    if (!allowedPredicates.Contains(p.Pred)) { continue; }
                     if (p is Str)
                     {
                         if (db.ontology.IsEnumeration(pred))
@@ -169,6 +176,10 @@
     public string? toextendrecord { get; set; }
     [Parameter]
     public bool issysobj { get; set; } = false;
+    [Parameter]
+    public int[] th_noms { get; set; } = new int[] { 0 };
+
+    private HashSet<string> allowedPredicates { get; set; } = new HashSet<string>();
 
     protected override void OnParametersSet()
     {
@@ -179,6 +190,7 @@
         {
             EdClick(toextendrecord);
         }
+        allowedPredicates = SypBlazor.Data.Theme.Allowed(th_noms);
 
     }
 

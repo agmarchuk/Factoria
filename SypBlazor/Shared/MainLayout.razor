@@ -42,7 +42,9 @@
                     <NavLink @onclick="ClickLogin" class="nav-link" href="javascript:void(0)">Login</NavLink>
                 </NotAuthorized>
             </AuthorizeView>
-            <NavLink href="/about"> О программе </NavLink>
+            <NavLink @onclick="ClickAbout" class="nav-link" href="javascript:void(0)">О программе</NavLink>
+            <NavLink @onclick="ClickSetParams" class="nav-link" href="javascript:void(0)">Установить параметры</NavLink>
+
         </div>
     }
 
@@ -123,6 +125,17 @@
     }
     private string? user = null;
     private bool toedit { get { return user != null; } }
+
+    private void ClickAbout()
+    {
+        collapseNavMenu = false;
+        navManager.NavigateTo("about/", true);
+    }
+    private void ClickSetParams()
+    {
+        collapseNavMenu = false;
+        navManager.NavigateTo("setparams/", true);
+    }
 
 
 }

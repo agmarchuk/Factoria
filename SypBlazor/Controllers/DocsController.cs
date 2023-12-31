@@ -1,7 +1,9 @@
 ﻿using Factograph.Data;
 using Factograph.Data.Adapters;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Net;
 using System.Xml.Linq;
 using static System.Net.WebRequestMethods;
@@ -15,6 +17,14 @@ namespace SypBlazor.Controllers
         { 
             this.db = db; 
         }
+
+        //[HttpPost("docs/set")]
+        //public IActionResult Set()
+        //{
+        //    string sbor = preds.Take(currentCount).Aggregate((s, x) => s + "," + x);
+        //    await ProtectedLocalStore.SetAsync("count", currentCount);
+        //    return new RedirectResult("~/Index");
+        //}
 
         /// <summary>
         /// Сюда приходит запрос от выбранных обратных отношений, которые помещаются в буфер.

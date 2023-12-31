@@ -135,8 +135,9 @@
         (
             tree.GetInverse("http://fogid.net/o/mother")
         )
-        .OrderBy(pers => pers.GetStr("from-date"))
+        .OrderBy(pers => pers.GetStr("http://fogid.net/o/from-date"))
         .Select(r => r.Id)
+        .Distinct()
         .ToArray();
 
         descr = tree.GetText("http://fogid.net/o/description") ?? "";

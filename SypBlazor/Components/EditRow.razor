@@ -11,10 +11,9 @@
         // Поля и прямые свойства, участвующие в обработке
         Pro[] directProps = etree.Props
             .Where(p => !(p is Inv) && p.Pred != inverseProp).ToArray();
-        for (int i = 0; i < directProps.Length; i++)
+        foreach (Pro pr in directProps)
         {
-            Pro pr = directProps[i];
-            int nom = i;
+            //if (pr.Pred == "http://fogid.net/o/uri" || pr.Pred == "http://fogid.net/o/docmetainfo") { continue; }
             <tr>
                 <td>
                     @(db.ontology.LabelOfOnto(pr.Pred))
