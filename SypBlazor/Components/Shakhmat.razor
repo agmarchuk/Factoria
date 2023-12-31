@@ -37,6 +37,7 @@
             string dirinv_pred = dir_pred;
             string? fromdate = item.GetStr("http://fogid.net/o/from-date");
             Dir? di = (Dir?)(fidi.FirstOrDefault(p => p is Dir && p.Pred == dirinv_pred));
+            string regime = "";
             if (di != null && di.Resources.Length > 0 && di.Resources[0] != null)
             {
                 var tr = di.Resources[0];
@@ -98,6 +99,7 @@
                     RRecord? firstphoto = rrec.Props
                     .Where(p => p is RInverseLink && p.Prop == "http://fogid.net/o/reflected")
                     .Select(p => db.GetRRecord(((RInverseLink)p).Source, false)?.GetDirect("http://fogid.net/o/in-doc"))
+                    .Where(r => r != null)
                     .FirstOrDefault(r => r.Tp == "http://fogid.net/o/photo-doc");
                     if (firstphoto != null)
                     {
@@ -107,6 +109,7 @@
                         .FirstOrDefault(s => s.StartsWith("documenttype:"))?.Substring("documenttype:".Length);
                         fromdoc = false;
                     }
+                    regime = "fund";
                 }
                 @if (tr.Tp == "http://fogid.net/o/photo-doc")
                 {
@@ -122,7 +125,7 @@
                 string? sr = uri == null ? null : "docs/GetImage?u=" + uri + "&s=small";
                 string? enlarge = uri == null ? null : "docs/GetImage?u=" + uri + "&s=normal";
                 string reference = "index/" + tr.Id + "/" + entityId;
-                string regime = tr.Tp=="http://fogid.net/o/photo-doc"?"photo":"";
+                regime = tr.Tp=="http://fogid.net/o/photo-doc"?"photo": regime;
                 <div class="mat-elevation-z5" style="margin:6px;">
                     @if (user != null)
                     {

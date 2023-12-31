@@ -3,7 +3,7 @@
 @inject Factograph.Data.IFDataService db
 
 <div class="mdl-shadow--4dp" style="width:@(Width)px; height:@(Height)px; text-align:center; display:flex; flex-direction: column; background: url('@(PhotoUrl)') center no-repeat; background-color:#d9dabb; background-size:contain;a">
-     <div style="margin: auto;height:@(Regime=="photo"?"100":"50")%;">
+     <div style="margin: auto;height:@((Regime=="photo"||Regime=="fund")?"100":"50")%;">
         <span style="text-align: center; color:black; background-color: #d9dabb; background-size:contain; ">@(Prolog)</span>
     </div>
     @if (Regime == "photo")
@@ -12,6 +12,16 @@
         @if (nam.Length > 24) { nam = nam.Substring(0, 24) + "..."; }
         <div style="margin: auto;height:min-content;">
             <a href="@(Reference)" style="align-content:center; color:black; background-color: #d9dabb; background-size:contain; " title="@(Name)">
+                @(nam)
+            </a>
+        </div>
+    }
+    else if (Regime == "fund")
+    {
+        string nam = Name ?? "noname";
+        @if (nam.Length > 24) { nam = nam.Substring(0, 24) + "..."; }
+        <div style="margin: auto;height:min-content;">
+            <a href="@(Reference)" style="align-content:center; color:#cc0000; background-color: #d9dabb; background-size:contain; " title="@(Name)">
                 @(nam)
             </a>
         </div>
@@ -49,7 +59,7 @@
     [Parameter]
     public string PhotoUrl { get; set; } = ""; // URL фотографии
     [Parameter]
-    public string Regime { get; set; } = ""; //photo, coll, doc
+    public string Regime { get; set; } = ""; //photo, fund,    coll, doc
     [Parameter]
     public int Width { get; set; } = 200;
     [Parameter]
