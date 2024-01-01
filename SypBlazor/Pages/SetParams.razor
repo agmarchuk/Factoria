@@ -11,6 +11,16 @@
     <input type="checkbox" @bind="ic1" /> <span>|</span>
     <span>Семья</span>
     <input type="checkbox" @bind="ic2" /> <span>|</span>
+    <span>География</span>
+    <input type="checkbox" @bind="ic3" /> <span>|</span>
+    <span>Архив</span>
+    <input type="checkbox" @bind="ic4" /> <span>|</span>
+    <span>Обучение</span>
+    <input type="checkbox" @bind="ic5" /> <span>|</span>
+    <span>Автор/получатель</span>
+    <input type="checkbox" @bind="ic6" /> <span>|</span>
+    <span>Коммуникации</span>
+    <input type="checkbox" @bind="ic7" /> <span>|</span>
 
     <button @onclick="OnChange" >OK</button>
     <button @onclick="OnCancel">Cancel</button>
@@ -24,12 +34,23 @@ else
     private bool ic0 = true;
     private bool ic1 = false;
     private bool ic2 = false;
+    private bool ic3 = false;
+    private bool ic4 = false;
+    private bool ic5 = false;
+    private bool ic6 = false;
+    private bool ic7 = false;
 
     private void OnChange()
     {
-        string sbor = (ic0 ? "0 " : "") +
+        string sbor = 
+            (ic0 ? "0 " : "") +
             (ic1 ? "1 " : "") +
-            (ic2 ? "2 " : "");
+            (ic2 ? "2 " : "") +
+            (ic3 ? "3 " : "") +
+            (ic4 ? "4 " : "") +
+            (ic5 ? "5 " : "") +
+            (ic6 ? "6 " : "") +
+            (ic7 ? "7 " : "");
         ProtectedLocalStore.SetAsync("setSbor", sbor);
         navManager.NavigateTo("", true);
     }
@@ -57,14 +78,15 @@ else
     private async Task LoadStateAsync()
     {
         var result = await ProtectedLocalStore.GetAsync<string>("setSbor");
-        int[] vec = new int[0];
+        int[] vec = new int[] { 0 };
         if (result.Success && !string.IsNullOrEmpty(result.Value))
         {
             vec = result.Value.Split(' ').Where(v => !string.IsNullOrEmpty(v)).Select(v => Int32.Parse(v)).ToArray();
         }
-        bool[] mask = Enumerable.Repeat(false, 3).ToArray();
+        bool[] mask = Enumerable.Repeat(false, 8).ToArray();
         for (int i = 0; i < vec.Length; i++) mask[vec[i]] = true;
-        ic0 = mask[0]; ic1 = mask[1]; ic2 = mask[2];
+        ic0 = mask[0]; ic1 = mask[1]; ic2 = mask[2]; ic3 = mask[3];
+        ic4 = mask[4]; ic5 = mask[5]; ic6 = mask[6]; ic7 = mask[7];
     }
 
 }
