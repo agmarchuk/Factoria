@@ -534,12 +534,17 @@ else // нет дерева
 
     private async Task LoadStateAsync()
     {
-        var result = await browserStorage.GetAsync<string>("setSbor");
         th_noms = new int[] { 0 }; // дефолт - одна нулевая тема
-        if (result.Success && !string.IsNullOrEmpty(result.Value))
+        try 
         {
-            th_noms = result.Value.Split(' ').Where(v => !string.IsNullOrEmpty(v)).Select(v => Int32.Parse(v)).ToArray();
-        }
+            var result = await browserStorage.GetAsync<string>("setSbor"); // номера без 0
+            if (result.Success && !string.IsNullOrEmpty(result.Value))
+            {
+                th_noms = Enumerable.Append<int>(result.Value.Split(' ')
+                    .Where(v => !string.IsNullOrEmpty(v)).Select(v => Int32.Parse(v)),
+                    0).ToArray();
+            }
+        } catch (Exception ex) {  }
     }
 
     protected override async Task OnParametersSetAsync()

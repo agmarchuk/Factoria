@@ -4,7 +4,7 @@ using MatBlazor;
 //using SypBlazor.Data;
 using Family.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
-using SypBlazor;
+using SypBlazor.Data;
 //using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 

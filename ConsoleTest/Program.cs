@@ -22,7 +22,7 @@ partial class Program
     public static void Main()
     {
         Console.WriteLine("Start FactographData use sample.");
-        IFDataService db = new Factograph.Data.FDataService("../../../wwwroot/", "../../../wwwroot/Ontology_iis-v14.xml", null);
+        Factograph.Data.IFDataService db = new Factograph.Data.FDataService("wwwroot/", "wwwroot/Ontology_iis-v14.xml", null);
         db.Reload(); // Это действие необходимо если меняется набор кассет
 
         // Определим процедуру вывода потока записей на консоль в формате N3

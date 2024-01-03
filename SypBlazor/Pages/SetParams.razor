@@ -42,8 +42,9 @@ else
 
     private void OnChange()
     {
+        ic0 = true;
         string sbor = 
-            (ic0 ? "0 " : "") +
+            //(ic0 ? "0 " : "") +
             (ic1 ? "1 " : "") +
             (ic2 ? "2 " : "") +
             (ic3 ? "3 " : "") +
@@ -77,14 +78,19 @@ else
 
     private async Task LoadStateAsync()
     {
-        var result = await ProtectedLocalStore.GetAsync<string>("setSbor");
         int[] vec = new int[] { 0 };
-        if (result.Success && !string.IsNullOrEmpty(result.Value))
+        try
         {
-            vec = result.Value.Split(' ').Where(v => !string.IsNullOrEmpty(v)).Select(v => Int32.Parse(v)).ToArray();
-        }
+            var result = await ProtectedLocalStore.GetAsync<string>("setSbor");
+            if (result.Success && !string.IsNullOrEmpty(result.Value))
+            {
+                vec = result.Value.Split(' ').Where(v => !string.IsNullOrEmpty(v)).Select(v => Int32.Parse(v)).ToArray();
+            }
+        } catch (Exception ex) {  }
+
         bool[] mask = Enumerable.Repeat(false, 8).ToArray();
         for (int i = 0; i < vec.Length; i++) mask[vec[i]] = true;
+        mask[0] = true;
         ic0 = mask[0]; ic1 = mask[1]; ic2 = mask[2]; ic3 = mask[3];
         ic4 = mask[4]; ic5 = mask[5]; ic6 = mask[6]; ic7 = mask[7];
     }

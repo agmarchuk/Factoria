@@ -1,4 +1,4 @@
-﻿namespace SypBlazor
+﻿namespace SypBlazor.Data
 {
     public class DataService : Factograph.Data.FDataService
     {
