@@ -3,7 +3,7 @@
 
 @inject Factograph.Data.IFDataService db
 
-@if (inv_items.Count() > 0)
+@if (user != null && inv_items.Count() > 0)
 {
     <div>
         <a href="javascript:void(0)" @onclick="FillCheckboxes">Выделить все</a> |

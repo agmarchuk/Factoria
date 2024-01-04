@@ -22,7 +22,8 @@
             onSelected="id => OnSelected((string)id)" />
     </div>
 
-    @if (rrec != null && rrec.Tp == "http://fogid.net/o/person")
+    @if (rrec != null && rrec.Tp == "http://fogid.net/o/person" &&
+        configuration.GetSection("App:fam")?.Value == "true")
     {
         <div style="width:300px;">
             индекс | <a href="fam/@(entityId)">семья</a> | <a href="gene/@(entityId)">семейное дерево</a>
