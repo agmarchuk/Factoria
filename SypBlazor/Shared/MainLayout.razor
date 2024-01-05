@@ -17,6 +17,8 @@
     title = configuration.GetSection("App:title").Value;
     var ico = configuration.GetSection("App:icon").Value;
     if (!string.IsNullOrEmpty(ico)) icon = ico;
+    string? hb = configuration.GetSection("App:background").Value;
+    if (hb!= null) headerbackground = hb; 
 }
 
 <PageTitle>@title</PageTitle>
@@ -50,22 +52,16 @@
 
 
     <main>
-        <nav class="navbar navbar-expand-xxl navbar-light bg-light" style="height:64px; padding-top:0px;  background-image:url(VertPoloska.jpg)">
-            <div class="container-fluid" style="padding-left:0px; padding-top:0px;">
+        <nav class="navbar navbar-expand-xxl navbar-light bg-light" style="height:64px; padding-top:0px; @(headerbackground)">
+            <div class="container-fluid" style="padding-left:0px; padding-top:10px;">
                 <a class="navbar-brand" href="#">
-                    @*<img src="FlyingBirdsSmall.jpg" alt="" width="268" height="64" style="">*@
-                    <img src="@(logo)" alt="" height="58" style="">
+                    <img src="@(logo)" alt="" height="58" style="" />
                 </a>
                 <div class="navbar-text" style="">
                     <div style="color: black; font-size:larger; font-weight: bold;">@(hea)</div>
-                    <div style="font-size:smaller;">@(subhea)</div>
+                    <div style="">@(subhea)</div>
                 </div>
 
-@*                <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="текст поиска" />
-                    <button class="btn btn-outline-success" type="submit">Искать</button>
-                </form>
-*@
                 <NavLink class="nav-link" @onclick="()=>expandSubNav = !expandSubNav">
                     <span class="navbar-toggler-icon"></span>
                 </NavLink>
@@ -97,6 +93,7 @@
     private string logo = "logo1.jpg";
     private string icon = "favicon.png";
     private string? title = "";
+    private string? headerbackground = "background-image:url(VertPoloska.jpg);";
     // Authorization
     private async Task ClickLogin()
     {
@@ -136,6 +133,4 @@
         collapseNavMenu = false;
         navManager.NavigateTo("setparams/", true);
     }
-
-
 }
