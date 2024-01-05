@@ -40,7 +40,7 @@ namespace Family.Authentication
                 return await Task.FromResult(new AuthenticationState(_anonimous));
             }
         }
-        public async Task UpdateAuthenticationState(AuthState userSession)
+        public async Task UpdateAuthenticationState(AuthState? userSession)
         {
             ClaimsPrincipal claimsPrincipal;
             if (userSession != null)

@@ -19,7 +19,7 @@
      <div style="width:100%;">
         <SypBlazor.Components.SearchPanel typs="@typs" user="@user"
             onNewItem="stss => NewItem(((Tuple<string, string>)stss).Item1, ((Tuple<string, string>)stss).Item2)"
-            onSelected="id => OnSelected((string)id)" />
+            onSelected="id => OnSelected((string)id)"  />
     </div>
 
     @if (rrec != null && rrec.Tp == "http://fogid.net/o/person" &&
@@ -45,10 +45,6 @@
 </div>
 @* ========= конец ========= *@
 
-@* <SypBlazor.Components.SearchPanel typs="@typs" user="@user"
-    onNewItem="stss => NewItem(((Tuple<string, string>)stss).Item1, ((Tuple<string, string>)stss).Item2)" 
-    onSelected="id => OnSelected((string)id)"    />
- *@
 @if (tree != null)
 {
     @if (tree.Tp == "http://fogid.net/o/person" && regime == "gene")
@@ -121,16 +117,19 @@
         {
             string? docmetainfo = ((Str?)tree.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/docmetainfo"))?.Value;
             if (docmetainfo != null && docmetainfo.Contains("application/pdf"))
-            {
+            {   // Это PDF - его надо напечатать
                 hasdocimage = true;
                 string sr = "docs/GetPdf?u=" + uri;
                     <embed src="@sr" width="100%" height="800" />
-                }
-                else if (uri != null && (docmetainfo == null || !docmetainfo.Contains("application/fog"))) // Все типы документов кроме .fog
-                {
-                    string sr = "icons/document_m.jpg";
-                    var mime = docmetainfo.Split(';')
-                            .FirstOrDefault(s => s.StartsWith("documenttype:"))?.Substring("documenttype:".Length);
+            }
+            else if (docmetainfo != null && docmetainfo.Contains("application/fog"))
+            {   // Это FOG - он недоступен
+            }
+            else if (docmetainfo != null) // Все типы документов кроме .fog
+            {   // Другие документы с docmetainfo
+                string sr = "icons/document_m.jpg";
+                var mime = docmetainfo.Split(';')
+                        .FirstOrDefault(s => s.StartsWith("documenttype:"))?.Substring("documenttype:".Length);
                 <div>Документ [@(mime)] получить копию: </div>
                 <div style="margin-bottom:10px;"><a href="@sr"><img src="@(sr)" /></a></div>
             }
@@ -330,13 +329,12 @@ else // нет дерева
         <li>Пройти небольшое обучение и получить полномочия редактирования информации архива</li>
     </ul> *@
 }
-<table>
-    <tr>
-        <td style="width:100px;"><hr/></td>
-        <td>@(user)</td>
-        <td width="100%"><hr /></td>
-    </tr>
-</table>
+<hr />
+@if (user != null)
+{
+    <div>user=@(user)</div>
+}
+<div>@(look)</div>
 
 @code {
     [Parameter] // Фокусная запись
@@ -446,17 +444,23 @@ else // нет дерева
                 else if (externalRec != null &&
                     (externalRec.Tp == "http://fogid.net/o/collection" ||
                      externalRec.Tp == "http://fogid.net/o/cassette"))
+                {
                     docset = externalRec.Props
-                        .Where(p => p is RInverseLink && p.Prop == "http://fogid.net/o/in-collection").Cast<RInverseLink>()
+                        .Where(p => p is RInverseLink && p.Prop == "http://fogid.net/o/in-collection")
                         .Cast<RInverseLink>()
-                        .Select(ril => db.GetRRecord(ril.Source, false).GetDirectResource("http://fogid.net/o/collection-item"))
+                        .Select(ril => db.GetRRecord(ril.Source, false)?.GetDirectResource("http://fogid.net/o/collection-item"))
+                        .Cast<string>()
                         .ToArray();
+                }
                 else if (externalRec != null && (db.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj").Contains(externalRec.Tp)))
+                {
                     docset = externalRec.Props
-                        .Where(p => p is RInverseLink && p.Prop == "http://fogid.net/o/reflected").Cast<RInverseLink>()
-                        .Cast<RInverseLink>()
-                        .Select(ril => db.GetRRecord(ril.Source, false).GetDirectResource("http://fogid.net/o/in-doc"))
-                        .ToArray();
+                            .Where(p => p is RInverseLink && p.Prop == "http://fogid.net/o/reflected")
+                            .Cast<RInverseLink>()
+                            .Select(ril => db.GetRRecord(ril.Source, false)?.GetDirectResource("http://fogid.net/o/in-doc"))
+                            .Cast<string>()
+                            .ToArray();
+                }
                 int ind = Array.IndexOf(docset, rrec.Id);
                 if (ind != -1 && ind - 1 >= 0)
                 {
@@ -473,7 +477,7 @@ else // нет дерева
     }
 
     private string? user = null;
-    private string? look;
+    private string? look = null;
 
     private void FixRecordChanges(Rec rec)
     {
@@ -507,7 +511,7 @@ else // нет дерева
                     {
                         Dir d = (Dir)p;
                         return d.Resources.Select(r => new XElement(toXName(p.Pred), 
-                            new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", r.Id)));
+                            new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", r.Id ?? "noId")));
                     }
                     else return new XElement[0];
                 }).Where(x => x != null),
@@ -520,12 +524,12 @@ else // нет дерева
     private int buff_cnt = 0;
     private string regime = "default";
 
-    private bool isConnected = false;
+    //private bool isConnected = false;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            isConnected = true;
+            //isConnected = true;
             await LoadStateAsync();
             StateHasChanged();
         }
@@ -545,7 +549,7 @@ else // нет дерева
                     .Where(v => !string.IsNullOrEmpty(v)).Select(v => Int32.Parse(v)),
                     0).ToArray();
             }
-        } catch (Exception ex) {  }
+        } catch (Exception) {  }
     }
 
     protected override async Task OnParametersSetAsync()
@@ -627,49 +631,58 @@ else // нет дерева
     // ==================== Редактирование =======================
     private void NewItem(string searchtype, string searchstring)
     {
-        if (string.IsNullOrEmpty(searchstring) || string.IsNullOrEmpty(searchtype)) { return; }
-        int pos = searchtype.LastIndexOf('/');
-        string local = searchtype.Substring(pos + 1);
-        string nsname = searchtype.Substring(0, pos + 1);
-        XElement xitem = new XElement(XName.Get(local, nsname),
-            new XAttribute("owner", user), 
-            new XElement(XName.Get("name", "http://fogid.net/o/"), 
-                new XAttribute("{http://www.w3.org/XML/1998/namespace}lang", "ru"),
-                searchstring));
-        XElement x = db.PutItem(xitem);
-        string? nid = x?.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
-        if (nid != null)
+        if (user != null)
         {
-            navManager.NavigateTo("index/" + nid);
+            if (string.IsNullOrEmpty(searchstring) || string.IsNullOrEmpty(searchtype)) { return; }
+            int pos = searchtype.LastIndexOf('/');
+            string local = searchtype.Substring(pos + 1);
+            string nsname = searchtype.Substring(0, pos + 1);
+            XElement xitem = new XElement(XName.Get(local, nsname),
+                new XAttribute("owner", user),
+                new XElement(XName.Get("name", "http://fogid.net/o/"),
+                    new XAttribute("{http://www.w3.org/XML/1998/namespace}lang", "ru"),
+                    searchstring));
+            XElement x = db.PutItem(xitem);
+            string? nid = x?.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
+            if (nid != null)
+            {
+                navManager.NavigateTo("index/" + nid);
+            }
+            //StateHasChanged();
         }
-        //StateHasChanged();
     }
     private void Delete(string id)
     {
-        XElement xitem = new XElement("delete",
-            new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", id),
-            new XAttribute("owner", user));
-        db.PutItem(xitem);
-        if (id == entityId)
+        if (user != null)
         {
-            navManager.NavigateTo("index/", true);
-        }
-        else
-        {
-            //StateHasChanged();
-            Build(entityId);
+            XElement xitem = new XElement("delete",
+                new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", id),
+                new XAttribute("owner", user));
+            db.PutItem(xitem);
+            if (id == entityId)
+            {
+                navManager.NavigateTo("index/", true);
+            }
+            else
+            {
+                //StateHasChanged();
+                Build(entityId);
+            }
         }
     }
     private void NewInverseRelation(string tty, string invPred)
     {
-        XElement xitem = new XElement(Factograph.Data.Adapters.ONames.ToXName(tty),
-            new XAttribute("owner", user),
-            new XElement(Factograph.Data.Adapters.ONames.ToXName(invPred),
-                new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", entityId))
-            );
-        XElement x = db.PutItem(xitem);
-        toextendrecord = x.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
-        Build(entityId);
+        if (entityId != null && user != null)
+        {
+            XElement xitem = new XElement(Factograph.Data.Adapters.ONames.ToXName(tty),
+                new XAttribute("owner", user),
+                new XElement(Factograph.Data.Adapters.ONames.ToXName(invPred),
+                    new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", entityId))
+                );
+            XElement x = db.PutItem(xitem);
+            toextendrecord = x.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
+            Build(entityId);
+        }
     }
 
     private void ClearBuffer()
@@ -677,7 +690,7 @@ else // нет дерева
         // Выясняем есть ли такой элемент
         RRecord? rRecord = db.GetRRecord(buff_id, true);
         // Если есть, то чистим, если нет, то заводим
-        if (rRecord != null)
+        if (rRecord != null && user != null)
         {
             // выделяем членов
             string[] members = rRecord.Props.Select<RProperty, string?>(p =>
@@ -738,13 +751,13 @@ else // нет дерева
             // Находим запись collection-member
             RRecord? mRec = db.GetRRecord(mId, false);
             if (mRec == null) continue;
-            string dir = mRec.GetDirectResource("http://fogid.net/o/collection-item");
+            string? dir = mRec.GetDirectResource("http://fogid.net/o/collection-item");
             if (dir == null) continue;
             // Формируем команду добавления и добавляем в db
             XElement xitem = new XElement(Factograph.Data.Adapters.ONames.ToXName(tty),
                 new XAttribute("owner", user),
                 new XElement(Factograph.Data.Adapters.ONames.ToXName(invPred),
-                    new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", entityId)),
+                    new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", entityId ?? "")),
                 new XElement(Factograph.Data.Adapters.ONames.ToXName(dirPred),
                     new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", dir))
                 );

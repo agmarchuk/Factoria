@@ -81,7 +81,7 @@
     private Rec? mother = null;
     private string?[] wifes = new string[0];
     private string?[] husbands = new string[0];
-    private string[] brothers = new string[0];
+    private string?[] brothers = new string[0];
     private string?[] children = new string[0];
 
     private string? descr = null;
@@ -113,14 +113,22 @@
         father = MkRec(tree.GetDirect("http://fogid.net/o/father")?.Id);
         mother = MkRec(tree.GetDirect("http://fogid.net/o/mother")?.Id);
 
-        IEnumerable<string> brotherIds = Enumerable.Empty<string>();
-        if (father != null) brotherIds = brotherIds.Concat<string>( 
-            father.GetInverse("http://fogid.net/o/father")
-            .Select(re => re.Id));
-        if (mother != null) brotherIds = brotherIds.Concat<string>(
-            mother.GetInverse("http://fogid.net/o/mother")
-            .Select(re => re.Id));
-        brothers = brotherIds.Distinct().Except(new string[] { entityId }).ToArray();
+        IEnumerable<string?> brotherIds = Enumerable.Empty<string>();
+        if (father != null)
+        {
+            brotherIds = brotherIds.Concat(father.GetInverse("http://fogid.net/o/father")
+                .Select(re => re.Id));
+        }
+        if (mother != null)
+        {
+            brotherIds = brotherIds.Concat(mother.GetInverse("http://fogid.net/o/mother")
+                .Select(re => re.Id));
+        }
+        brothers = brotherIds
+            .Where(idd => idd != null)
+            .Distinct()
+            .Except(new string[] { entityId })
+            .ToArray();
         wifes = tree.GetInverse("http://fogid.net/o/husband")
             .OrderBy(fam => fam.GetStr("http://fogid.net/o/from-date"))
             .Select(fam => fam.GetDirect("http://fogid.net/o/wife")?.Id)

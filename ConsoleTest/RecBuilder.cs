@@ -18,9 +18,9 @@ namespace ConsoleTest
             this.getRecord = getRecord;
         }
 
-        public Rec? ToRec(RRecord r, Rec shablon)
+        public Rec? ToRec(RRecord? r, Rec? shablon)
         {
-            if (r == null) return null;
+            if (r == null || shablon == null) return null;
             Rec result = new Rec(r.Id, r.Tp);
             // Следуем шаблону. Подсчитаем количество стрелок
             int[] nprops = Enumerable.Repeat<int>(0, shablon.Props.Length)
@@ -102,8 +102,8 @@ namespace ConsoleTest
                     RRecord? r1 = getRecord(id1);
                     var shablon1 = ((Dir)shablon.Props[nom]).Resources
                         .FirstOrDefault(res => res.Tp == r1?.Tp);
-                    Rec r11 = ToRec(r1, shablon1);
-                    ((Dir)pros[nom]).Resources[pos[nom]] = r11;
+                    Rec? r11 = ToRec(r1, shablon1);
+                    ((Dir)pros[nom]).Resources[pos[nom]] = r11 ?? new Rec("noid", "notp");
                     pos[nom]++;
                 }
                 else if (pros[nom] is Inv)
@@ -112,8 +112,8 @@ namespace ConsoleTest
                     RRecord? r1 = getRecord(id1);
                     var shablon1 = ((Inv)shablon.Props[nom]).Sources
                         .FirstOrDefault(res => res.Tp == r1?.Tp);
-                    Rec r11 = ToRec(r1, shablon1);
-                    ((Inv)pros[nom]).Sources[pos[nom]] = r11;
+                    Rec? r11 = ToRec(r1, shablon1);
+                    ((Inv)pros[nom]).Sources[pos[nom]] = r11 ?? new Rec("noid", "notp");
                     pos[nom]++;
                 }
             }

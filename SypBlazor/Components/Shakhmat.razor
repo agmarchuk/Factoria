@@ -61,7 +61,7 @@
                     .FirstOrDefault(s => s.StartsWith("documenttype:"))?.Substring("documenttype:".Length);
                 if (documenttype == "application/fog") { continue; }
 
-                bool fromdoc = true;
+                //bool fromdoc = true;
                 @if (db.ontology.DescendantsAndSelf("http://fogid.net/o/document").Contains(tr.Tp))
                 {
                     // вторая попытка
@@ -88,7 +88,7 @@
                             documenttype = uri == null || doc == null  ? null :
                                 doc.GetField("http://fogid.net/o/docmetainfo")?.Split(';')
                                 .FirstOrDefault(s => s.StartsWith("documenttype:"))?.Substring("documenttype:".Length);
-                            fromdoc = false;
+                            //fromdoc = false;
                         }
                     }
                 }
@@ -100,14 +100,14 @@
                     .Where(p => p is RInverseLink && p.Prop == "http://fogid.net/o/reflected")
                     .Select(p => db.GetRRecord(((RInverseLink)p).Source, false)?.GetDirect("http://fogid.net/o/in-doc"))
                     .Where(r => r != null)
-                    .FirstOrDefault(r => r.Tp == "http://fogid.net/o/photo-doc");
+                    .FirstOrDefault(r => r?.Tp == "http://fogid.net/o/photo-doc");
                     if (firstphoto != null)
                     {
                         uri = firstphoto.GetField("http://fogid.net/o/uri");
                         documenttype = uri == null || firstphoto == null ? null :
                         firstphoto.GetField("http://fogid.net/o/docmetainfo")?.Split(';')
                         .FirstOrDefault(s => s.StartsWith("documenttype:"))?.Substring("documenttype:".Length);
-                        fromdoc = false;
+                        //fromdoc = false;
                     }
                     regime = "fund";
                 }
@@ -158,11 +158,11 @@
 
 @code {
     [Parameter]
-    public string entityId { get; set; }
+    public string entityId { get; set; } = "noId";
     [Parameter]
-    public string dir_pred { get; set; }
+    public string dir_pred { get; set; } = "noDirPred";
     [Parameter]
-    public Rec[] inv_items { get; set; }
+    public Rec[] inv_items { get; set; } = new Rec[0];
     [Parameter]
     public string? user { get; set; }
 

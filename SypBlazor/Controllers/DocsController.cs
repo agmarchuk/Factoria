@@ -43,12 +43,12 @@ namespace SypBlazor.Controllers
             string? user = Request.Form["user"];
             if (user == null) goto Out; //{ user = WebUtility.UrlDecode(user); }
             bool tocut = false;
-            bool tocopy = false;
+            //bool tocopy = false;
             List<string> relationIds = new List<string>();
             var query = this.HttpContext.Request.Form;
             foreach (var item in query)
             {
-                if      (item.Key == "copy") tocopy = true;
+                if      (item.Key == "copy") tocut = false;
                 else if (item.Key == "cut") tocut = true;
                 else if (item.Value == "on") relationIds.Add(WebUtility.UrlDecode(item.Key));
             }
@@ -109,6 +109,7 @@ namespace SypBlazor.Controllers
             // Теперь добавим элементы из set
             foreach (string? item_id in set)
             {
+                if (item_id == null) continue;
                 db.PutItem(new XElement("{http://fogid.net/o/}collection-member",
                     new XAttribute("owner", user),
                     new XElement("{http://fogid.net/o/}in-collection", 

@@ -22,7 +22,8 @@ partial class Program
     public static void Main()
     {
         Console.WriteLine("Start FactographData use sample.");
-        Factograph.Data.IFDataService db = new Factograph.Data.FDataService("wwwroot/", "wwwroot/Ontology_iis-v14.xml", null);
+        string wwwpath = "wwwroot/"; // Это для запуска через dotnet
+        Factograph.Data.IFDataService db = new Factograph.Data.FDataService(wwwpath, wwwpath + "Ontology_iis-v14.xml", null);
         db.Reload(); // Это действие необходимо если меняется набор кассет
 
         // Определим процедуру вывода потока записей на консоль в формате N3
@@ -113,7 +114,7 @@ partial class Program
                     second_col = "<table>";
                     foreach (var r in d.Resources)
                     {
-                        second_col += $"<tr><td><a href='{r.Id}'>{r.GetText("http://fogid.net/o/name")}</a></td></tr>";
+                        second_col += $"<tr><td><a href='{r?.Id}'>{r?.GetText("http://fogid.net/o/name")}</a></td></tr>";
                     }
                     second_col += "</table>";
                 }
@@ -218,8 +219,8 @@ partial class Program
 
         foreach (var xelement in xdb.Elements())
         {
-            string about = xelement.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about").Value;
-            tw.WriteLine($"type({about}, {xelement.Name}).");
+            string? about = xelement?.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
+            tw.WriteLine($"type({about}, {xelement?.Name}).");
         }
 
         tw.Close();

@@ -66,6 +66,7 @@
     }
     private void NewItemClick(Tuple<string, string> stss, string pred) // на входе пара: тип и образец и ид предиката
     {
+        if (user == null) return;
         string ty = stss.Item1;
         string ss = stss.Item2;
         XElement xitem = new XElement(Factograph.Data.Adapters.ONames.ToXName(ty),
@@ -73,8 +74,8 @@
             new XElement("{http://fogid.net/o/}name", 
                 new XAttribute("{http://www.w3.org/XML/1998/namespace}lang", "ru"), ss));
         XElement x = db.PutItem(xitem);
-        string nid = x.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about").Value;
-        this.OnSelected(nid, pred);
+        string? nid = x.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
+        if (nid != null) this.OnSelected(nid, pred);
     }
 
 }

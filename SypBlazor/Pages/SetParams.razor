@@ -86,7 +86,7 @@ else
             {
                 vec = result.Value.Split(' ').Where(v => !string.IsNullOrEmpty(v)).Select(v => Int32.Parse(v)).ToArray();
             }
-        } catch (Exception ex) {  }
+        } catch (Exception) {  }
 
         bool[] mask = Enumerable.Repeat(false, 8).ToArray();
         for (int i = 0; i < vec.Length; i++) mask[vec[i]] = true;

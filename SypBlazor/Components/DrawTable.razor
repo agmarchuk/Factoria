@@ -8,18 +8,21 @@
 @{
     int ncolumns = 0;
 }
+@if (Trees != null && Trees.Count() > 0)
+{
 <table class="mat-elevation-z5 bor" style="">
     @* Построение ряда заголовков *@
     <tr class="bor">
-        @foreach (var p in Trees[0].Props.Where(p => p is Str || p is Tex || p is Dir).ToArray())
-        {
-            string pred = p.Pred;
-            if (pred == "http://fogid.net/o/uri" || pred == "http://fogid.net/o/docmetainfo") { continue; }
-            if (!allowedPredicates.Contains(pred)) { continue; }
-            ncolumns++;
-            string label = db.ontology.LabelOfOnto(p.Pred);
-            <th class="bor">@(label)</th>
-        }
+
+            @foreach (var p in Trees[0].Props.Where(p => p is Str || p is Tex || p is Dir).ToArray())
+            {
+                string pred = p.Pred;
+                if (pred == "http://fogid.net/o/uri" || pred == "http://fogid.net/o/docmetainfo") { continue; }
+                if (!allowedPredicates.Contains(pred)) { continue; }
+                ncolumns++;
+                string label = db.ontology.LabelOfOnto(p.Pred);
+                <th class="bor">@(label)</th>
+            }
         @if(user != null)
         {
             ncolumns++;
@@ -29,6 +32,7 @@
     @* Построение множества рядов с данными *@
     @foreach (var tree in Trees)
     {
+        if (tree == null) continue;
         var fieldsdirects = tree.Props.Where(p => (p is Str || p is Tex || p is Dir)
         //&& allowedPredicates.Contains(p.Pred)
         //&& !(p.Pred == "http://fogid.net/o/uri" || p.Pred == "http://fogid.net/o/docmetainfo")
@@ -149,7 +153,7 @@
 
 
 </table>
-
+}
 
 @code {
     [Parameter]
@@ -208,7 +212,7 @@
         await onOk.InvokeAsync();
         //StateHasChanged();
     }
-    private async Task DelItemClick(string id)
+    private async Task DelItemClick(string? id)
     {
         //TODO: а может так "крестик" проверять?
         RRecord? rec = db.GetRRecord(id, true);
@@ -218,7 +222,7 @@
         }
         else
         {
-             await js.InvokeVoidAsync("alert", "Can't delete record");
+            await js.InvokeVoidAsync("alert", "Can't delete record");
         }
     }
 
@@ -228,7 +232,7 @@
     // Копия записи для редактирования, если null, то нет записи для редактирования
     private RRecord? erecord = null;
     private Rec? etree = null;
-    private void EdClick(string id)
+    private void EdClick(string? id)
     {
         if (erecord != null) return; // Не реагировать на гиперссылку если не закончено редактирование какой-то записи
 
@@ -334,7 +338,7 @@
 
     private void NewItem(string searchtype, string searchstring)
     {
-        if (string.IsNullOrEmpty(searchstring) || string.IsNullOrEmpty(searchtype)) { return; }
+        if (user == null || string.IsNullOrEmpty(searchstring) || string.IsNullOrEmpty(searchtype)) { return; }
         int pos = searchtype.LastIndexOf('/');
         string local = searchtype.Substring(pos + 1);
         string nsname = searchtype.Substring(0, pos + 1);
@@ -376,7 +380,7 @@
                         if (d.Resources != null && d.Resources.Length > 0)
                         {
                             return d.Resources.Select(r => new XElement(Factograph.Data.Adapters.ONames.ToXName(p.Pred),
-                            new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", r.Id)));
+                            new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", r.Id ?? "noId")));
                         }
                         else return new XElement[0];
                     }
@@ -390,44 +394,49 @@
 
     // Редактирование прямой ссылки
     private string? searchlinkprop = null;
-    private string? searchsubitem = null;
+    //private string? searchsubitem = null;
     private void SearchLink(string prop) { searchlinkprop = prop; }
 
     private void LinkRecord(string rid)
     {
         RRecord? extRec = db.GetRRecord(rid, false);
-        var erec = new RRecord
-            (
-                erecord.Id,
-                erecord.Tp,
-                erecord.Props.Select(p => p.Prop != searchlinkprop ? p :
-                    new RDirect
-                    {
-                        Prop = searchlinkprop,
-                        DRec = new RRecord
-                        (
-                            rid,
-                            extRec.Tp,
-                            extRec.Props,
-                            db
-                        )
-                    }).ToArray(),
-                db
-            );
-        erecord = erec;
-        searchlinkprop = null;
-        searchsubitem = null;
+        if (erecord != null && extRec != null)
+        {
+            var erec = new RRecord
+                (
+                    erecord.Id,
+                    erecord.Tp,
+                    erecord.Props.Select(p => p.Prop != searchlinkprop ? p :
+                        new RDirect
+                            {
+                                Prop = searchlinkprop,
+                                DRec = new RRecord
+                                (
+                                    rid,
+                                    extRec.Tp,
+                                    extRec.Props,
+                                    db
+                                )
+                            }).ToArray(),
+                    db
+                );
+            erecord = erec;
+            searchlinkprop = null;
+        }
     }
     private void DeleteLink(string prop)
     {
-        var erec = new RRecord
-            (
-                erecord.Id,
-                erecord.Tp,
-                erecord.Props.Select(p => p.Prop != prop ? p : new RDirect { Prop = prop, DRec = null }).ToArray(),
-                db
-            );
-        erecord = erec;
+        if (erecord != null)
+        {
+            var erec = new RRecord
+                (
+                    erecord.Id,
+                    erecord.Tp,
+                    erecord.Props.Select(p => p.Prop != prop ? p : new RDirect { Prop = prop, DRec = null }).ToArray(),
+                    db
+                );
+            erecord = erec;
+        }
     }
     private void LinkClick(string id)
     {

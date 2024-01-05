@@ -50,8 +50,8 @@
     [Parameter]
     public Pro property { get; set; } = new Str("");
 
-    private void SelectChangeHandler(object e, Str bindProperty)
+    private void SelectChangeHandler(object? e, Str bindProperty)
     {
-        ((Str)bindProperty).Value = e.ToString();
+        ((Str)bindProperty).Value = e?.ToString();
     }
 }

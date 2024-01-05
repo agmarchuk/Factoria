@@ -55,7 +55,7 @@
                 if (v.Lang == "") { lang = v.Lang; text = v.Text; }
                 else if (lang != "") { lang = v.Lang; text = v.Text; }
             }
-            currentLanguage = lang;
+            if (lang != null) currentLanguage = lang;
         }
     }
     private void OnSelectChange(ChangeEventArgs args)

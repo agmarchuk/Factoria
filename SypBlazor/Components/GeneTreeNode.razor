@@ -11,20 +11,23 @@
 
         @foreach (var s in spouses)
         {
-            bool fatherormother = s?.GetDirect("http://fogid.net/o/father") != null || s?.GetDirect("http://fogid.net/o/mother") != null;
-            if (fatherormother)
+            if (s != null)
             {
-                <img src="icons/family.jpg" style="margin-left:4px;" />
-                <span> &nbsp;</span>
-                <a href="gene/@(s.Id)" title="@(s.GetText("http://fogid.net/o/name"))">
-                    @(s.GetText("http://fogid.net/o/name"))
-                </a>
-            }
-            else
-            {
-                <a href="gene/@(s.Id)" title="@(s.GetText("http://fogid.net/o/name"))">
+                bool fatherormother = s?.GetDirect("http://fogid.net/o/father") != null || s?.GetDirect("http://fogid.net/o/mother") != null;
+                if (fatherormother)
+                {
                     <img src="icons/family.jpg" style="margin-left:4px;" />
-                </a>
+                    <span> &nbsp;</span>
+                    <a href="gene/@(s?.Id)" title="@(s?.GetText("http://fogid.net/o/name"))">
+                        @(s?.GetText("http://fogid.net/o/name"))
+                    </a>
+                }
+                else
+                {
+                    <a href="gene/@(s?.Id)" title="@(s?.GetText("http://fogid.net/o/name"))">
+                        <img src="icons/family.jpg" style="margin-left:4px;" />
+                    </a>
+                }
             }
 
         }
