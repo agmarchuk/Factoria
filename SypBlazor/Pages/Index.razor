@@ -111,7 +111,14 @@
                 <source type="video/mp4" src='@(sr + "&ext=mp4")' />
                 Your browser does not support the video tag.
             </video>
-
+        }
+        else if (tree.Tp == "http://fogid.net/o/audio-doc")
+        {
+            string sr = "docs/GetAudio?u=" + uri;
+            <audio controls>
+                <source type="video/mpeg" src='@(sr)' />
+                Your browser does not support the audio tag.
+            </audio>
         }
         else if (tree.Tp == "http://fogid.net/o/document")
         {
