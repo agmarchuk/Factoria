@@ -14,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Factograph.Data" Version="1.0.0" />
     <PackageReference Include="MatBlazor" Version="2.10.0" />
   </ItemGroup>
 
