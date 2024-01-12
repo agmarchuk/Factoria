@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleTest", "ConsoleTest\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SypBlazor", "SypBlazor\SypBlazor.csproj", "{6953A2C4-42F7-4AC7-9D15-8821CF3BC312}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Factograph.Data", "..\PolarDB\Factograph.Data\Factograph.Data.csproj", "{84F1E8CC-A329-471E-9896-B0F6F6FF1DA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Factograph.Data", "..\PolarDB\Factograph.Data\Factograph.Data.csproj", "{3E5CF85E-704A-4064-A297-99393D9DC34F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{6953A2C4-42F7-4AC7-9D15-8821CF3BC312}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6953A2C4-42F7-4AC7-9D15-8821CF3BC312}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6953A2C4-42F7-4AC7-9D15-8821CF3BC312}.Release|Any CPU.Build.0 = Release|Any CPU
-		{84F1E8CC-A329-471E-9896-B0F6F6FF1DA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{84F1E8CC-A329-471E-9896-B0F6F6FF1DA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{84F1E8CC-A329-471E-9896-B0F6F6FF1DA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{84F1E8CC-A329-471E-9896-B0F6F6FF1DA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E5CF85E-704A-4064-A297-99393D9DC34F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E5CF85E-704A-4064-A297-99393D9DC34F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E5CF85E-704A-4064-A297-99393D9DC34F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E5CF85E-704A-4064-A297-99393D9DC34F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
