@@ -6,6 +6,22 @@ using System.Xml.Serialization;
 
 partial class Program
 {
+    public static void Main()
+    {
+        Console.WriteLine("Start FactographData inverse index.");
+        string wwwpath = "../../../wwwroot/"; // Это для запуска через dotnet
+        Factograph.Data.IFDataService db = new Factograph.Data.FDataService(wwwpath, wwwpath + "Ontology_iis-v14.xml", null);
+        //db.Reload(); // Это действие необходимо если меняется набор кассет
+        var r = db.GetRRecord("syp2001-p-marchuk_a", true);
+        Console.WriteLine(r.GetName());
+        foreach (var p in r.Props.Take(20)) 
+        {
+            string vid = p is RField ? "f" : (p is RDirect ? "d" : "i");
+            Console.WriteLine($"{vid} {p.Prop}");
+        }
+
+    }
+
     /// <summary>
     /// Программа осуществляет присоединение к фактографической базе данных и обеспечвает
     /// выполнение методов доступа. 
@@ -19,10 +35,10 @@ partial class Program
     ///     <LoadCassette>D:\Home\FactographProjects\syp_cassettes\SypCassete</LoadCassette>
     /// Перед запуском, кассеты должны раполагаться на указанных местах!
     /// </summary>
-    public static void Main()
+    public static void Main4()
     {
         Console.WriteLine("Start FactographData use sample.");
-        string wwwpath = "wwwroot/"; // Это для запуска через dotnet
+        string wwwpath = "../../../wwwroot/"; // Это для запуска через dotnet
         Factograph.Data.IFDataService db = new Factograph.Data.FDataService(wwwpath, wwwpath + "Ontology_iis-v14.xml", null);
         db.Reload(); // Это действие необходимо если меняется набор кассет
 
