@@ -1,12 +1,85 @@
-﻿using System.Xml.Linq;
-using System.IO;
+﻿using System.IO;
+using System.Xml.Linq;
+using System.Xml.Serialization;
 using Factograph.Data;
 using Factograph.Data.r;
-using System.Xml.Serialization;
+using Factograph.Data.Adapters;
+using System.Linq;
+using static System.Net.WebRequestMethods;
+//using ConsoleTest;
 
 partial class Program
 {
+    /// <summary>
+    /// Нагрузочное тестирование адаптеров. Цель: сформировать данные достаточно большого объема и провести 
+    /// тестирование выборками. Для этого будем пользоваться традиционной фототекой, а выборку также будем генерировать
+    /// и пропускать в цикле. 
+    /// </summary>
     public static void Main()
+    {
+        System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+
+        var adapter = new UpiAdapter(null);
+        adapter.Init("upi:D:/Home/FactographDatabases/upi-test/");
+        //var adapter = new RRecordAdapter(null);
+        //adapter.Init("rr:D:/Home/FactographDatabases/rr-test/");
+
+        int npersons = 10_000;
+        int nphotos = npersons * 4;
+        int nreflections = npersons * 8;
+        // 3 + 2 * 3 + 4 * 3 = 21 триплетов
+
+        Random rnd = new Random();
+        string rdf = "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}";
+        string fog = "{http://fogid.net/o/}";
+
+        IEnumerable<XElement> xflow = Enumerable.Range(0, npersons)
+            .Select(i => new XElement(fog + "person",
+                new XAttribute(rdf + "about", "p" + i),
+                new XElement(fog + "name", "и" + i),
+                new XElement(fog + "from-date", "" + (1900 + rnd.Next(110))))
+            ).Concat(
+                Enumerable.Range(0, nphotos).Select(i => new XElement(fog + "photo-doc",
+                    new XAttribute(rdf + "about", "f" + i),
+                    new XElement(fog + "name", "и" + i),
+                    new XElement(fog + "uri", "DSP" + i)))
+            ).Concat(
+                Enumerable.Range(0, nreflections).Select(i => new XElement(fog + "reflection",
+                    new XAttribute(rdf + "about", "r" + i),
+                    new XElement(fog + "reflected", new XAttribute(rdf+"resource", "p" + rnd.Next(npersons))),
+                    new XElement(fog + "in-doc", new XAttribute(rdf + "resource", "f" + rnd.Next(nphotos)))))
+            );
+
+        bool toload = true;
+	    if (toload)
+	    { 
+	    adapter.StartFillDb(s => Console.WriteLine(s));
+            adapter.LoadXFlow(xflow, new Dictionary<string, string>());
+            adapter.FinishFillDb(s => Console.WriteLine(s));
+	    }
+	    else
+	    {
+	    //adapter.Refresh();
+	    }
+
+        sw.Restart();
+        for (int i = 0; i < 1000; i++)
+        {
+            int nom = rnd.Next(npersons);
+            var xrec = adapter.GetItemByIdBasic("p"+nom, false);
+            //Console.WriteLine(xrec.ToString());
+        }
+        sw.Stop();
+        Console.WriteLine(sw.ElapsedMilliseconds);
+
+        int nom2 = 66666;
+        string id = "p" + nom2;
+
+
+
+        //Console.ReadKey();
+    }
+    public static void Main5()
     {
         Console.WriteLine("Start FactographData inverse index.");
         string wwwpath = "../../../wwwroot/"; // Это для запуска через dotnet
