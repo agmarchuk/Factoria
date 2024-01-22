@@ -6,25 +6,110 @@ using Factograph.Data.r;
 using Factograph.Data.Adapters;
 using System.Linq;
 using static System.Net.WebRequestMethods;
+using Polar.DB;
+using System.Runtime.CompilerServices;
+using System.Data;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 //using ConsoleTest;
 
 partial class Program
 {
+    public static void Main()
+    {
+        Main7();
+    }
+
+    public static void Main7()
+    {
+        System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+        Random rnd = new Random();
+        bool isupi = false;
+        int npersons = 1_000_000;
+
+        PType tp_prop = new PTypeUnion(
+            new NamedType("novariant", new PType(PTypeEnumeration.none)),
+            new NamedType("field", new PTypeRecord(
+                new NamedType("prop", new PType(PTypeEnumeration.sstring)),
+                new NamedType("value", new PType(PTypeEnumeration.sstring)),
+                new NamedType("lang", new PType(PTypeEnumeration.sstring)))),
+            new NamedType("objprop", new PTypeRecord(
+                new NamedType("prop", new PType(PTypeEnumeration.sstring)),
+                new NamedType("link", new PType(PTypeEnumeration.sstring)))),
+            new NamedType("invprop", new PTypeRecord(
+                new NamedType("prop", new PType(PTypeEnumeration.sstring)),
+                new NamedType("source", new PType(PTypeEnumeration.sstring))))
+            );
+        PType tp_rec = new PTypeRecord(
+            new NamedType("id", new PType(PTypeEnumeration.sstring)),
+            new NamedType("tp", new PType(PTypeEnumeration.sstring)), // Признак delete будет в поле типа
+                                                                      //new NamedType("deleted", new PType(PTypeEnumeration.boolean)),
+            new NamedType("props", new PTypeSequence(tp_prop))
+            );
+
+        int nphotos = npersons * 4;
+        int nreflections = npersons * 8;
+        // 3 + 2 * 3 + 4 * 3 = 21 триплетов
+
+        // Сначала надо активировать базу данных
+        IFDataService db = null;
+        string pth = "wwwroot/";
+        db = new FDataService(pth, pth + "Ontology_iis-v14.xml", null);
+        db.Reload();
+        // =========== RRecord ===========
+        sw.Restart();
+        for (int i = 0; i < 1000; i++)
+        {
+            string id = "p" + rnd.Next(npersons);
+            var rr = db.GetRRecord(id, true);
+        }
+        sw.Stop();
+        Console.WriteLine("duration=" + sw.ElapsedMilliseconds);
+    }
     /// <summary>
     /// Нагрузочное тестирование адаптеров. Цель: сформировать данные достаточно большого объема и провести 
     /// тестирование выборками. Для этого будем пользоваться традиционной фототекой, а выборку также будем генерировать
     /// и пропускать в цикле. 
     /// </summary>
-    public static void Main()
+    public static void Main6()
     {
         System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+        bool isupi = false;
+        bool isxml = false;
+        int npersons = 1_000_000;
 
-        var adapter = new UpiAdapter(null);
-        adapter.Init("upi:D:/Home/FactographDatabases/upi-test/");
-        //var adapter = new RRecordAdapter(null);
-        //adapter.Init("rr:D:/Home/FactographDatabases/rr-test/");
+        DAdapter? adapter = null;
+        if (isupi)
+        {
+            adapter = new UpiAdapter(null);
+            adapter.Init("upi:D:/Home/FactographDatabases/upi-test/");
+        }
+        else
+        {
+            adapter = new RRecordAdapter(null);
+            adapter.Init("rr:D:/Home/FactographDatabases/rr-test/");
+        }
 
-        int npersons = 10_000;
+
+        PType tp_prop = new PTypeUnion(
+            new NamedType("novariant", new PType(PTypeEnumeration.none)),
+            new NamedType("field", new PTypeRecord(
+                new NamedType("prop", new PType(PTypeEnumeration.sstring)),
+                new NamedType("value", new PType(PTypeEnumeration.sstring)),
+                new NamedType("lang", new PType(PTypeEnumeration.sstring)))),
+            new NamedType("objprop", new PTypeRecord(
+                new NamedType("prop", new PType(PTypeEnumeration.sstring)),
+                new NamedType("link", new PType(PTypeEnumeration.sstring)))),
+            new NamedType("invprop", new PTypeRecord(
+                new NamedType("prop", new PType(PTypeEnumeration.sstring)),
+                new NamedType("source", new PType(PTypeEnumeration.sstring))))
+            );
+        PType tp_rec = new PTypeRecord(
+            new NamedType("id", new PType(PTypeEnumeration.sstring)),
+            new NamedType("tp", new PType(PTypeEnumeration.sstring)), // Признак delete будет в поле типа
+                                                                      //new NamedType("deleted", new PType(PTypeEnumeration.boolean)),
+            new NamedType("props", new PTypeSequence(tp_prop))
+            );
+
         int nphotos = npersons * 4;
         int nreflections = npersons * 8;
         // 3 + 2 * 3 + 4 * 3 = 21 триплетов
@@ -41,7 +126,7 @@ partial class Program
             ).Concat(
                 Enumerable.Range(0, nphotos).Select(i => new XElement(fog + "photo-doc",
                     new XAttribute(rdf + "about", "f" + i),
-                    new XElement(fog + "name", "и" + i),
+                    new XElement(fog + "name", "ф" + i),
                     new XElement(fog + "uri", "DSP" + i)))
             ).Concat(
                 Enumerable.Range(0, nreflections).Select(i => new XElement(fog + "reflection",
@@ -50,34 +135,157 @@ partial class Program
                     new XElement(fog + "in-doc", new XAttribute(rdf + "resource", "f" + rnd.Next(nphotos)))))
             );
 
-        bool toload = true;
-	    if (toload)
-	    { 
-	    adapter.StartFillDb(s => Console.WriteLine(s));
-            adapter.LoadXFlow(xflow, new Dictionary<string, string>());
-            adapter.FinishFillDb(s => Console.WriteLine(s));
-	    }
-	    else
-	    {
-	    //adapter.Refresh();
-	    }
-
-        sw.Restart();
-        for (int i = 0; i < 1000; i++)
+        
+        // ============ Данные записываются в фактографическую систему и читаются оттуда
+        bool factographic = false;
+        IFDataService db = null;
+        if (factographic)
         {
-            int nom = rnd.Next(npersons);
-            var xrec = adapter.GetItemByIdBasic("p"+nom, false);
-            //Console.WriteLine(xrec.ToString());
+            // Сначала надо активировать базу данных
+            string pth = "wwwroot/";
+            db = new FDataService(pth, pth + "Ontology_iis-v14.xml", null);
+            db.Reload();
         }
-        sw.Stop();
-        Console.WriteLine(sw.ElapsedMilliseconds);
+        else
+        {
+            bool toload = true;
+            if (toload && adapter != null)
+            {
+                adapter.StartFillDb(s => Console.WriteLine(s));
+                adapter.LoadXFlow(xflow, new Dictionary<string, string>());
+                adapter.FinishFillDb(s => Console.WriteLine(s));
+                // Это связь двух режимов: техническое действие по записи результата генерации в файл
+                //adapter.Save(@"D:\Home\FactographProjects\phototeka\originals\0001\0001.fog");
+                //return;
+            }
+            else
+            {
+                //adapter.Refresh();
+            }
+        }
 
-        int nom2 = 66666;
+        if (adapter != null)
+        {
+            sw.Restart();
+            for (int i = 0; i < 1000; i++)
+            {
+                int nom = rnd.Next(npersons);
+                var xrec = adapter.GetItemByIdBasic("p" + nom, false);
+                //Console.WriteLine(xrec.ToString());
+            }
+            sw.Stop();
+            Console.WriteLine(sw.ElapsedMilliseconds);
+        }
+
+        int nom2 = npersons * 2 / 3;
         string id = "p" + nom2;
 
+        // =========== Большой эксперимент ===========
+        // Ссылочные предикаты
+        string ipred = "http://fogid.net/o/reflected";
+        string dpred = "http://fogid.net/o/in-doc";
+        Func<IEnumerable<object>, string, object?> GetProp = (props, pred) =>
+            props.FirstOrDefault(p =>
+                (int)((object[])p)[0] == 2 &&
+                (string)((object[])((object[])p)[1])[0] == pred);
+
+        Console.WriteLine("Start BigExp");
+        sw.Restart();
+        for (int i = 0; i < 1000;i++)
+        {
+            nom2 = rnd.Next(npersons);
+            id = "p" + nom2;
+            // Запись
+            object? rect = adapter.GetRecord(id);
+
+            if (isxml)
+            {
+                // ======== Часть XML =========
+                var xrecord = adapter.GetItemByIdBasic(id, true);
+                if (xrecord != null)
+                {
+                    var query = xrecord.Elements("inverse")
+                        .Where(xinv => xinv.Attribute("prop")?.Value == ipred)
+                        .Select(xinv => xinv.Element("record")?.Attribute("id")?.Value)
+                        //.ToArray()
+                        ;
+                    var query2 = query
+                        .Select(idd => adapter.GetItemByIdBasic(idd, false)
+                            .Elements("direct").FirstOrDefault(rec => rec.Attribute("prop")?.Value == dpred)
+                            .Element("record").Attribute("id")?.Value
+                            )
+                        .Select(iddd => adapter.GetItemByIdBasic(iddd, false))
+                        .ToArray();
+                }
+            }
+            else
+            {
+                if (isupi)
+                {
+                    var ireflections = ((object[])((object[])rect)[2])
+                        .Where(u => (int)((object[])u)[0] == 3)
+                        .Select(u => ((object[])u)[1])
+                        .Where(pa => (string)((object[])pa)[0] == ipred)
+                        .Select(pa => (string)((object[])pa)[1])
+                        ;
+                    var query = ireflections
+                        .Select(iref => ((object[])((object[])adapter.GetRecord(iref))[2])
+                            .First(u => (int)((object[])u)[0] == 2 && (string)((object[])((object[])u)[1])[0] == dpred)
+                        )
+                        .Select(u => ((object[])((object[])u)[1])[1])
+                        .Select(iph => adapter.GetRecord((string)iph))
+                        .ToArray()
+                        ;
+                }
+                else
+                {
+                    IEnumerable<object> inverse_rects = adapter.GetInverseRecords(id);
+
+                    // Функция определения нужного свойства: на вход подается поток свойств из записи и предикат,
+                    // на выходе отдельное свойство или null
+
+                    var getR = inverse_rects
+                        .Where(r =>
+                        {
+                            var prop = GetProp((object[])((object[])r)[2], ipred);
+                            if (prop == null) return false;
+                            var pre = (string)((object[])((object[])prop)[1])[1];
+                            return pre == id;
+                        })
+                        .Select(r =>
+                        {
+                            var prop = GetProp((object[])((object[])r)[2], dpred);
+                            if (prop == null) return null;
+                            var pre = (string)((object[])((object[])prop)[1])[1];
+                            return pre;
+                        })
+                        .Where(idd => idd != null);
+                    //.ToArray();
+                    foreach (var idd in getR)
+                    {
+                        var rec_res = adapter.GetRecord(idd);
+                    }
+                }
+            }
 
 
-        //Console.ReadKey();
+        }
+        sw.Stop();
+        Console.WriteLine("duration=" +  sw.ElapsedMilliseconds);
+        //adapter.Close();
+
+        if (db != null)
+        {
+            // =========== RRecord ===========
+            sw.Restart();
+            for (int i = 0; i < 1000; i++)
+            {
+                id = "p" + rnd.Next(npersons);
+                var rr = db.GetRRecord(id, true);
+            }
+            sw.Stop();
+            Console.WriteLine("duration=" + sw.ElapsedMilliseconds);
+        }
     }
     public static void Main5()
     {
