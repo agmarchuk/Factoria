@@ -15,16 +15,18 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 partial class Program
 {
     public static void Main()
-    {
-        Main7();
+    {Console.WriteLine("Main");
+        Main7(1000_000);
     }
-
-    public static void Main7()
+/// <summary>
+/// Генерация данных и заполнение базы данных адаптером rr
+/// </summary>
+/// <param name="npersons"></param>
+    public static void Main8(int npersons)
     {
         System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
         Random rnd = new Random();
         bool isupi = false;
-        int npersons = 1_000_000;
 
         PType tp_prop = new PTypeUnion(
             new NamedType("novariant", new PType(PTypeEnumeration.none)),
@@ -49,11 +51,50 @@ partial class Program
         int nphotos = npersons * 4;
         int nreflections = npersons * 8;
         // 3 + 2 * 3 + 4 * 3 = 21 триплетов
+        
+        string rdf = "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}";
+        string fog = "{http://fogid.net/o/}";
+
+        IEnumerable<XElement> xflow = Enumerable.Range(0, npersons)
+            .Select(i => new XElement(fog + "person",
+                new XAttribute(rdf + "about", "p" + i),
+                new XElement(fog + "name", "и" + i),
+                new XElement(fog + "from-date", "" + (1900 + rnd.Next(110))))
+            ).Concat(
+                Enumerable.Range(0, nphotos).Select(i => new XElement(fog + "photo-doc",
+                    new XAttribute(rdf + "about", "f" + i),
+                    new XElement(fog + "name", "ф" + i),
+                    new XElement(fog + "uri", "DSP" + i)))
+            ).Concat(
+                Enumerable.Range(0, nreflections).Select(i => new XElement(fog + "reflection",
+                    new XAttribute(rdf + "about", "r" + i),
+                    new XElement(fog + "reflected", new XAttribute(rdf+"resource", "p" + rnd.Next(npersons))),
+                    new XElement(fog + "in-doc", new XAttribute(rdf + "resource", "f" + rnd.Next(nphotos)))))
+            );
+
+        DAdapter adapter = new RRAdapter(null);
+        adapter.Init("rr:C:/Home/FactographDatabases/rr-test/");
+        adapter.StartFillDb(s => Console.WriteLine(s));
+        adapter.LoadXFlow(xflow, new Dictionary<string, string>());
+        adapter.FinishFillDb(s => Console.WriteLine(s));
+        adapter.Save(@"C:\Home\FactographProjects\Test2\originals\0001\0001.fog");
+    }
+/// <summary>
+/// Инициирование базы данных, проведение тестовых расчетов
+/// </summary>
+/// <param name="npersons"></param>
+    public static void Main7(int npersons)
+    {
+        Console.WriteLine("Main7");
+        System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+        Random rnd = new Random();
+
+        int nphotos = npersons * 4;
+        int nreflections = npersons * 8;
 
         // Сначала надо активировать базу данных
-        IFDataService db = null;
         string pth = "wwwroot/";
-        db = new FDataService(pth, pth + "Ontology_iis-v14.xml", null);
+        IFDataService db = new FDataService(pth, pth + "Ontology_iis-v14.xml", null);
         db.Reload();
         // =========== RRecord ===========
         sw.Restart();
@@ -70,23 +111,23 @@ partial class Program
     /// тестирование выборками. Для этого будем пользоваться традиционной фототекой, а выборку также будем генерировать
     /// и пропускать в цикле. 
     /// </summary>
-    public static void Main6()
+    public static void Main6(int npersons)
     {
         System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
         bool isupi = false;
         bool isxml = false;
-        int npersons = 1_000_000;
+        //int npersons = 100_000;
 
         DAdapter? adapter = null;
         if (isupi)
         {
             adapter = new UpiAdapter(null);
-            adapter.Init("upi:D:/Home/FactographDatabases/upi-test/");
+            adapter.Init("upi:C:/Home/FactographDatabases/upi-test/");
         }
         else
         {
             adapter = new RRecordAdapter(null);
-            adapter.Init("rr:D:/Home/FactographDatabases/rr-test/");
+            adapter.Init("rr:C:/Home/FactographDatabases/rr-test/");
         }
 
 
@@ -155,7 +196,7 @@ partial class Program
                 adapter.LoadXFlow(xflow, new Dictionary<string, string>());
                 adapter.FinishFillDb(s => Console.WriteLine(s));
                 // Это связь двух режимов: техническое действие по записи результата генерации в файл
-                //adapter.Save(@"D:\Home\FactographProjects\phototeka\originals\0001\0001.fog");
+                //adapter.Save(@"C:\Home\FactographProjects\Test2\originals\0001\0001.fog");
                 //return;
             }
             else
