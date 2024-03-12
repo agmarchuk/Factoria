@@ -666,7 +666,10 @@ else // нет дерева
         {
             XElement xitem = new XElement("delete",
                 new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", id),
-                new XAttribute("owner", user));
+                new XAttribute("owner", user),
+                //TODO: Зачем delete имя? Это из-за парсинга XML
+                new XElement("{http://fogid.net/o/}name")
+                );
             db.PutItem(xitem);
             if (id == entityId)
             {

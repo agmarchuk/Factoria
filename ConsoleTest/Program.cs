@@ -15,8 +15,20 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 partial class Program
 {
     public static void Main()
-    {Console.WriteLine("Main");
-        Main7(1000_000);
+    {
+        Console.WriteLine("Main");
+        Main4();
+    }
+    private static void Main9()
+    {
+        Console.WriteLine("Start FactographData. Use sample.");
+        string wwwpath = "../ConsoleTest/wwwroot/"; // Это для запуска через dotnet
+        Factograph.Data.IFDataService db = new Factograph.Data.FDataService(wwwpath, wwwpath + "Ontology_iis-v14.xml", null);
+
+        Console.WriteLine($"Before Reload");
+        db.Reload(); // Это действие необходимо если меняется набор кассет
+        Console.WriteLine($"After Reload");
+        
     }
 /// <summary>
 /// Генерация данных и заполнение базы данных адаптером rr
@@ -359,10 +371,13 @@ partial class Program
     /// </summary>
     public static void Main4()
     {
-        Console.WriteLine("Start FactographData use sample.");
-        string wwwpath = "../../../wwwroot/"; // Это для запуска через dotnet
+        Console.WriteLine("Start FactographData. Use sample.");
+        string wwwpath = "../ConsoleTest/wwwroot/"; // Это для запуска через dotnet
         Factograph.Data.IFDataService db = new Factograph.Data.FDataService(wwwpath, wwwpath + "Ontology_iis-v14.xml", null);
+
+        Console.WriteLine($"Before Reload");
         db.Reload(); // Это действие необходимо если меняется набор кассет
+        Console.WriteLine($"After Reload");
 
         // Определим процедуру вывода потока записей на консоль в формате N3
         // Запись состоит из идентификатора, типа и набора свойств
@@ -396,8 +411,10 @@ partial class Program
         };
 
         // Поиск записей по имени
-        IEnumerable<RRecord> records = db.SearchRRecords("марчук", false);
-
+        string rname = "марчук";
+        IEnumerable<RRecord> records = db.SearchRRecords(rname, false);
+        Console.WriteLine($"{records.Count()} records with name {rname}");
+        
         // Посмотрим результат в формате N3
         foreach (var record in records) printRRecord(record);
 
