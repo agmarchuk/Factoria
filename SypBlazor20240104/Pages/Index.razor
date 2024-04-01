@@ -1,0 +1,781 @@
+﻿@page "/"
+@page "/index/{entityId?}/{eid?}"
+@using System.Xml.Linq
+@using Factograph.Data
+@using Factograph.Data.r
+@using Family.Authentication
+@using SypBlazor
+@using SypBlazor.Components
+
+@inject Factograph.Data.IFDataService db
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navManager
+@inject IConfiguration configuration
+
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage browserStorage
+
+<div style="width:100%;display:flex;flex-direction:row;">
+     <div style="width:100%;">
+        <SypBlazor.Components.SearchPanel typs="@typs" user="@user"
+            onNewItem="stss => NewItem(((Tuple<string, string>)stss).Item1, ((Tuple<string, string>)stss).Item2)"
+            onSelected="id => OnSelected((string)id)"  />
+    </div>
+
+    @if (rrec != null && rrec.Tp == "http://fogid.net/o/person" &&
+        configuration.GetSection("App:fam")?.Value == "true")
+    {
+        <div style="width:300px;">
+            индекс | <a href="fam/@(entityId)">семья</a> | <a href="gene/@(entityId)">семейное дерево</a>
+        </div>
+    }
+</div>
+
+@* ========= Тестовая область ========= *@
+<div>
+    @if (user != null) 
+    {
+        if (buff_cnt > 0)
+        {
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span>В <a href="Index/@(buff_id)">буфере</a>: @(buff_cnt) элементов</span>
+            <a href="javascript:void(0)" @onclick="ClearBuffer"> x </a>
+        }
+    }
+</div>
+@* ========= конец ========= *@
+
+@if (tree != null)
+{
+    @if (tree.Tp == "http://fogid.net/o/person" && regime == "gene")
+    {
+        <SypBlazor.Components.GeneTree entityId="@entityId" />
+    }
+    else
+    {
+    bool hasdocimage = false;
+    var invProps = tree.Props.Where(p => p is Inv).Cast<Inv>().ToArray();
+    <div>
+        <span style="color:green;">@(db.ontology.LabelOfOnto(tree.Tp))</span>
+        &nbsp;
+        <span>@(tree.Id)</span>
+    </div>
+
+    // ========    Это вставка полоски пред. след. к документу =========
+    @if (externalId != null)
+    {
+        string pr = "index/" + prev + "/" + externalId;
+        string d = "index/" + externalId;
+        string nx = "index/" + next + "/" + externalId;
+        <div style="text-align: center;">
+            <NavLink href="@d">к источнику</NavLink>
+            &nbsp;
+            @if (prev == null)
+            {
+                <span>пред.</span>
+            }
+            else
+            {
+                <NavLink href="@pr"><span>пред.</span></NavLink>
+            }
+            &nbsp;
+            @if (next == null)
+            {
+                <span>след.</span>
+            }
+            else
+            {
+                <NavLink href="@nx"><span>след.</span></NavLink>
+            }
+        </div>
+    }
+
+
+    @if (db.ontology.DescendantsAndSelf("http://fogid.net/o/document").Contains(tree.Tp))
+    {
+        var uriprop = tree.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/uri");
+        string? uri = ((Str?)uriprop)?.Value;
+      
+        if (tree.Tp == "http://fogid.net/o/photo-doc")
+        {
+            string sr = "docs/GetImage?u=" + uri + "&s=normal";
+            hasdocimage = true;
+            <img src="@sr" />
+
+        }
+        else if (tree.Tp == "http://fogid.net/o/video-doc")
+        {
+            hasdocimage = true;
+            string sr = "docs/GetVideo?u=" + uri + "&s=medium";
+            <video width="480" controls>
+                @* <source type="video/webm" src='@(sr + "&ext=webm")' /> *@
+                <source type="video/mp4" src='@(sr + "&ext=mp4")' />
+                Your browser does not support the video tag.
+            </video>
+        }
+        else if (tree.Tp == "http://fogid.net/o/audio-doc")
+        {
+            string sr = "docs/GetAudio?u=" + uri;
+            <audio controls>
+                <source type="audio/mpeg" src='@(sr)' />
+                Your browser does not support the audio tag.
+            </audio>
+        }
+        else if (tree.Tp == "http://fogid.net/o/document")
+        {
+            string? docmetainfo = ((Str?)tree.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/docmetainfo"))?.Value;
+            if (docmetainfo != null && docmetainfo.Contains("application/pdf"))
+            {   // Это PDF - его надо напечатать
+                hasdocimage = true;
+                string sr = "docs/GetPdf?u=" + uri;
+                    <embed src="@sr" width="100%" height="800" />
+            }
+            else if (docmetainfo != null && docmetainfo.Contains("application/fog"))
+            {   // Это FOG - он недоступен
+            }
+            else if (docmetainfo != null) // Все типы документов кроме .fog
+            {   // Другие документы с docmetainfo
+                string sr = "docs/GetDoc?u=" + uri;
+                var mime = docmetainfo.Split(';')
+                        .FirstOrDefault(s => s.StartsWith("documenttype:"))?.Substring("documenttype:".Length);
+                <div>Документ [@(mime)] получить копию: </div>
+                <div style="margin-bottom:10px;"><a href="@sr"><img src="icons/document_m.jpg" /></a></div>
+            }
+
+        }
+    }
+
+    // ========    Это вставка НИЖНЕЙ полоски пред. след. к документу =========
+    @if (externalId != null && hasdocimage)
+    {
+        string pr = "index/" + prev + "/" + externalId;
+        string d = "index/" + externalId;
+        string nx = "index/" + next + "/" + externalId;
+        <div style="text-align: center;">
+            <NavLink href="@d">к источнику</NavLink>
+            &nbsp;
+            @if (prev == null)
+            {
+                <span>пред.</span>
+            }
+            else
+            {
+                <NavLink href="@pr"><span>пред.</span></NavLink>
+            }
+            &nbsp;
+            @if (next == null)
+            {
+                <span>след.</span>
+            }
+            else
+            {
+                <NavLink href="@nx"><span>след.</span></NavLink>
+            }
+        </div>
+    }
+
+    <SypBlazor.Components.DrawTable Trees="@(new Rec[] { tree })" 
+        onDelete="(id) => Delete((string)id)"
+        onCancel="() => StateHasChanged()"
+        onOk="() => Build(entityId)"
+        th_noms="@th_noms"
+        user="@user" />
+    @if ( true || invProps.Length > 0) //TODO: надо разобраться почему нет пустых обратных списков свойств
+    {
+        var allowed = SypBlazor.Data.Theme.Allowed(th_noms);
+        <table style="">
+
+        @foreach (var iProp in invProps)
+        {
+            string pred = iProp.Pred;
+            if (!allowed.Contains(pred)) { continue; }            
+            Rec[] inv_items = iProp.Sources.Where(g => g != null)
+                .ToArray();
+            if (user != null || inv_items.Length > 0)
+            {
+                <tr valign="top">
+                    <td>
+                        <span style="color:green;">@(db.ontology.InvLabelOfOnto(pred))</span>
+                    </td>
+                    <td style="">
+                        @if (inv_items.Length > 0 || user != null)
+                        {
+                            if (pred == "http://fogid.net/o/in-collection" 
+                                || pred == "http://fogid.net/o/reflected"
+                                || pred == "http://fogid.net/o/inDocument") // TODO: Можно было бы выделить функцию 
+                            {
+                                string? dir_pred = null;
+                                if (pred == "http://fogid.net/o/in-collection") dir_pred = "http://fogid.net/o/collection-item";
+                                else if (pred == "http://fogid.net/o/reflected") dir_pred = "http://fogid.net/o/in-doc";
+                                    else if (pred == "http://fogid.net/o/inDocument") dir_pred = "http://fogid.net/o/partItem";
+                                if (pred == "http://fogid.net/o/inDocument")
+                                {  // Посортируем части
+                                    Rec[] query = inv_items.OrderBy<Rec, string>(r =>
+                                    {
+                                        var pg = r.GetStr("http://fogid.net/o/pageNumbers");
+                                        return pg ?? "";
+                                    }).ToArray();
+                                    inv_items = query;                                        
+                                }
+                                else if (pred == "http://fogid.net/o/in-collection")
+                                {
+                                    Rec[] query = inv_items.OrderBy<Rec, string>(r =>
+                                    {
+                                        var dt = r.GetDirect("http://fogid.net/o/collection-item")?
+                                            .GetStr("http://fogid.net/o/from-date");
+                                        return dt ?? "";
+                                    }).ToArray();
+                                    inv_items = query;
+                                }
+                                else if (pred == "http://fogid.net/o/reflected")
+                                {
+                                    Rec[] query = inv_items.OrderBy<Rec, string>(r =>
+                                    {
+                                        var dt = r.GetDirect("http://fogid.net/o/in-doc")?
+                                                    .GetStr("http://fogid.net/o/from-date");
+                                        return dt ?? "";
+                                    }).ToArray();
+                                    inv_items = query;
+                                }
+                                if (dir_pred != null && user != null)
+                                {
+                                    string tty =
+                                        pred == "http://fogid.net/o/in-collection" ?
+                                        "http://fogid.net/o/collection-member" :
+                                    (pred == "http://fogid.net/o/reflected" ?
+                                        "http://fogid.net/o/reflection" :
+                                    (pred == "http://fogid.net/o/inDocument" ?
+                                        "http://fogid.net/o/DocumentPart" : ("typeerr 4493"))); //TODO: Нужен корректный выход
+
+                                    @if (buff_cnt > 0)
+                                    {
+                                        <div>
+                                            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                            <a href="javascript:void(0)" @onclick="@(e =>AddInverseRelations(tty, pred, dir_pred))">Добавить</a>
+                                            <span> &nbsp; из буфера</span>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                }
+                                <SypBlazor.Components.Shakhmat entityId="@entityId"
+                                        dir_pred="@dir_pred" inv_items="@inv_items" user="@user" />
+                            }
+                            else if (true || iProp.Sources.Length > 0)
+                            {
+                                bool issysobj = false;
+                                var pre = iProp.Pred;
+                                //var tty = iProp.Sources[0].Tp;
+                                string tty = db.ontology.DomainsOfProp(pre).First();
+                                if (user != null)
+                                {
+                                    <div>
+                                        <a href="javascript:void(0)" @onclick="@(e =>NewInverseRelation(tty, pre))">нов.</a>
+                                        </div>
+                                }
+                                if (db.ontology.AncestorsAndSelf(tty).Contains("http://fogid.net/o/sys-obj"))
+                                { issysobj = true; }
+                                if (inv_items.Length > 0)
+                                {
+                                    <SypBlazor.Components.DrawTable Trees="@(inv_items)" level="1" user="@user"
+                                        inverseProp="@(iProp.Pred)" focusId="@(entityId)"
+                                        th_noms="@th_noms"
+                                        onDelete="(id) => Delete((string)id)"
+                                        onOk="() => Build(entityId)"
+                                        onCancel="() => StateHasChanged()"
+                                        toextendrecord="@toextendrecord"
+                                        issysobj="@issysobj"></SypBlazor.Components.DrawTable>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (user != null)
+                            {
+                                string pre = iProp.Pred;
+                                string tty = db.ontology.DomainsOfProp(pre).First();
+                                if (!db.ontology.AncestorsAndSelf(tty).Contains("http://fogid.net/o/sys-obj") &&
+                                    !( pred == "http://fogid.net/o/in-collection"
+                                    || pred == "http://fogid.net/o/reflected"
+                                    || pred == "http://fogid.net/o/inDocument"))
+                                {
+                                    <div>
+                                        <a href="javascript:void(0)" @onclick="@(e =>NewInverseRelation(tty, pre))">нов.</a>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div>
+                                        -
+                                    </div>
+                                }
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        }
+        </table>
+    }
+    @if (toextendrecord != null) toextendrecord = null; // Сомнительное решение, направленное на однократное срабатывание...
+    }
+}
+else // нет дерева
+{
+    @* <h3>Варианты входа</h3>
+    <ul>
+        <li><a href="index/start_page">Стартовая страница</a> с набором фондов. Далее двигаться по ссылкам</li>
+        <li>Набрать поисковый запрос в формате начало ФИО или начало названия, выбрать из вариантов, далее по ссылкам</li>
+        <li><a href="index/cassetterootcollection">Кассеты (первичные материалы)</a></li>
+        <li>Найти персону и посмотреть в режиме "семья" или в режиме "семейное дерево"</li>
+    </ul>
+    <h3>Варианты участия в проекте</h3>
+    <ul>
+        <li>Написать письмо модератору <a href="mailto:mag@iis.nsk.su">Марчуку Александру Гурьевичу</a>. Замечания и предложения приветствуются.</li>
+        <li>Прислать модератору документы и информацию, соответствующие теме архива куста семей и персон, близких Гурию Ивановичу и Ольге Николаевне Марчук</li>
+        <li>Пройти небольшое обучение и получить полномочия редактирования информации архива</li>
+    </ul> *@
+}
+<hr />
+@if (user != null)
+{
+    <div>user=@(user)</div>
+}
+<div>@(look)</div>
+@* <div>@(((FDataService)db).GetLook())</div> *@
+
+@code {
+    [Parameter] // Фокусная запись
+    public string? entityId { get; set; }
+    [Parameter] // Внешная запись
+    public string? eid { get; set; }
+
+    private RRecord? rrec;
+    private string[] typs = new string[0];
+
+    private string? toextendrecord = null; // Я забыл для чего это...
+
+
+    // группа параметров состояния
+    struct AppState
+    {
+        public AppState()
+        {
+            _toedit = false;
+        }
+        private bool _toedit = false;
+        public bool ToEdit { get { return _toedit; } }
+        public bool ToView { get { return !_toedit; } }
+    }
+    private AppState s = new AppState();
+
+    private void ToSearch()
+    {
+        StateHasChanged();
+    }
+    private void ToCancel()
+    {
+        //searchstring = null;
+        StateHasChanged();
+    }
+    // Мы будем создавать Rec-модель
+    private Rec? tree = null;
+    private string? prev = null, next = null, externalId = null;
+    private void Build(string? id)
+    {
+        if (id == null) return;
+        prev = null; next = null; externalId = null;
+        rrec = db.GetRRecord(id, true);
+        if (rrec != null)
+        {
+            Rec shablon;
+            if (false && db.ontology.DescendantsAndSelf("http://fogid.net/o/collection").Contains(rrec.Tp))
+            {
+                shablon = new Rec(null, rrec.Tp,
+                    new Tex("http://fogid.net/o/name"),
+                    new Inv("http://fogid.net/o/in-collection",
+                        new Rec(null, "http://fogid.net/o/collection-member",
+                            new Dir("http://fogid.net/o/collection-item",
+                                new Rec(null, null,
+                                    new Tex("http://fogid.net/o/name"),
+                                    new Str("http://fogid.net/o/uri"),
+                                    new Str("http://fogid.net/o/docmetainfo"))
+                                    ))),
+                    new Inv("http://fogid.net/o/collection-item",
+                        new Rec(null, "http://fogid.net/o/collection-member",
+                            new Dir("http://fogid.net/o/in-collection",
+                                new Rec(null, null,
+                                    new Tex("http://fogid.net/o/name"))
+                                    )))
+
+                    );
+            }
+            else if (false && rrec.Tp == "http://fogid.net/o/photo-doc")
+            {
+                shablon = new Rec(null, rrec.Tp,
+                    new Tex("http://fogid.net/o/name"),
+                    new Str("http://fogid.net/o/from-date"),
+                    new Tex("http://fogid.net/o/description"),
+                    new Str("http://fogid.net/o/uri"),
+                    new Str("http://fogid.net/o/docmetainfo"),
+                    inv_parts["http://fogid.net/o/collection-item"]
+                    );
+            }
+            else
+            {
+                shablon = Rec.GetUniShablon(rrec.Tp, 2, null, db.ontology);
+            }
+            tree = Rec.Build(rrec, shablon, db.ontology, idd => db.GetRRecord(idd, false));
+
+            // ======== Вычисление полоски ==========
+            if (eid != null)
+            {
+                externalId = eid;
+                RRecord? externalRec = db.GetRRecord(externalId, true);
+                //var rxobj = new RYEngine(dba);
+                string[] docset = new string[0];
+                if (externalRec != null && externalRec.Tp == "http://fogid.net/o/document")
+                    docset = externalRec.Props
+                        .Where(p => p is RInverseLink && p.Prop == "http://fogid.net/o/inDocument").Cast<RInverseLink>()
+                        .Select(l =>
+                        {
+                            //RRecord r = rxobj.GetRRecord(l.Source, false);
+                            RRecord? r = db.GetRRecord(l.Source, false);
+                            return new { r = r, pg = r?.GetField("http://fogid.net/o/pageNumbers") };
+                        })
+                        .OrderBy(rpg => rpg.pg)
+                        .Select(rpg => rpg.r?.GetDirectResource("http://fogid.net/o/partItem"))
+                        .Where(res => res != null)
+                        .Cast<string>()
+                        .ToArray();
+                // Другой вариант
+                else if (externalRec != null &&
+                    (externalRec.Tp == "http://fogid.net/o/collection" ||
+                     externalRec.Tp == "http://fogid.net/o/cassette"))
+                {
+                    docset = externalRec.Props
+                        .Where(p => p is RInverseLink && p.Prop == "http://fogid.net/o/in-collection")
+                        .Cast<RInverseLink>()
+                        .Select(ril => db.GetRRecord(ril.Source, false)?.GetDirectResource("http://fogid.net/o/collection-item"))
+                        .Cast<string>()
+                        .ToArray();
+                }
+                else if (externalRec != null && (db.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj").Contains(externalRec.Tp)))
+                {
+                    docset = externalRec.Props
+                            .Where(p => p is RInverseLink && p.Prop == "http://fogid.net/o/reflected")
+                            .Cast<RInverseLink>()
+                            .Select(ril => db.GetRRecord(ril.Source, false)?.GetDirectResource("http://fogid.net/o/in-doc"))
+                            .Cast<string>()
+                            .ToArray();
+                }
+                int ind = Array.IndexOf(docset, rrec.Id);
+                if (ind != -1 && ind - 1 >= 0)
+                {
+                    prev = docset[ind - 1];
+                }
+                else prev = null;
+                if (ind != -1 && ind + 1 < docset.Length)
+                {
+                    next = docset[ind + 1];
+                }
+                else next = null;
+            }
+        }
+    }
+
+    private string? user = null;
+    private string? look = null;
+
+    private void FixRecordChanges(Rec rec)
+    {
+        Func<string, XName> toXName = (string sname) =>
+        {
+            int pos = sname.LastIndexOfAny(new char[] { '/', '#' } );
+            return XName.Get(sname.Substring(pos + 1), sname.Substring(0, pos + 1));
+        };
+        if (rec != null && rec.Id != null && user != null)
+        {
+            // Делаем Xml-объект
+            XElement xrec = new XElement(toXName(rec.Tp),
+                new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", rec.Id),
+                new XAttribute("owner", user),
+                rec.Props.SelectMany<Pro, XElement>(p =>
+                {
+                    if (p is Tex)
+                    {
+                        Tex t = (Tex)p;
+                        return t.Values.Select(v => new XElement(toXName(p.Pred),
+                            new XText(v.Text),
+                           string.IsNullOrEmpty(v.Lang) ? new XAttribute("{http://www.w3.org/XML/1998/namespace}lang", "ru") :
+                           new XAttribute("{http://www.w3.org/XML/1998/namespace}lang", v.Lang)));
+                    }
+                    else if (p is Str)
+                    {
+                        Str s = (Str)p;
+                        return Enumerable.Repeat(new XElement(toXName(p.Pred), s.Value), 1);
+                    }
+                    else if (p is Dir)
+                    {
+                        Dir d = (Dir)p;
+                        return d.Resources.Select(r => new XElement(toXName(p.Pred), 
+                            new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", r.Id ?? "noId")));
+                    }
+                    else return new XElement[0];
+                }).Where(x => x != null),
+                null);
+            db.PutItem(xrec);
+        }
+    }
+
+    private string? buff_id = null;
+    private int buff_cnt = 0;
+    private string regime = "default";
+
+    //private bool isConnected = false;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            //isConnected = true;
+            await LoadStateAsync();
+            StateHasChanged();
+        }
+    }
+
+    private int[] th_noms = new int[] { 0 }; // Используемые номера тем
+
+    private async Task LoadStateAsync()
+    {
+        th_noms = new int[] { 0 }; // дефолт - одна нулевая тема
+        try 
+        {
+            var result = await browserStorage.GetAsync<string>("setSbor"); // номера без 0
+            if (result.Success && !string.IsNullOrEmpty(result.Value))
+            {
+                th_noms = Enumerable.Append<int>(result.Value.Split(' ')
+                    .Where(v => !string.IsNullOrEmpty(v)).Select(v => Int32.Parse(v)),
+                    0).ToArray();
+            }
+        } catch (Exception) {  }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var st = await authStateProvider.GetAuthenticationStateAsync();
+        user = st.User.Identity?.Name;
+        if (user != null) 
+        {
+            buff_id = "buffer_" + user;
+            var buff = db.GetRRecord(buff_id, true);
+            buff_cnt = 0;
+            if (buff != null)
+            {
+                buff_cnt = buff.Props.Where(p => p is RInverseLink).Count();
+            }
+        }
+
+        if (typs.Length == 0) typs = db.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj").ToArray();
+
+        if (entityId == null)
+        {
+            var spage = configuration.GetSection("App:start_page")?.Value;
+            if (spage != null) entityId = spage;
+        }
+        if (entityId != null)
+        {
+            rrec = db.GetRRecord(entityId, false);
+            if (rrec != null)
+            {
+                BuildParts();
+                Build(entityId);
+                //searchstring = null;
+                StateHasChanged();
+            }
+        }
+    }
+    //protected override async Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    await base.OnAfterRenderAsync(firstRender);
+    //    if (firstRender)
+    //    {
+    //        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+    //        regime = await customAuthStateProvider.ReadFromStorage("regime") ?? "default";
+    //        StateHasChanged();
+    //    }
+    //}
+
+
+    // Шаблоны обратных свойств, размещенные по обратным предикатам
+    private Dictionary<string, Inv> inv_parts = new Dictionary<string, Inv>();
+    private void BuildParts()
+    {
+        inv_parts = new Dictionary<string, Inv>();
+        inv_parts.Add("http://fogid.net/o/in-collection",
+            new Inv("http://fogid.net/o/in-collection",
+                new Rec(null, "http://fogid.net/o/collection-member",
+                    new Dir("http://fogid.net/o/collection-item",
+                        new Rec(null, "http://fogid.net/o/photo-doc",
+                            new Str("http://fogid.net/o/uri"),
+                            new Str("http://fogid.net/o/docmetainfo")),
+                        new Rec(null, null,
+                            new Tex("http://fogid.net/o/name"))
+                            ))));
+        inv_parts.Add("http://fogid.net/o/collection-item",
+            new Inv("http://fogid.net/o/collection-item",
+                new Rec(null, "http://fogid.net/o/collection-member",
+                    new Dir("http://fogid.net/o/in-collection",
+                        new Rec(null, null,
+                            new Tex("http://fogid.net/o/name"))
+                            ))));
+    }
+
+    // ============= Навигация
+    private void OnSelected(string id)
+    {
+        navManager.NavigateTo("index/" + id);
+    }
+
+    // ==================== Редактирование =======================
+    private void NewItem(string searchtype, string searchstring)
+    {
+        if (user != null)
+        {
+            if (string.IsNullOrEmpty(searchstring) || string.IsNullOrEmpty(searchtype)) { return; }
+            int pos = searchtype.LastIndexOf('/');
+            string local = searchtype.Substring(pos + 1);
+            string nsname = searchtype.Substring(0, pos + 1);
+            XElement xitem = new XElement(XName.Get(local, nsname),
+                new XAttribute("owner", user),
+                new XElement(XName.Get("name", "http://fogid.net/o/"),
+                    new XAttribute("{http://www.w3.org/XML/1998/namespace}lang", "ru"),
+                    searchstring));
+            XElement x = db.PutItem(xitem);
+            string? nid = x?.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
+            if (nid != null)
+            {
+                navManager.NavigateTo("index/" + nid);
+            }
+            //StateHasChanged();
+        }
+    }
+    private void Delete(string id)
+    {
+        if (user != null)
+        {
+            XElement xitem = new XElement("delete",
+                new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", id),
+                new XAttribute("owner", user));
+            db.PutItem(xitem);
+            if (id == entityId)
+            {
+                navManager.NavigateTo("index/", true);
+            }
+            else
+            {
+                //StateHasChanged();
+                Build(entityId);
+            }
+        }
+    }
+    private void NewInverseRelation(string tty, string invPred)
+    {
+        if (entityId != null && user != null)
+        {
+            XElement xitem = new XElement(Factograph.Data.Adapters.ONames.ToXName(tty),
+                new XAttribute("owner", user),
+                new XElement(Factograph.Data.Adapters.ONames.ToXName(invPred),
+                    new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", entityId))
+                );
+            XElement x = db.PutItem(xitem);
+            toextendrecord = x.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
+            Build(entityId);
+        }
+    }
+
+    private void ClearBuffer()
+    {
+        // Выясняем есть ли такой элемент
+        RRecord? rRecord = db.GetRRecord(buff_id, true);
+        // Если есть, то чистим, если нет, то заводим
+        if (rRecord != null && user != null)
+        {
+            // выделяем членов
+            string[] members = rRecord.Props.Select<RProperty, string?>(p =>
+                {
+                    if (p is RInverseLink && p.Prop == "http://fogid.net/o/in-collection")
+                        return ((RInverseLink)p).Source;
+                    return null;
+                })
+                .Where(r => r != null)
+                .Cast<string>()
+                .ToArray();
+            // чистим
+            foreach (var member in members)
+            {
+                db.PutItem(new XElement("delete",
+                    new XAttribute("owner", user),
+                    new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", member)));
+            }
+        }
+        buff_cnt = 0;
+        //navManager.NavigateTo("index/" + (entityId ?? ""));
+    }
+
+    // Добавление обратных отношений к айтемам из буфера
+    // tty - тип псевдосущности отношения
+    // invPred - обратный предикат по пути от фокусной сущности к отношению
+    // dirPred - прямой предикат от отношению к "удаленной" сущности
+    private void AddInverseRelations(string tty, string invPred, string dirPred)
+    {
+        if (user == null || buff_id == null) return;
+        RRecord? rRecord = db.GetRRecord(buff_id, true);
+        if (rRecord == null) return;
+        // Выделяю идентификаторы элементов коллекции
+        string[] members = rRecord.Props.Select<RProperty, string?>(p =>
+            {
+                if (p is RInverseLink && p.Prop == "http://fogid.net/o/in-collection")
+                    return ((RInverseLink)p).Source;
+                return null;
+            })
+            .Where(r => r != null)
+            .Cast<string>()
+            .ToArray();
+        // Возможно, нам понадобится добавок в виде значения атрибута pageNumbers
+        // Вычислим начальное значение
+        int pn_initial = 1001;
+        if (tty == "http://fogid.net/o/DocumentPart" && entityId != null)
+        {
+            // прочитаем обратные ссылки
+            RRecord? rtest = db.GetRRecord(entityId, true);
+            if (rtest != null) pn_initial += rtest.Props.Count(p =>
+                p is RInverseLink && p.Prop == "http://fogid.net/o/inDocument");
+        }
+        // Прохожусь по элементам коллекции
+        foreach (var pair in members.Select<string, Tuple<int, string>>((s, i) => new Tuple<int, string>(i, s)))
+        {
+            int ind = pair.Item1;
+            string mId = pair.Item2;
+            // Находим запись collection-member
+            RRecord? mRec = db.GetRRecord(mId, false);
+            if (mRec == null) continue;
+            string? dir = mRec.GetDirectResource("http://fogid.net/o/collection-item");
+            if (dir == null) continue;
+            // Формируем команду добавления и добавляем в db
+            XElement xitem = new XElement(Factograph.Data.Adapters.ONames.ToXName(tty),
+                new XAttribute("owner", user),
+                new XElement(Factograph.Data.Adapters.ONames.ToXName(invPred),
+                    new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", entityId ?? "")),
+                new XElement(Factograph.Data.Adapters.ONames.ToXName(dirPred),
+                    new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", dir))
+                );
+            // добавим страницу, если надо
+            if (tty == "http://fogid.net/o/DocumentPart") 
+                xitem.Add(new XElement("{http://fogid.net/o/}pageNumbers", "" + (pn_initial + ind)));
+            XElement x = db.PutItem(xitem);
+        }
+        //toextendrecord = x.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
+        Build(entityId);
+    }
+}

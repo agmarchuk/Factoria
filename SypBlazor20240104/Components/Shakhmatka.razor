@@ -1,0 +1,64 @@
+@using FactographData
+@using FactographData.r
+
+@inject FactographData.IFDataService db
+
+<div>
+    @foreach (var item in inv_items)
+    {
+        var fidi = item.Props;
+        string dirinv_pred = dir_pred;
+        Dir? di = (Dir?)(fidi.FirstOrDefault(p => p is Dir && p.Pred == dirinv_pred));
+        if (di != null && di.Resources.Length > 0 && di.Resources[0] != null)
+        {
+            var tr = di.Resources[0];
+            var uriprop = tr.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/uri");
+            string? uri = ((Str?)uriprop)?.Value;
+            string? cb_n = System.Net.WebUtility.UrlEncode(item.Id);
+            string cb_name = cb_n ?? "unknown";
+            <div class="photo mat-elevation-z5" style="">
+                @if (tr.Tp == "http://fogid.net/o/photo-doc")
+                {
+                    string sr = "docs/GetImage?u=" + uri + "&s=small";
+                    <a href="index/@tr.Id/@entityId">
+                        <img src="@(sr)" alt="" />
+                    </a>
+                }
+                else
+                {
+                    var dmiprop = tr.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/docmetainfo");
+                    string? dmi = ((Str?)dmiprop)?.Value;
+                    <span>
+                        @(db.ontology.LabelOfOnto(tr.Tp))
+                    </span>
+                    @if (dmi != null && dmi.Contains("application/fog"))
+                    {
+                        <span>fog</span>
+                    }
+                    else
+                    {
+                        <a href="index/@tr.Id/@entityId">
+                            @(tr.GetText("http://fogid.net/o/name"))
+                        </a>
+                    }
+                }
+            </div>
+        }
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string entityId { get; set; }
+    [Parameter]
+    public string dir_pred { get; set; }
+    [Parameter]
+    public Rec[] inv_items { get; set; }
+
+    // Список отобранных отношений (не только к документам)
+    private string selectedtype = ""; // Типы отношений
+    private string selecteddirect = ""; // предикат указателя на документ
+
+}
+
+

@@ -68,12 +68,14 @@ namespace Factograph.Data
                     {
                         property = new XElement(XName.Get(locname, ns));
                     }
-                    if (reader.HasAttributes) 
-                    {
-                        while (reader.MoveToNextAttribute()) 
+                        if (reader.HasAttributes)
                         {
-                            //Console.WriteLine("Att {0}={1} {2}", reader.Name, reader.Value, reader.Depth);
-                            XAttribute att = new XAttribute(XName.Get(reader.LocalName, reader.NamespaceURI), reader.Value);
+                            while (reader.MoveToNextAttribute())
+                            {
+                                XAttribute att;
+                                if (reader.LocalName == "xmlns") att = new XAttribute("xmlns", "http://fogid.net/o/");
+                                else att = new XAttribute(XName.Get(reader.LocalName, reader.NamespaceURI), reader.Value);
+                                
                             if (reader.Depth == 2) record.Add(att);
                             else if (reader.Depth == 3 && property != null) property.Add(att);
                         }

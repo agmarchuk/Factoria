@@ -1,0 +1,81 @@
+﻿@using System.Xml.Linq
+@using Factograph.Data.r;
+@using Factograph.Data;
+@inject Factograph.Data.IFDataService db
+
+@if (property is Dir)
+{
+    Dir d = (Dir)property;
+    if (d.Resources.Length != 0)
+    {
+        Rec re = d.Resources[0];
+        <td colspan="2" style="width:100%;">
+            <a href="index/@(re.Id)" target="_blank">@(re.GetText("http://fogid.net/o/name"))</a>
+            &nbsp;
+            <a href="javascript:void(0)" @onclick="@(e => DeleteLink(d.Pred))">x</a>
+        </td>
+    }
+    else
+    {
+        // В это месте, для хендлера onNewItem есть еще дополнительная информация вида:
+        // d.Pred - имя предиката прямой ссылки для данной записи. Отработать onSelected
+        // можно и нужно после появления идентификатора нового айтема. Заталкиваю его в параметры
+        var typps = db.ontology.RangesOfProp(d.Pred)
+            .SelectMany(t => db.ontology.DescendantsAndSelf(t))
+            .Distinct().ToArray();
+        <td colspan="2" style="background-color: antiquewhite; width:100%;">
+            <SypBlazor.Components.SearchPanel typs="@typps" user="@user"
+                                      onNewItem="stss => NewItemClick((Tuple<string, string>)stss, d.Pred)"
+                                      onSelected="idd => OnSelected((string)idd, d.Pred)" />
+        </td>
+    }
+}
+
+
+@code {
+    [Parameter]
+    public Rec etree { get; set; } = new Rec("", "");
+    [Parameter]
+    public Pro property { get; set; } = new Dir("");
+    [Parameter]
+    public string? user { get; set; }
+
+    private void OnSelected(string idd, string pred)
+    {
+        //Dir di = (Dir)etree.Props.First(pr => pr is Dir && pr.Pred == pred);
+        Dir di = (Dir)property;
+        var rr = db.GetRRecord(idd, false);
+        if (rr == null) return;
+        string nm = "";
+        string lan = "";
+        foreach (var pr in rr.Props.Where(p => p is RField && p.Prop == "http://fogid.net/o/name"))
+        {
+            RField f = (RField)pr;
+            if (f.Lang == "ru") { nm = f.Value; lan = f.Lang; break; }
+            if (f.Lang == "en") { nm = f.Value; lan = f.Lang; }
+            else if (f.Lang != "en") { nm = f.Value; lan = f.Lang; }
+        }
+        di.Resources = new Rec[] { new Rec(rr.Id, rr.Tp,
+            new Pro[] { new Tex("http://fogid.net/o/name", new TextLan(nm, lan)) }) };
+    }
+    private void DeleteLink(string prop)
+    {
+        Dir di = (Dir)property;
+        di.Resources = new Rec[0];
+        //StateHasChanged();
+    }
+    private void NewItemClick(Tuple<string, string> stss, string pred) // на входе пара: тип и образец и ид предиката
+    {
+        if (user == null) return;
+        string ty = stss.Item1;
+        string ss = stss.Item2;
+        XElement xitem = new XElement(Factograph.Data.Adapters.ONames.ToXName(ty),
+            new XAttribute("owner", user),
+            new XElement("{http://fogid.net/o/}name", 
+                new XAttribute("{http://www.w3.org/XML/1998/namespace}lang", "ru"), ss));
+        XElement x = db.PutItem(xitem);
+        string? nid = x.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
+        if (nid != null) this.OnSelected(nid, pred);
+    }
+
+}

@@ -1,0 +1,62 @@
+﻿@using Factograph.Data
+@using Factograph.Data.r
+@inject Factograph.Data.IFDataService db
+
+<div class="mdl-shadow--4dp" style="width:@(Width)px; height:@(Height)px; text-align:center; display:flex; flex-direction: column; background: url('@(PhotoUrl)') center no-repeat; background-color:antiquewhite;">
+    <div style="margin: auto;">
+        <span style="text-align: center; color:black; background-color: antiquewhite; background-size:contain; ">@(Prolog)</span>
+    </div>
+    <div style="margin-top:@(PhotoUrl==null?100:20)px; text-align:center;font-size:large; font-weight:bold;height:min-content; background-color: antiquewhite;">@(Name)</div>
+    <div style="text-align:center; height:100%;">@(Dates)</div>
+@*     @if (Regime == "photo")
+    {
+        <div style="margin: auto;height:min-content;">
+            <a href="@(Reference)" style="align-content:center; color:black; background-color: #d9dabb; background-size:contain; " title="@(Name)">
+                @(Name.Substring(0, Math.Min(Name.Length, 24)))
+            </a>
+        </div>
+    }
+    else
+    {
+        <div style="margin: auto;height:50%;">
+            <a href="@(Reference)" style="align-content:center; color:darkred; background-color: #d9dabb; background-size:contain; " title="@(Name)">
+                @(Name.Substring(0, Math.Min(Name.Length, 24)))
+            </a>
+        </div>
+    }
+ *@    <div style="margin: auto;height:min-content;font-size:smaller;">
+        <span style="text-align: center; color:black; background-color: antiquewhite; background-size:contain; ">
+            @(Epilog)
+        </span>
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter]
+    public string Prolog { get; set; } = ""; // Текст в начале
+    [Parameter]
+    public string Epilog { get; set; } = ""; // Текст в конце
+    [Parameter]
+    public string Name { get; set; } = ""; // Текст имени объекта (носитель гиперссылки)
+    [Parameter]
+    public string Dates { get; set; } = ""; // Текст дат
+    [Parameter]
+    public string Text { get; set; } = ""; // Дополнительный (поясняющий) текст
+    [Parameter]
+    public string Reference { get; set; } = ""; // Ссылка по которой посылают пользователя при нажатии
+    [Parameter]
+    public string PhotoUrl { get; set; } = ""; // URL фотографии
+    [Parameter]
+    public string Regime { get; set; } = ""; //photo, coll, doc
+    [Parameter]
+    public int Width { get; set; } = 200;
+    [Parameter]
+    public int Height { get; set; } = 200;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
+}

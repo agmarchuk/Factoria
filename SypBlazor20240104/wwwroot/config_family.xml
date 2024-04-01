@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <config>
-  <database connectionstring="upi:D:\Home\FactographDatabases\upi-test\"/>
+  <database connectionstring="upi:D:\Home\FactographDatabases\sypblazor\"/>
 
   <LoadCassette>C:\FactographProjects\gi_pharchive</LoadCassette>
   <LoadCassette>C:\FactographProjects\gi_disks</LoadCassette>

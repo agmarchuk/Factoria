@@ -1,0 +1,221 @@
+﻿@using Factograph.Data
+@using Factograph.Data.r
+
+@inject Factograph.Data.IFDataService db
+
+@if (user != null && inv_items.Count() > 0)
+{
+    <div>
+        <a href="javascript:void(0)" @onclick="FillCheckboxes">Выделить все</a> |
+        <a href="javascript:void(0)" @onclick="ClearCheckboxes">Сбросить все</a>
+    </div>
+}
+<form method="post" action="docs/cpycut" >
+    @if (user != null)
+    {
+        <input type="hidden" name="entityId" value="@(System.Net.WebUtility.UrlEncode(entityId))" />
+        <input type="hidden" name="dir_pred" value="@(System.Net.WebUtility.UrlEncode(dir_pred))" />
+    }
+    @if (user != null && inv_items.Count() > 0)
+    {   //TODO: наверное правильно будет "спрятать" идентификатор пользователя...
+        <input type="hidden" name="user" value="@(System.Net.WebUtility.UrlEncode(user))" />
+        <div>
+
+            <input type="submit" name="copy" value="Копировать">
+            &nbsp;
+            <input type="submit" name="cut" value="Забрать">
+            &nbsp;
+            в буфер.&nbsp;
+            <input type="reset">
+        </div>
+    }
+
+    <div style="display:flex;flex-wrap:wrap;width:100%; ">
+        @foreach (var item in inv_items)
+        {
+            var fidi = item.Props;
+            string dirinv_pred = dir_pred;
+            string? fromdate = item.GetStr("http://fogid.net/o/from-date");
+            Dir? di = (Dir?)(fidi.FirstOrDefault(p => p is Dir && p.Pred == dirinv_pred));
+            string regime = "";
+            if (di != null && di.Resources.Length > 0 && di.Resources[0] != null)
+            {
+                var tr = di.Resources[0];
+                if (fromdate == null) fromdate = tr.GetStr("http://fogid.net/o/from-date");
+                //string st = "";
+                //if (selected.Any(re => re.Id == item.Id)) st = "border:solid thick; border-color:aqua;";
+                //int position = AddRelation(dirinv_pred, item);
+                string? cb_n = System.Net.WebUtility.UrlEncode(item.Id);
+                string cb_name = cb_n ?? "unknown";
+                // Малая композиция состоит из спецификатора, uri и подпись
+                string specificator = "";
+                string podpis = fromdate ?? "";
+                if (podpis.Length > 4) podpis = podpis.Substring(0, 4);
+                string name = tr.GetText("http://fogid.net/o/name") ?? "";
+                string text = tr.GetText("http://fogid.net/o/doc-content") ?? "";
+
+                // Первая попытка получить uri и documenttype 
+                string? uri = tr.GetStr("http://fogid.net/o/uri");
+                string? documenttype = uri == null ? null :
+                    tr.GetStr("http://fogid.net/o/docmetainfo")?.Split(';')
+                    .FirstOrDefault(s => s.StartsWith("documenttype:"))?.Substring("documenttype:".Length);
+                if (documenttype == "application/fog") { continue; }
+
+                //bool fromdoc = true;
+                @if (db.ontology.DescendantsAndSelf("http://fogid.net/o/document").Contains(tr.Tp))
+                {
+                    // вторая попытка
+                    RRecord? rrec = db.GetRRecord(tr.Id ?? "noname", false);
+                    //if (rrec?.Id == "GeneTreeCass_0001_0031") { }
+                    uri = rrec?.GetField("http://fogid.net/o/uri");
+                    documenttype = rrec?.GetField("http://fogid.net/o/docmetainfo")?.Split(';')
+                        .FirstOrDefault(s => s.StartsWith("documenttype:"))?.Substring("documenttype:".Length);
+                    if (documenttype == "application/fog") { continue; }
+                    if (uri == null && tr.Tp == "http://fogid.net/o/document")
+                    {
+                        // снова вычисляю, а можно было бы поставить true ранее
+                        rrec = db.GetRRecord(tr.Id ?? "noname", true);
+                        if (rrec == null) throw new Exception("Err: 2873");
+                        RRecord? firstpart = rrec.Props
+                            .Where(p => p is RInverseLink && p.Prop == "http://fogid.net/o/inDocument")
+                        .Select(p => db.GetRRecord(((RInverseLink)p).Source, false))
+                        .OrderBy(r => r?.GetField("http://fogid.net/o/pageNumbers"))
+                        .FirstOrDefault();
+                        var doc = firstpart==null?null: db.GetRRecord(firstpart.GetDirectResource("http://fogid.net/o/partItem"), false);
+                        if (doc != null && doc.Tp == "http://fogid.net/o/photo-doc")
+                        {
+                            uri = doc.GetField("http://fogid.net/o/uri");
+                            documenttype = uri == null || doc == null  ? null :
+                                doc.GetField("http://fogid.net/o/docmetainfo")?.Split(';')
+                                .FirstOrDefault(s => s.StartsWith("documenttype:"))?.Substring("documenttype:".Length);
+                            //fromdoc = false;
+                        }
+                    }
+                }
+                else if (db.ontology.DescendantsAndSelf("http://fogid.net/o/collection").Contains(tr.Tp))
+                {
+                    RRecord? rrec = db.GetRRecord(tr.Id ?? "noname", true);
+                    if (rrec == null) throw new Exception("Err: 2873");
+                    RRecord? firstphoto = rrec.Props
+                    .Where(p => p is RInverseLink && p.Prop == "http://fogid.net/o/reflected")
+                    .Select(p => db.GetRRecord(((RInverseLink)p).Source, false)?.GetDirect("http://fogid.net/o/in-doc"))
+                    .Where(r => r != null)
+                    .FirstOrDefault(r => r?.Tp == "http://fogid.net/o/photo-doc");
+                    if (firstphoto != null)
+                    {
+                        uri = firstphoto.GetField("http://fogid.net/o/uri");
+                        documenttype = uri == null || firstphoto == null ? null :
+                        firstphoto.GetField("http://fogid.net/o/docmetainfo")?.Split(';')
+                        .FirstOrDefault(s => s.StartsWith("documenttype:"))?.Substring("documenttype:".Length);
+                        //fromdoc = false;
+                    }
+                    regime = "fund";
+                }
+                @if (tr.Tp == "http://fogid.net/o/photo-doc")
+                {
+                        
+                }
+                else
+                {
+                    //uri = null;
+                    //documenttype = null;
+                    specificator = db.ontology.LabelOfOnto(tr.Tp);
+                }
+                if (documenttype == null || !documenttype.StartsWith("image/")) { uri = null; }
+                string? sr = uri == null ? null : "docs/GetImage?u=" + uri + "&s=small";
+                string? enlarge = uri == null ? null : "docs/GetImage?u=" + uri + "&s=normal";
+                string reference = "index/" + tr.Id + "/" + entityId;
+                regime = tr.Tp=="http://fogid.net/o/photo-doc"?"photo": regime;
+                <div class="mat-elevation-z5" style="margin:6px;">
+                    @if (user != null)
+                    {
+                        <div style="">
+                            <div style="float:left">
+                                @if (filled)
+                                {
+                                    <input type="checkbox" checked name="@(cb_name)" />
+                                }
+                                else
+                                {
+                                    <input type="checkbox" name="@(cb_name)" />
+                                }
+                            </div>
+                            <div style="float:right;">
+                                <a href="@(enlarge)" target="_external">+</a>
+                            </div>
+                        </div>
+                    }
+                    <div>
+                        <Box Prolog="@(specificator)" Epilog="@(podpis)" Name="@(name)" Text="@(text)"
+                            Reference="@(reference)" PhotoUrl="@(sr)" 
+                            Regime='@(regime)' />
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</form>
+
+@code {
+    [Parameter]
+    public string entityId { get; set; } = "noId";
+    [Parameter]
+    public string dir_pred { get; set; } = "noDirPred";
+    [Parameter]
+    public Rec[] inv_items { get; set; } = new Rec[0];
+    [Parameter]
+    public string? user { get; set; }
+
+    // Список отобранных отношений (не только к документам)
+    private string selectedtype = ""; // Типы отношений
+    private string selecteddirect = ""; // предикат указателя на документ
+    private List<Rec> selected = new List<Rec>();
+    private string[] selectedObjs = new string[0];
+    //private bool che = false;
+    private List<bool> mask = new List<bool>();
+    private List<Rec> relations = new List<Rec>();
+
+    private void ClearRelations()
+    {
+        relations = new List<Rec>();
+        mask = new List<bool>();
+    }
+    private int AddRelation(string dirinv_pred, Rec? rel)
+    {
+        if (rel == null) return -1;
+        if (rel.Tp != selectedtype || dirinv_pred != selecteddirect)
+        {
+            selectedtype = rel.Tp;
+            selecteddirect = dirinv_pred;
+            relations = new List<Rec>();
+            mask = new List<bool>();
+        }
+        int pos = relations.Count;
+        relations.Add(rel);
+        mask.Add(false);
+        return pos;
+    }
+    private void OnCopy()
+    {
+    }
+    private void OnCut()
+    {
+
+    }
+    private bool filled = false;
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        filled = false;
+    }
+    private void FillCheckboxes()
+    {
+        filled = true;
+        this.StateHasChanged();
+    }
+    private void ClearCheckboxes()
+    {
+        filled = false;
+        this.StateHasChanged();
+    }
+}

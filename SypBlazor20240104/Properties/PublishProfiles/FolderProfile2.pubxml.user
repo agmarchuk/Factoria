@@ -4,8 +4,8 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 -->
 <Project>
   <PropertyGroup>
-    <_PublishTargetUrl>D:\Home\CoreSites\Family</_PublishTargetUrl>
-    <History>True|2024-03-31T13:31:59.8500304Z;True|2024-01-14T20:57:00.1690631+07:00;</History>
+    <_PublishTargetUrl>D:\Home\CoreSites\SoranBlazor</_PublishTargetUrl>
+    <History>True|2023-08-24T03:12:12.9219567Z;True|2023-08-23T09:03:37.5317622+07:00;</History>
     <LastFailureDetails />
   </PropertyGroup>
 </Project>

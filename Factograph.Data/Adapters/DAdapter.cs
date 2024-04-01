@@ -330,10 +330,13 @@ namespace Factograph.Data.Adapters
                 }
                 else if (x.Name == ONames.fogi + "substitute")
                 {
-                    string idold = x.Attribute("old-id").Value;
-                    string idnew = x.Attribute("new-id").Value;
+                    string? idold = x.Attribute(ONames.rdfabout)?.Value; //x.Attribute("old-id").Value;
+                    string? idnew = x.Element("{http://fogid.net/u/}newid")?
+                        .Attribute(ONames.rdfresource)?.Value;
+                    //x.Attribute("new-id").Value;
                     // может old-id уже уничтожен, тогда ничего не менять
-                    if (substitutes.TryGetValue(idold, out string value))
+                    string? value = null;
+                    if (idold != null && substitutes.TryGetValue(idold, out value))
                     {
                         substitutes.Remove(idold);
                     }
@@ -521,15 +524,16 @@ namespace Factograph.Data.Adapters
 
         public static Func<XElement, XElement> ConvertXElement = xel =>
         {
-            if (xel.Name == "delete" || xel.Name == ONames.fogi + "delete") return new XElement(ONames.fogi + "delete",
-                xel.Attribute("id") != null ?
-                    new XAttribute(ONames.rdfabout, ConvertId(xel.Attribute("id").Value)) :
-                    new XAttribute(xel.Attribute(ONames.rdfabout)),
-                xel.Attribute("mT") == null ? null : new XAttribute(xel.Attribute("mT")));
-            else if (xel.Name == "substitute" || xel.Name == ONames.fogi + "substitute") return new XElement(ONames.fogi + "substitute",
-                new XAttribute("old-id", ConvertId(xel.Attribute("old-id").Value)),
-                new XAttribute("new-id", ConvertId(xel.Attribute("new-id").Value)));
-            else
+            //if (xel.Name == "delete" || xel.Name == ONames.fogi + "delete") return new XElement(ONames.fogi + "delete",
+            //    xel.Attribute("id") != null ?
+            //        new XAttribute(ONames.rdfabout, ConvertId(xel.Attribute("id").Value)) :
+            //        new XAttribute(xel.Attribute(ONames.rdfabout)),
+            //    xel.Attribute("mT") == null ? null : new XAttribute(xel.Attribute("mT")));
+            //else if (xel.Name == "substitute" || xel.Name == ONames.fogi + "substitute") return new XElement(ONames.fogi + "substitute",
+            //    new XAttribute("old-id", ConvertId(xel.Attribute("old-id").Value)),
+            //    new XAttribute("new-id", ConvertId(xel.Attribute("new-id").Value)));
+            
+            //else
             {
                 string id = ConvertId(xel.Attribute(ONames.rdfabout).Value);
                 XAttribute mt_att = xel.Attribute("mT");

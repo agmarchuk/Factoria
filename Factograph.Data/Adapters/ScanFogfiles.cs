@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -13,7 +14,7 @@ namespace Factograph.Data.Adapters
         private string[] fogfile_names;
         private Func<XElement, XElement> transformXElement = null;
         private Func<XElement, bool> useXElement = null; // true - OK, false - break
-        private Func<XElement, XElement> revisionXElement = null; // первичная доработка
+        //private Func<XElement, XElement> revisionXElement = null; // первичная доработка
         public ScanFogfiles(string[] fogfile_names,
             Func<XElement, XElement> transformXElement,
             Func<XElement, bool> useXElement)
@@ -25,12 +26,12 @@ namespace Factograph.Data.Adapters
         }
         public static XElement CreateRevision(XElement xrec)
         {
-            Console.WriteLine("=============123==============" + xrec);
-            return xrec;
+            //Console.WriteLine("=============123==============" + xrec);
+            //return xrec;
             // Надо определить "стандартную" доработку xdoc'а:
             // <delete id=""/> => <delete rdf:about="" />
             // <substitute oldid="" newid=""/> => <substitute rdf:about="oldid" ><newid rdf:resource="new"/></substitute>
-            //XElement revisionXElem =
+            // А еще у них должны появиться ns="http://fogid.net/o/"
             if (xrec.Name.LocalName == "delete")
             {
                 string? att1 = xrec.Attribute("id")?.Value;
@@ -43,13 +44,14 @@ namespace Factograph.Data.Adapters
             }
             else if (xrec.Name.LocalName == "substitute")
             {
-                string? att2 = xrec.Attribute("oldid")?.Value;
+                string? att2 = xrec.Attribute("old-id")?.Value;
                 if (att2 != null)
                 {
                     return new XElement(XName.Get("substitute", "http://fogid.net/o/"),
                         new XAttribute(XName.Get("about", "http://www.w3.org/1999/02/22-rdf-syntax-ns#"), att2),
-                        new XElement(XName.Get("resource", "http://www.w3.org/1999/02/22-rdf-syntax-ns#"),
-                        xrec.Attribute("newid")?.Value));
+                        new XElement(XName.Get("newid", "http://fogid.net/o/"),
+                            new XAttribute(XName.Get("resource", "http://www.w3.org/1999/02/22-rdf-syntax-ns#"),
+                        xrec.Attribute("new-id")?.Value)));
                 }
                 else return xrec;
             }
@@ -62,7 +64,7 @@ namespace Factograph.Data.Adapters
             foreach (string ffname in fogfile_names)
             {
                 OneFog fog = new OneFog(ffname);
-                foreach (XElement xrec in fog.Records().Select(x => revisionXElement(x)))//
+                foreach (XElement xrec in fog.Records().Select(x => CreateRevision(x)))//
                 {
                     //Console.WriteLine("=============123==============" + xrec);
                     // Рабочая зона
@@ -78,7 +80,7 @@ namespace Factograph.Data.Adapters
             foreach (string ffname in fogfile_names)
             {
                 OneFog fog = new OneFog(ffname);
-                foreach (XElement xrec in fog.Records().Select(x => revisionXElement(x))) //
+                foreach (XElement xrec in fog.Records().Select(x => CreateRevision(x))) //
                 {
                     yield return xrec;
                 }

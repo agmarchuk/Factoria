@@ -1,0 +1,25 @@
+@page "/room216/"
+@inject NavigationManager navManager
+@inject Factograph.Data.IFDataService db
+<h1>Административная страница</h1>
+<div>
+    <NavLink @onclick="Reload" href="javascript:void(0)">Перезагрузить!</NavLink>
+    @if (loaddone)
+    {
+        <button @onclick="OkButton">ok</button>
+    }
+</div>
+
+@code{
+    private bool loaddone = false;
+    private void Reload()
+    {
+        db.Reload();
+        loaddone = true;
+    }
+    private void OkButton()
+    {
+        loaddone = false;
+        navManager.NavigateTo("index", true);       
+    }
+}

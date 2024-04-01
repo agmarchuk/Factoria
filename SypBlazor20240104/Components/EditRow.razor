@@ -1,0 +1,68 @@
+﻿@using System.Collections.Generic
+@using System.Linq
+@using System.Xml.Linq
+@using Factograph.Data
+@using Factograph.Data.r
+@inject Factograph.Data.IFDataService db
+
+<table border="1" width="100%">
+    @if (etree != null)
+    {
+        // Поля и прямые свойства, участвующие в обработке
+        Pro[] directProps = etree.Props
+            .Where(p => !(p is Inv) && p.Pred != inverseProp).ToArray();
+        foreach (Pro pr in directProps)
+        {
+            //if (pr.Pred == "http://fogid.net/o/uri" || pr.Pred == "http://fogid.net/o/docmetainfo") { continue; }
+            <tr>
+                <td>
+                    @(db.ontology.LabelOfOnto(pr.Pred))
+                </td>
+                @if (pr is Tex)
+                {
+                    <TexCell property="pr"/>
+                }
+                else if (pr is Str)
+                {
+                    <StrCell property="pr" />
+                }
+                else
+                {
+                    <DirCell property="pr" etree="@(etree)" user="@user" />
+                }
+            </tr>
+        }
+        <tr>
+            <td colspan="3">
+                <MatBlazor.MatButton @onclick="@(args => onOkClick())" Outlined="true">ok</MatBlazor.MatButton>&nbsp;
+                <MatBlazor.MatButton @onclick="@(onCancelClick)" Outlined="true">cancel</MatBlazor.MatButton>&nbsp;
+            </td>
+        </tr>
+    }
+</table>
+
+
+@code {
+    [Parameter]
+    public Rec etree { get; set; } = new Rec("", "");
+    [Parameter]
+    public string? inverseProp { get; set; }
+    [Parameter]
+    public string? user { get; set; }
+    [Parameter]
+    public EventCallback onNewItem { get; set; }
+    [Parameter]
+    public EventCallback onCancel { get; set; }
+    [Parameter]
+    public EventCallback onOk { get; set; }
+
+    private async Task onOkClick()
+    {
+        await onOk.InvokeAsync(etree);
+    }
+    private async Task onCancelClick()
+    {
+        await onCancel.InvokeAsync();
+    }
+
+}
