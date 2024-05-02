@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+  <!-- Надо указать в connectionstring пустую директорию для базы данных -->
+  <database connectionstring="rr:C:\Home\FactographDatabases\sborka1\"/>
+
+  <!-- Надо перечислить заружаемые кассеты. Для тех, в которых допустимо 
+    редактирование нужен аттрибут write="true"-->
+  <LoadCassette write="true">C:\Home\FactographProjects\DemoMag</LoadCassette>
+</config>
