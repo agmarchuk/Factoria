@@ -372,7 +372,7 @@ partial class Program
     public static void Main4()
     {
         Console.WriteLine("Start FactographData. Use sample.");
-        string wwwpath = "../ConsoleTest/wwwroot/"; // Это для запуска через dotnet
+        string wwwpath = @"D:\Home\dev2024\Factoria\ConsoleTest\wwwroot\"; // "../ConsoleTest/wwwroot/"; // Это для запуска через dotnet
         Factograph.Data.IFDataService db = new Factograph.Data.FDataService(wwwpath, wwwpath + "Ontology_iis-v14.xml", null);
 
         Console.WriteLine($"Before Reload");

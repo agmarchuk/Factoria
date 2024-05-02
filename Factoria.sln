@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Factograph.Data", "Factogra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polar.DB", "..\PolarDB\Polar.DB\Polar.DB.csproj", "{D5B1D608-9B95-4442-B9AD-AB5F261585C7}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Publicuem2", "Publicuem2\Publicuem2.csproj", "{7452736D-B1FB-41A1-A041-B4F1DB562DBD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{D5B1D608-9B95-4442-B9AD-AB5F261585C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5B1D608-9B95-4442-B9AD-AB5F261585C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5B1D608-9B95-4442-B9AD-AB5F261585C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7452736D-B1FB-41A1-A041-B4F1DB562DBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7452736D-B1FB-41A1-A041-B4F1DB562DBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7452736D-B1FB-41A1-A041-B4F1DB562DBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7452736D-B1FB-41A1-A041-B4F1DB562DBD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

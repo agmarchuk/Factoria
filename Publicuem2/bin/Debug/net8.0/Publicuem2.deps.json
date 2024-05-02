@@ -1,0 +1,49 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Publicuem2/1.0.0": {
+        "dependencies": {
+          "Factograph.Data": "1.0.0"
+        },
+        "runtime": {
+          "Publicuem2.dll": {}
+        }
+      },
+      "Factograph.Data/1.0.0": {
+        "dependencies": {
+          "Polar.DB": "1.0.0"
+        },
+        "runtime": {
+          "Factograph.Data.dll": {}
+        }
+      },
+      "Polar.DB/1.0.0": {
+        "runtime": {
+          "Polar.DB.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Publicuem2/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Factograph.Data/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Polar.DB/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

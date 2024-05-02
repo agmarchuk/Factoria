@@ -47,7 +47,10 @@ namespace Factograph.Data.Adapters
         /// <param name="turlog">лог для сообщений</param>
         public void FillDb(IEnumerable<FogInfo> fogflow, Action<string> turlog)
         {
-            FillDbScans(fogflow, turlog);
+            // Это старое сканирование
+            FillDb0(fogflow, turlog);
+            // Это новое (не работающее) сканирование
+            //FillDbScans(fogflow, turlog);
         }
 
         public void FillDb0(IEnumerable<FogInfo> fogflow, Action<string> turlog)
@@ -524,16 +527,15 @@ namespace Factograph.Data.Adapters
 
         public static Func<XElement, XElement> ConvertXElement = xel =>
         {
-            //if (xel.Name == "delete" || xel.Name == ONames.fogi + "delete") return new XElement(ONames.fogi + "delete",
-            //    xel.Attribute("id") != null ?
-            //        new XAttribute(ONames.rdfabout, ConvertId(xel.Attribute("id").Value)) :
-            //        new XAttribute(xel.Attribute(ONames.rdfabout)),
-            //    xel.Attribute("mT") == null ? null : new XAttribute(xel.Attribute("mT")));
-            //else if (xel.Name == "substitute" || xel.Name == ONames.fogi + "substitute") return new XElement(ONames.fogi + "substitute",
-            //    new XAttribute("old-id", ConvertId(xel.Attribute("old-id").Value)),
-            //    new XAttribute("new-id", ConvertId(xel.Attribute("new-id").Value)));
-            
-            //else
+            if (xel.Name == "delete" || xel.Name == ONames.fogi + "delete") return new XElement(ONames.fogi + "delete",
+                xel.Attribute("id") != null ?
+                    new XAttribute(ONames.rdfabout, ConvertId(xel.Attribute("id").Value)) :
+                    new XAttribute(xel.Attribute(ONames.rdfabout)),
+                xel.Attribute("mT") == null ? null : new XAttribute(xel.Attribute("mT")));
+            else if (xel.Name == "substitute" || xel.Name == ONames.fogi + "substitute") return new XElement(ONames.fogi + "substitute",
+                new XAttribute("old-id", ConvertId(xel.Attribute("old-id").Value)),
+                new XAttribute("new-id", ConvertId(xel.Attribute("new-id").Value)));
+            else
             {
                 string id = ConvertId(xel.Attribute(ONames.rdfabout).Value);
                 XAttribute mt_att = xel.Attribute("mT");

@@ -551,7 +551,7 @@ namespace Factograph.Data
             string subpath;
             string method = s;
             if (method == null) subpath = "/originals";
-            if (method == "small") subpath = "/documents/small";
+            else if (method == "small") subpath = "/documents/small";
             else if (method == "medium") subpath = "/documents/medium";
             else subpath = "/documents/normal"; // (method == "n")
             string path = cass_dir + subpath + last10;
