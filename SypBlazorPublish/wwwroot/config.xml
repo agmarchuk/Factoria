@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<config>
-  <database connectionstring="upi:D:\Home\FactographDatabases\upi\"/>
-
-  <LoadCassette write="yes">D:\Home\FactographProjects\test_cass</LoadCassette>
-
-</config>
