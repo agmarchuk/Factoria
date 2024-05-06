@@ -124,13 +124,13 @@ namespace Publicuem2
 
         private static XElement? OneTable(IFDataService db, Rec[] recs, string? forbidden)
         {
-            if (recs.Length == 0) return null; 
+            if (recs.Length == 0 || recs[0] == null) return null; 
             Pro[] dtable = recs[0].Props.Where(prop => !(prop is Inv)).ToArray();
             var query = dtable.Where(prop => !(prop is Dir && prop.Pred == forbidden));
             return new XElement("table", new XAttribute("border", "0"),
                 new XElement("tr",
                 query.Select(prop => new XElement("td", db.ontology.LabelOfOnto(prop.Pred)))),
-                recs.Select(rec => new XElement("tr",
+                recs.Where(rec => rec != null).Select(rec => new XElement("tr",
                 rec.Props.Where(prop => !(prop is Inv)).Select(prop =>
                 {
                     if (prop is Str)
