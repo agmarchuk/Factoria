@@ -10,7 +10,6 @@
     <Content Remove="Components\MatBox.razor" />
     <Content Remove="Components\Shakhmatka.razor" />
     <Content Remove="Components\Shakhmatka_edit.razor" />
-    <Content Remove="wwwroot\config.xml" />
   </ItemGroup>
 
   <ItemGroup>

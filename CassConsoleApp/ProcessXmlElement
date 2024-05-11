@@ -1,0 +1,8 @@
+
+
+namespace CassConsoleApp 
+{
+    public class ProcessXmlElement
+    {
+    }
+}
