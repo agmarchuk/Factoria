@@ -66,14 +66,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="CManager.exe" size="116736">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="CManager.exe" size="117248">
       <assemblyIdentity name="CManager" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>NPdCAwL5as4WCZHYp2dgHMG73Qgz7dw9S06R+kOlRCM=</dsig:DigestValue>
+        <dsig:DigestValue>3quLZ2H1wN4pKM6u8hJjcEpzDgsjBpo7OTJR4VgVL8I=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

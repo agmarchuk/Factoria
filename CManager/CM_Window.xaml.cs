@@ -785,9 +785,30 @@ namespace CManager
         {
             string ow = this.owner.Text;
             if(string.IsNullOrEmpty(ow)) return;
-            cass.AddNewRdf(ow);
+            //cass.AddNewRdf(ow);
+            AddNewRdf1(cass, ow);
             cass.Save();
             RefreshViewPort();
+        }
+
+        public static IEnumerable<XElement> AddNewRdf1( Cassette cassette, string owner)
+        {
+            string dbid = cassette.Name + "_" + owner + "_" + DateTime.Now.Ticks.ToString();
+            string emptyRDFDOcText =
+$@"<?xml version='1.0' encoding='utf-8'?>
+<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns='http://fogid.net/o/' 
+owner='{owner}' prefix='{cassette.Name}_' counter='1011'>
+</rdf:RDF>";
+            XElement emptyRdfDoc = XElement.Parse(emptyRDFDOcText);
+            string filepath = cassette.Dir.FullName + "/" + dbid + ".fog";
+            emptyRdfDoc.Save(filepath);
+            var seq = cassette.AddFile(new FileInfo(filepath), cassette.CollectionId).ToList();
+            // Надо добавить владельца в iisstore документа и хорошо бы проставить uri (это надо делать в файле)
+            XElement rdfdoc = seq.First(xe => xe.Name == ONames.TagDocument);
+            XElement iisstore = rdfdoc.Element(ONames.TagIisstore);
+            iisstore.Add(new XAttribute(ONames.AttOwner, owner));
+            File.Delete(filepath);
+            return seq;
         }
 
         private void MenuBuildPhotoPreviews_Click(object sender, RoutedEventArgs e)
