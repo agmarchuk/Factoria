@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Design.Serialization;
+﻿using System;
+using System.ComponentModel.Design.Serialization;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -26,24 +27,38 @@ namespace CassConsoleApp
             // Директория с внешними запускаемыми программами или C:\Home\bin или D:\Home\bin
             if (Directory.Exists(@"C:\Home\bin")) working_directory = @"C:\Home\bin";
 
-            Console.WriteLine("Usage: CassConsoleApp config.xml");
+            Console.WriteLine("Usage: CassConsoleApp preview|compress config.xml");
 
-            string config_path = "D:\\Home\\dev2024\\Factoria\\CassConsoleApp\\config.xml";
-            XElement xconfig = XElement.Load(config_path);
+            string command = args.Length > 0 ? args[0] : "preview";
+            string second_arg = args.Length > 1 ? args[1] : @"D:\Home\dev2024\Factoria\CassConsoleApp\config.xml";
+            var parts = second_arg.Split('\\', '/');
+            string filename = parts == null ? @"D:\Home\dev2024\Factoria\CassConsoleApp\config.xml" : parts[parts.Length - 1];
+            string[] cassnames = new string[0]; 
+            if (filename.ToLower() == "config.xml")
+            {
+                XElement xconfig = XElement.Load(second_arg);
+                cassnames = xconfig.Elements("LoadCassette").Select(x => x.Value).ToArray();
+            }
+            else
+            {
+                cassnames = new string[] { second_arg }; 
+            }
 
-            foreach (string casspath in xconfig.Elements("LoadCassette").Select(x => x.Value))
+            foreach (string casspath in cassnames)
             {
 
                 //string casspath = args.Length > 0 ? args[0] : @"D:\Home\FactographProjects\t2";
                 string cass = casspath.Split('/', '\\').Last();
-                string cassname = casspath + "/meta/" + cass + "_current.fog";
-                string backupname = cassname + ".fog";
-                if (!System.IO.File.Exists(backupname)) System.IO.File.Move(cassname, backupname);
+                string cassfog = casspath + "/meta/" + cass + "_current.fog";
+                //string backupname = cassname + ".fog";
+                //if (!System.IO.File.Exists(backupname)) System.IO.File.Move(cassname, backupname);
                 // Заведем командный файл преобразований
                 //if (System.IO.File.Exists(casspath + "/convert.bat")) 
                 //    System.IO.File.Delete(casspath + "/convert.bat");
                 //FileStream convert = new FileStream(casspath + "/convert.bat", FileMode.Append, FileAccess.Write);
                 //System.IO.TextWriter writer = new System.IO.StreamWriter(convert);
+
+
                 // Типоразмеры
                 XElement finfo = XElement.Parse(
     @"<?xml version='1.0' encoding='utf-8'?>
@@ -58,64 +73,64 @@ namespace CassConsoleApp
   </video>
 </finfo>");
 
-                Func<XmlReader, bool> GetProperty = reader =>
-    {
-        string ns = reader.NamespaceURI;
-        string locname = reader.LocalName;
-        Console.WriteLine($"{ns}//{locname}");
-        if (reader.HasAttributes)
-        {
-            while (reader.MoveToNextAttribute())
-            {
-                Console.WriteLine("Att {0}={1} {2}", reader.Name, reader.Value, reader.NamespaceURI);
-            }
-            // Move the reader back to the element node.
-            //reader.MoveToElement();
-            while (reader.Read())
-            {
-                if (reader.NodeType == XmlNodeType.Text)
-                {
-                    Console.WriteLine("text {0}={1} {2} {3}", reader.Name, reader.Value, reader.NamespaceURI, reader.Depth);
-                }
-                else if (reader.NodeType == XmlNodeType.EndElement)
-                {
-                    break;
-                }
-            }
+    //Func<XmlReader, bool> GetProperty = reader =>
+    //{
+    //    string ns = reader.NamespaceURI;
+    //    string locname = reader.LocalName;
+    //    Console.WriteLine($"{ns}//{locname}");
+    //    if (reader.HasAttributes)
+    //    {
+    //        while (reader.MoveToNextAttribute())
+    //        {
+    //            Console.WriteLine("Att {0}={1} {2}", reader.Name, reader.Value, reader.NamespaceURI);
+    //        }
+    //        // Move the reader back to the element node.
+    //        //reader.MoveToElement();
+    //        while (reader.Read())
+    //        {
+    //            if (reader.NodeType == XmlNodeType.Text)
+    //            {
+    //                Console.WriteLine("text {0}={1} {2} {3}", reader.Name, reader.Value, reader.NamespaceURI, reader.Depth);
+    //            }
+    //            else if (reader.NodeType == XmlNodeType.EndElement)
+    //            {
+    //                break;
+    //            }
+    //        }
 
-        }
-        return true;
-    };
-                Func<XmlReader, bool> GetRecord = reader =>
-                {
-                    string ns = reader.NamespaceURI;
-                    string locname = reader.LocalName;
-                    Console.WriteLine($"{ns}//{locname}");
-                    if (reader.HasAttributes)
-                    {
-                        while (reader.MoveToNextAttribute())
-                        {
-                            Console.WriteLine("Att {0}={1} {2}", reader.Name, reader.Value, reader.NamespaceURI);
-                        }
-                        // Move the reader back to the element node.
-                        //reader.MoveToElement();
-                        while (reader.Read())
-                        {
-                            if (reader.NodeType == XmlNodeType.Element)
-                            {
-                                var ok = GetProperty(reader);
-                            }
-                            else if (reader.NodeType == XmlNodeType.EndElement)
-                            {
-                                break;
-                            }
-                        }
+    //    }
+    //    return true;
+    //};
+    //Func<XmlReader, bool> GetRecord = reader =>
+    //{
+    //    string ns = reader.NamespaceURI;
+    //    string locname = reader.LocalName;
+    //    Console.WriteLine($"{ns}//{locname}");
+    //    if (reader.HasAttributes)
+    //    {
+    //        while (reader.MoveToNextAttribute())
+    //        {
+    //            Console.WriteLine("Att {0}={1} {2}", reader.Name, reader.Value, reader.NamespaceURI);
+    //        }
+    //        // Move the reader back to the element node.
+    //        //reader.MoveToElement();
+    //        while (reader.Read())
+    //        {
+    //            if (reader.NodeType == XmlNodeType.Element)
+    //            {
+    //                var ok = GetProperty(reader);
+    //            }
+    //            else if (reader.NodeType == XmlNodeType.EndElement)
+    //            {
+    //                break;
+    //            }
+    //        }
 
-                    }
-                    return true;
-                };
+    //    }
+    //    return true;
+    //};
 
-                OneFog fog = new OneFog(backupname);
+                OneFog fog = new OneFog(cassfog);
                 Dictionary<string, string> attributes = new Dictionary<string, string>();
                 foreach (var pair in fog.FogAttributes())
                 {
@@ -123,46 +138,58 @@ namespace CassConsoleApp
                     attributes.Add(pair.Key, pair.Value);
                 }
 
+                Console.WriteLine("=====================<<<===========================");
+
                 foreach (XElement rec in fog.Records())
                 {
-                    Console.WriteLine(rec.ToString());
-                }
-                fog.Close();
-
-                Console.WriteLine("================================================");
-
-                //string rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-                string xdocroot = @"<?xml version='1.0' encoding='utf-8'?>
-<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' 
-xmlns='http://fogid.net/o/'></rdf:RDF>";
-                OneFog fog2 = new OneFog(backupname);
-                //foreach (var pair in fog.FogAttributes())
-                //{
-                //    //Console.WriteLine($"{pair.Key}=>{pair.Value}");
-                //}
-
-                XElement xdoc = XElement.Parse(xdocroot);
-                // Добавлю атрибуты uri, owner, prefix, counter
-
-                if (attributes.ContainsKey("uri")) xdoc.Add(new XAttribute("uri", attributes["uri"]));
-                if (attributes.ContainsKey("owner")) xdoc.Add(new XAttribute("owner", attributes["owner"]));
-                if (attributes.ContainsKey("prefix")) xdoc.Add(new XAttribute("prefix", attributes["prefix"]));
-                if (attributes.ContainsKey("counter")) xdoc.Add(new XAttribute("counter", attributes["counter"]));
-
-                // Теперь добавим преобразованные записи
-                foreach (XElement rec in fog2.Records())
-                {
-                    //xdoc.Add(rec);
                     string localname = rec.Name.LocalName;
                     string? id = rec.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
                     int width = 1440, height = 1080;
                     if (id == null) { continue; }
                     string? documenttype = null;
 
+
                     // Сначала выявим uri и infos - массив атрибутов в docmetainfo 
                     string? uri = rec.Element(XName.Get("uri", "http://fogid.net/o/"))?.Value;
                     string? docmetainfo = rec.Element(XName.Get("docmetainfo", "http://fogid.net/o/"))?.Value;
                     string[] infos = docmetainfo != null ? docmetainfo.Split(';') : new string[0];
+
+                    // ============== command = "compress" ===============
+                    if (command == "compress")
+                    {
+                        if (localname == "photo-doc" && uri != null)
+                        {
+                            // Если есть tif как оригинал, его надо преобразовать в .jpg
+                            string source = casspath + @"\originals\" + uri.Substring(uri.Length - 10) + ".tif";
+                            string? target = null;
+                            if (System.IO.File.Exists(source))
+                            {
+                                target = casspath + @"\originals\" + uri.Substring(uri.Length - 10) + ".jpg";
+                                Process proc1 = new Process();
+                                proc1.StartInfo.FileName = working_directory + @"\magick.exe";
+                                proc1.StartInfo.WorkingDirectory = working_directory;
+                                proc1.StartInfo.ArgumentList.Add(source);
+                                proc1.StartInfo.ArgumentList.Add(target);
+                                proc1.Start();
+                                try
+                                {
+                                    proc1.WaitForExit();
+                                    Console.WriteLine(target + " <- " + " OK");
+                                }
+                                finally
+                                {
+                                    proc1.Dispose();
+                                }
+                            }
+                            if (target != null && System.IO.File.Exists(target))
+                            {
+                                System.IO.File.Delete(source);
+                            }
+                        }
+
+                        continue;
+                    }
+                    // ============== end of "compress" =============
 
                     // Работаем в масштабах:
                     string[] frame_sizes = new string[] { "small", "medium", "normal" };
@@ -180,10 +207,14 @@ xmlns='http://fogid.net/o/'></rdf:RDF>";
                             else if (info.StartsWith("documenttype:"))
                                 documenttype = info.Substring("documenttype:".Length);
                         }
-                        string? ext = documenttype?.Substring(documenttype.LastIndexOf('/') + 1);
-                        if (ext == "jpeg") ext = "jpg";
+                        string? ext = documenttype?.Substring(documenttype.LastIndexOf('/') + 1)?.ToLower();
+                        if (ext == "jpg" || ext == "jpeg") ext = "jpg";
+                        else if (ext == "tif" || ext == "tiff") ext = "tif";
                         // Документ-оригинал:
                         string original = casspath + "\\originals" + uri.Substring(uri.Length - 10) + "." + ext;
+                        // Оригинал может быть .jpg, надо проверить наличие файла
+                        if (ext == "tif" && !System.IO.File.Exists(original))
+                            original = casspath + "\\originals" + uri.Substring(uri.Length - 10) + ".jpg";
 
                         // Вычислим фактор "увеличения" для каждого типоразмера
                         int more = width > height ? width : height;
@@ -360,50 +391,57 @@ xmlns='http://fogid.net/o/'></rdf:RDF>";
                                 process2.Dispose();
                             }
                         }
-
-                        //    //Process process = Process.Start(magic_path + "\\magick.exe");
-                        //    Process process = new Process();
-                        //    process.StartInfo.FileName = magic_path + "\\magick.exe";
-                        //    process.StartInfo.WorkingDirectory = magic_path;
-                        //    string ars = $"\"{original}\" \"-resize {ifactor}.{rfactor}%\" \"{small}\"";
-                        //    //process.StartInfo.Arguments = ars;
-                        //    process.StartInfo.ArgumentList.Add(original);
-                        //    process.StartInfo.ArgumentList.Add("-resize");
-                        //    process.StartInfo.ArgumentList.Add(ifactor + "." + rfactor + "%");
-                        //    process.StartInfo.ArgumentList.Add(small);
-                        //    process.Start();
-                        //    try
-                        //    {
-                        //        process.WaitForExit();
-                        //        Console.WriteLine(ext + " OK");
-                        //    }
-                        //    finally
-                        //    {
-                        //        process.Dispose();
-                        //    }
-                        //}
                     }   // =============== конец обработки видео
 
-                    xdoc.Add(new XElement(XName.Get(localname, "http://fogid.net/o/"),
-                        new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", id),
-                        rec.Elements().Select(el =>
-                        {
-                            string pred = el.Name.LocalName;
-                            var att = el.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource");
-                            if (att == null)
+                }
+                fog.Close();
+
+                Console.WriteLine("=====================>>>===========================");
+
+                // ======================== А это - канонически правильная копия fog2 ===========================
+                bool makeFog2 = false;
+                if (makeFog2)
+                {
+                    string xdocroot = @"<?xml version='1.0' encoding='utf-8'?>
+<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' 
+xmlns='http://fogid.net/o/'></rdf:RDF>";
+                    OneFog fog2 = new OneFog(cassfog);
+
+                    XElement xdoc = XElement.Parse(xdocroot);
+                    // Добавлю атрибуты uri, owner, prefix, counter
+
+                    if (attributes.ContainsKey("uri")) xdoc.Add(new XAttribute("uri", attributes["uri"]));
+                    if (attributes.ContainsKey("owner")) xdoc.Add(new XAttribute("owner", attributes["owner"]));
+                    if (attributes.ContainsKey("prefix")) xdoc.Add(new XAttribute("prefix", attributes["prefix"]));
+                    if (attributes.ContainsKey("counter")) xdoc.Add(new XAttribute("counter", attributes["counter"]));
+
+                    // Теперь добавим преобразованные записи
+                    foreach (XElement rec in fog2.Records())
+                    {
+                        string localname = rec.Name.LocalName;
+                        string? id = rec.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
+                        xdoc.Add(new XElement(XName.Get(localname, "http://fogid.net/o/"),
+                            new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", id),
+                            rec.Elements().Select(el =>
                             {
-                                return new XElement(XName.Get(pred, "http://fogid.net/o/"), new XText(el.Value));
-                            }
-                            else
-                            {
-                                return new XElement(XName.Get(pred, "http://fogid.net/o/"),
-                                    new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", att.Value));
-                            }
-                        })));
+                                string pred = el.Name.LocalName;
+                                var att = el.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource");
+                                if (att == null)
+                                {
+                                    return new XElement(XName.Get(pred, "http://fogid.net/o/"), new XText(el.Value));
+                                }
+                                else
+                                {
+                                    return new XElement(XName.Get(pred, "http://fogid.net/o/"),
+                                        new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", att.Value));
+                                }
+                            })));
+                    }
                 }
                 //Console.WriteLine(xdoc.ToString());
 
-                xdoc.Save(cassname);
+                //xdoc.Save(cassname); // ============ Это сохранение fog-файла
+
                 //convert.Close();
                 //writer.Close();
             }
@@ -423,7 +461,6 @@ xmlns='http://fogid.net/o/'></rdf:RDF>";
             {
                 Console.WriteLine($"Внешний процесс вернул ошибку: {e.Data}");
             }
-
         }
 
     }
