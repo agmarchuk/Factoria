@@ -241,7 +241,7 @@ namespace Factograph.Data
                     pth = pth,
                     fogx = null,
                     owner = atts.owner,
-                    writable = true //cass.writable,
+                    writable = cass.writable // true //cass.writable, -- надо опереться на кассету (???)
                     //prefix = atts.prefix,
                     //counter = atts.counter
                 });
