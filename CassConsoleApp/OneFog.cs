@@ -72,6 +72,7 @@ namespace CassConsoleApp {
                         while (reader.MoveToNextAttribute()) 
                         {
                             //Console.WriteLine("Att {0}={1} {2}", reader.Name, reader.Value, reader.Depth);
+                            if (reader.Value == "http://fogid.net/o/") continue;
                             XAttribute att = new XAttribute(XName.Get(reader.LocalName, reader.NamespaceURI), reader.Value);
                             if (reader.Depth == 2) record.Add(att);
                             else if (reader.Depth == 3 && property != null) property.Add(att);

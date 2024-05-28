@@ -399,7 +399,7 @@ namespace CassConsoleApp
                 Console.WriteLine("=====================>>>===========================");
 
                 // ======================== А это - канонически правильная копия fog2 ===========================
-                bool makeFog2 = false;
+                bool makeFog2 = true;
                 if (makeFog2)
                 {
                     string xdocroot = @"<?xml version='1.0' encoding='utf-8'?>
@@ -414,6 +414,7 @@ xmlns='http://fogid.net/o/'></rdf:RDF>";
                     if (attributes.ContainsKey("owner")) xdoc.Add(new XAttribute("owner", attributes["owner"]));
                     if (attributes.ContainsKey("prefix")) xdoc.Add(new XAttribute("prefix", attributes["prefix"]));
                     if (attributes.ContainsKey("counter")) xdoc.Add(new XAttribute("counter", attributes["counter"]));
+                    xdoc.Add(new XAttribute("version", "fogid-2024"));
 
                     // Теперь добавим преобразованные записи
                     foreach (XElement rec in fog2.Records())
@@ -437,8 +438,11 @@ xmlns='http://fogid.net/o/'></rdf:RDF>";
                                 }
                             })));
                     }
+                    fog2.Close();
+                    //Console.WriteLine(xdoc.ToString());
+                    System.IO.File.Move(cassfog, cassfog + ".xml", true);
+                    xdoc.Save(cassfog);
                 }
-                //Console.WriteLine(xdoc.ToString());
 
                 //xdoc.Save(cassname); // ============ Это сохранение fog-файла
 

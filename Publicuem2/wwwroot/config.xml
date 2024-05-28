@@ -1,41 +1,8 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <config>
-<!--
-  <database connectionstring="xml:"/>
-  -->
-  <!--<database connectionstring="upi:D:\Home\FactographDatabases\upi-test\"/>-->
   <database connectionstring="rr:D:\Home\FactographDatabases\rr-test\"/>
 
-  <!--<LoadCassette>D:\Home\FactographProjects\test_pdf</LoadCassette>
-  <LoadCassette>D:\Home\FactographProjects\syp_cassettes\SypCassete</LoadCassette>-->
-
-  <!--<LoadCassette>D:\Home\FactographProjects\syp_cassettes_min\Syp2016video</LoadCassette>-->
-
-  <!--<LoadCassette>D:\Home\FactographProjects\MMF50_cassettes\fromPA</LoadCassette>
-  <LoadCassette>D:\Home\FactographProjects\MMF50_cassettes\MMF NGU 1966-71</LoadCassette>
-  <LoadCassette>D:\Home\FactographProjects\MMF50_cassettes\MMF50db</LoadCassette>
-  <LoadCassette>D:\Home\FactographProjects\MMF50_cassettes\MMF50sborki</LoadCassette>
-  <LoadCassette>D:\Home\FactographProjects\MMF50_cassettes\mmfUsers</LoadCassette>-->
-
-  <!--<LoadCassette>E:\FactographProjects\PA_cassettes\da1</LoadCassette>
-  <LoadCassette>E:\FactographProjects\PA_cassettes\da2</LoadCassette>
-  <LoadCassette>E:\FactographProjects\PA_cassettes\gi_pharchive</LoadCassette>
-  <LoadCassette>E:\FactographProjects\PA_cassettes\kbrd2010</LoadCassette>
-  <LoadCassette>E:\FactographProjects\PA_cassettes\PA_database201012</LoadCassette>
-  <LoadCassette>E:\FactographProjects\PA_cassettes\PA_folder_collections</LoadCassette>
-  <LoadCassette>E:\FactographProjects\PA_cassettes\PA_folders01-20</LoadCassette>
-  <LoadCassette>E:\FactographProjects\PA_cassettes\PA_folders24-59</LoadCassette>
-  <LoadCassette>E:\FactographProjects\PA_cassettes\PA_folders60-99</LoadCassette>
-  <LoadCassette>E:\FactographProjects\PA_cassettes\PA_folders100-111</LoadCassette>
-  <LoadCassette>E:\FactographProjects\PA_cassettes\PA_Users</LoadCassette>
-  <LoadCassette>E:\FactographProjects\PA_cassettes\RAS_57</LoadCassette>
-  <LoadCassette>E:\FactographProjects\PA_cassettes\SBRAS_2009_12</LoadCassette>
-  <LoadCassette>E:\FactographProjects\PA_cassettes\w100531</LoadCassette>
-  <LoadCassette>E:\FactographProjects\PA_cassettes\wwww</LoadCassette>
-  <LoadCassette>E:\FactographProjects\PA_cassettes-1\da3</LoadCassette>
-  <LoadCassette>E:\FactographProjects\PA_cassettes-1\pa_naukaVVV</LoadCassette>
-  <LoadCassette>E:\FactographProjects\PA_cassettes-1\pa_video</LoadCassette>
-  <LoadCassette>E:\FactographProjects\PA_newspapers\newspaper</LoadCassette>-->
+  <!--<LoadCassette write="true">D:\Home\FactographProjects\ttt</LoadCassette>-->
 
   <LoadCassette>C:\FactographProjects\gi_pharchive</LoadCassette>
   <LoadCassette>C:\FactographProjects\gi_disks</LoadCassette>
@@ -51,5 +18,6 @@
   <LoadCassette>C:\FactographProjects\an_cass</LoadCassette>
   <LoadCassette>C:\FactographProjects\bogatykh</LoadCassette>
   <LoadCassette write="true">C:\FactographProjects\marchuk_common</LoadCassette>
+
 
 </config>

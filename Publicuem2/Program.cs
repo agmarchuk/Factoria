@@ -7,10 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<Factograph.Data.IFDataService, Factograph.Data.FDataService>();
 var app = builder.Build();
 
+app.UseStaticFiles();
+
 //app.MapGet("/", () => "Hello World!");
-//app.MapGet("/", (HttpRequest request) => "Hello World!");
+
 app.MapGet("/", Sbor.CreateHtml);
-//app.MapGet("/docs", (HttpRequest request) => 
+//app.MapGet("/doc", (HttpRequest request) =>
 //{
 //    return new MimeResult("wwwroot/soldat.jpg", "image/jpeg");
 //});
