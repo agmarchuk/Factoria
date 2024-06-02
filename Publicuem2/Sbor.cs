@@ -134,7 +134,8 @@ $@"
                         new XElement("td", db.ontology.LabelOfOnto(prop.Pred),
                         new XAttribute("valign", "top")),
                         new XElement("td",
-                            prop.Pred == "http://fogid.net/o/in-collection" || prop.Pred == "http://fogid.net/o/reflected" ?
+                            prop.Pred == "http://fogid.net/o/in-collection" || prop.Pred == "http://fogid.net/o/reflected" 
+                                 || prop.Pred == "http://fogid.net/o/inDocument"?
                                 (new Canvas()).Build(db, prop.Sources, prop.Pred) :
                                 OneTable(db, prop.Sources, prop.Pred)
                                 ))))); //TODO: Надо вставить полотно
