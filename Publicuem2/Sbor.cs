@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Collections.Immutable;
+using System.Xml.Linq;
 
 using Factograph.Data;
 using Factograph.Data.r;
@@ -8,10 +9,14 @@ namespace Publicuem2
 {
     public class Sbor
     {
+        private static string[] typs = new string[0];
         public static HtmlResult CreateHtml(Factograph.Data.IFDataService db, HttpRequest request)
         {
             var id = request.Query["id"];
             string? searchstring = request.Query["searchstring"];
+            string? typ = request.Query["typ"];
+            bool bywords = string.IsNullOrEmpty(request.Query["bywords"]) ? false : true;
+            if (typs.Length == 0) typs = db.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj").ToArray();
 
             RRecord[] searchvariants = new RRecord[0];
             if (!string.IsNullOrEmpty(searchstring))
@@ -25,29 +30,40 @@ namespace Publicuem2
                 record = db.GetRRecord(id, true);
                 if (record != null) { xportrait = BuildXPortrait(record, db); }
             }
-            XElement xhtml = new XElement("html",
-                new XElement("head",
-                    new XElement("style", new XAttribute("type", "text/css"), Styles.Css),
-                    //new XElement("link", 
-                    //    new XAttribute("rel", "stylesheet"),
-                    //    new XAttribute("type", "text/css"),
-                    //    new XAttribute("href", "~/Site.css")),
-                    new XElement("meta", new XAttribute("charset", "utf-8"))),
-                new XElement("body",
-                    new XElement("a", new XAttribute("href", "?id=syp2001-p-marchuk_a"), "syp2001-p-marchuk_a"),
-                    new XElement("a", new XAttribute("href", "?id=collection_PA_videoOfficial-old"), "Ошибка"),
-                    new XElement("h1", "Hello Привет!"),
-                    new XElement("form", new XAttribute("method", "get"), new XAttribute("action", ""),
-                        new XElement("input", new XAttribute("name", "searchstring"), new XAttribute("value", searchstring ?? "")),
-                        null),
-                    searchvariants.Select(variant => new XElement("div",
+
+            string options = typs.Select(t => "<option value='" + t + "' "+ (t == typ? "selected " : "") +">" + db.ontology.LabelOfOnto(t) + "</option>")
+                .Aggregate((s, el) => s + " " + el);
+            string chked = bywords ? "checked" : "";
+            var variants = new XElement("div", searchvariants.Select(variant => new XElement("div",
                         db.ontology.LabelOfOnto(variant.Tp),
                         new XText(" "),
                         new XElement("a", new XAttribute("href", "?id=" + variant.Id), variant.GetName())
-                        )),
-                    xportrait,
-                    null));
-            return new HtmlResult(xhtml.ToString());
+                        )));
+
+            string html =
+$@"
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <link rel='stylesheet' type='text/css' href='StyleSheet.css'/>
+</head>
+<body>
+<h1>Фактограф-просмотр</h1>
+<form method='get' action=''>
+    <input type='text' name='searchstring' value='{searchstring ?? ""}'/>
+    <select name='typ'>
+        {options}
+    </select>
+    <input type='checkbox' name='bywords' {chked}/>
+    <input type='submit' value='искать'/>
+</form>
+{ variants?.ToString() ?? "" }
+{ xportrait?.ToString() ?? ""}
+</body>
+</html>
+";
+            return new HtmlResult(html);
         }
         private static XElement BuildXPortrait(RRecord rrec, Factograph.Data.IFDataService db)
         {
@@ -98,8 +114,6 @@ namespace Publicuem2
                             //< div style = "margin-bottom:10px;" >< a href = "@sr" >< img src = "icons/document_m.jpg" /></ a ></ div >
                             prolog = new XElement("div", "Документ[" + (mime) + "]  получить копию:",
                                 new XElement("a", new XAttribute("href", sr), "load"));
-
-
                         }
                     }
                 }
@@ -109,13 +123,8 @@ namespace Publicuem2
             //Pro[] dtable = tree.Props.Where(prop => !(prop is Inv)).ToArray();
             XElement? xtable = OneTable(db, new Rec[] { tree }, null);
 
-            //var q1 = tree.Props.Where(prop => prop is Inv).Cast<Inv>()
-            //        .Where(iprop => iprop.Sources.Length > 0).ToArray();
-            //foreach (var prop in q1)
-            //{
-            //    var qq2 = OneTable(db, prop.Sources, prop.Pred); //TODO: это что такое?
-            //}
             return new XElement("div",
+                new XElement("div", db.ontology.LabelOfOnto(tree.Tp) + " " + tree.Id),
                 prolog,
                 new XElement("table",
                 new XElement("tr", new XElement("td", new XAttribute("colspan", "2"), xtable)),
@@ -125,7 +134,7 @@ namespace Publicuem2
                         new XElement("td", db.ontology.LabelOfOnto(prop.Pred),
                         new XAttribute("valign", "top")),
                         new XElement("td",
-                            prop.Pred == "http://fogid.net/o/in-collection" || prop.Pred == "http://fogid.net/o/" ?
+                            prop.Pred == "http://fogid.net/o/in-collection" || prop.Pred == "http://fogid.net/o/reflected" ?
                                 (new Canvas()).Build(db, prop.Sources, prop.Pred) :
                                 OneTable(db, prop.Sources, prop.Pred)
                                 ))))); //TODO: Надо вставить полотно
@@ -170,7 +179,12 @@ namespace Publicuem2
                     }
                     return new XElement("td", new XAttribute("class", "s"), "");
                 }))));
-
+        }
+        public static HtmlResult Reload(Factograph.Data.IFDataService db, HttpRequest request)
+        {
+            db.Reload();
+            return new HtmlResult(
+"<html><head></head><body><h1>Reload OK!</h1><a href='/'>Start</a></body></html>");
         }
     }
 }

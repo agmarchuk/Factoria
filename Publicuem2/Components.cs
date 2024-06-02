@@ -23,6 +23,8 @@ namespace Publicuem2
                 recs.Select((r, nom) => 
                 {
                     // Находим внешнюю ссылку на документ
+                    if (r == null || altprop == null) 
+                        return (new Brick()).Build("icons/medium/default_m.jpg", "", "", "");
                     var propdir = r.GetDirect(altprop);
                     //string text = propdir==null? "null" : " " + propdir.Tp + " " + propdir.Id;
                     string photoURL = "nourl";
@@ -31,6 +33,8 @@ namespace Publicuem2
                     string? date = null;
                     string? uri = null;
                     string? docmetainfo = null;
+                    if (propdir == null)
+                        return (new Brick()).Build("icons/medium/default_m.jpg", "", "", "");
                     RRecord? rrec = db.GetRRecord(propdir.Id, false);
                     if (rrec != null)
                     {
@@ -52,6 +56,10 @@ namespace Publicuem2
                     else if (uri != null && propdir != null && propdir.Tp == "http://fogid.net/o/audio-doc")
                     {
                         photoURL = "icons/medium/sq200x200au.jpg";
+                    }
+                    else if (propdir != null && db.ontology.DescendantsAndSelf("http://fogid.net/o/collection").Contains(propdir.Tp))
+                    {
+                        photoURL = "icons/medium/sq200x200co.jpg";
                     }
                     else if (uri != null && propdir != null && propdir.Tp == "http://fogid.net/o/document"
                         && docmetainfo != null && docmetainfo.Split(';').Any(part => part.StartsWith("documenttype:application/pdf")))
