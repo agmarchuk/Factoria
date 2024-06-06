@@ -20,12 +20,14 @@ namespace Publicuem2
             string? altprop = proppred == "http://fogid.net/o/in-collection" ? "http://fogid.net/o/collection-item" :
                 (proppred == "http://fogid.net/o/reflected" ? "http://fogid.net/o/in-doc" : 
                 (proppred == "http://fogid.net/o/inDocument" ? "http://fogid.net/o/partItem" : null));
+            if (proppred == "http://fogid.net/o/inDocument")
+                recs = recs.OrderBy(r => r.GetStr("http://fogid.net/o/pageNumbers")).ToArray();
             return new XElement("div", new XAttribute("style", "display: flex; flex-wrap: wrap;"),
-                recs.Select((r, nom) => 
+                recs.Select(r => 
                 {
                     // Находим внешнюю ссылку на документ
                     if (r == null || altprop == null) 
-                        return (new Brick()).Build("icons/medium/default_m.jpg", "r == null || altprop == null", "", "");
+                        return (new Brick()).Build("icons/medium/default_m.jpg", "Err: r == null || altprop == null", "", "");
                     var propdir = r.GetDirect(altprop);
                     //string text = propdir==null? "null" : " " + propdir.Tp + " " + propdir.Id;
                     string photoURL = "nourl";
@@ -35,7 +37,7 @@ namespace Publicuem2
                     string? uri = null;
                     string? docmetainfo = null;
                     if (propdir == null)
-                        return (new Brick()).Build("icons/medium/default_m.jpg", "ropdir == null", "", "");
+                        return (new Brick()).Build("icons/medium/default_m.jpg", "Err: propdir == null", "", "");
                     RRecord? rrec = db.GetRRecord(propdir.Id, false);
                     if (rrec != null)
                     {

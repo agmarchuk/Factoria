@@ -151,6 +151,10 @@ namespace Factograph.Data
                 {
                     adapter = new RRAdapter(NormalizeWord);//new RRecordAdapter(NormalizeWord);
                 }
+                else if (pre == "rmem")
+                {
+                    adapter = new RMemAdapter(NormalizeWord);//new RRecordAdapter(NormalizeWord);
+                }
 
                 if (adapter == null) return;
 
@@ -190,6 +194,7 @@ namespace Factograph.Data
                         ((RRAdapter)adapter).RestoreDynamic(); //((RRecordAdapter)adapter).RestoreDynamic();
                     }
                 }
+                else if (pre == "rmem") Load(); // Всегда загружать!
 
                 // Логфайл элементов Put()
                 //putlogfilename = connectionstring.Substring(connectionstring.IndexOf(':') + 1) + "logfile_put.txt";

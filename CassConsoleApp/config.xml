@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <config>
-  <database connectionstring="upi:E:\FactographDatabases\upi-test\"/>
+  <database connectionstring="rmem:"/>
 
-  <LoadCassette write="true">D:\Home\FactographProjects\ttt</LoadCassette>
+  <!--<LoadCassette write="true">D:\Home\FactographProjects\ttt</LoadCassette>-->
   
   <!--<LoadCassette>C:\FactographProjects\gi_pharchive</LoadCassette>
   <LoadCassette>C:\FactographProjects\gi_disks</LoadCassette>
@@ -22,7 +22,7 @@
   <LoadCassette write="true">C:\FactographProjects\marchuk_common</LoadCassette>-->
 
 
-  <!--<LoadCassette>E:\FactographProjects\syp_cassettes2\Syp_2012_1</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp_2012_1</LoadCassette>
   <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp_2012_mag</LoadCassette>
   <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp_2012_Tikhonova</LoadCassette>
   <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp_2013</LoadCassette>
@@ -53,7 +53,7 @@
   <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2022</LoadCassette>
   <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2023</LoadCassette>
   <LoadCassette>E:\FactographProjects\syp_cassettes2\SypCassete</LoadCassette>
-  <LoadCassette>E:\FactographProjects\syp_cassettes2\SypUsers</LoadCassette>-->
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\SypUsers</LoadCassette>
 
 
 </config>
