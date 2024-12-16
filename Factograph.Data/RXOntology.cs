@@ -22,7 +22,7 @@ namespace Factograph.Data
             Dictionary<string, XElement> enumerationTypes = xontology.Elements("EnumerationType")
                 .ToDictionary(x => x.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about").Value);
 
-            // Теперь берем определениz я всех DatatypeProperty, оставляем те, range которых входит в предыдущую таблицу 
+            // Теперь берем определения всех DatatypeProperty, оставляем те, range которых входит в предыдущую таблицу 
             // и строим то, что нужно
             enufildspecs = xontology.Elements("DatatypeProperty")
                 .Where(dp =>

@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+  <database connectionstring="rr:C:\Home\CoreSites\MagBlazorDatabase\"/>
+
+	<LoadCassette>C:\Home\FactographProjects\PA_folders01-20</LoadCassette>
+	<LoadCassette>C:\Home\FactographProjects\Cassette_20211014</LoadCassette>
+	<LoadCassette write="true">C:\Home\FactographProjects\usr_tester</LoadCassette>
+
+  <!--LoadCassette write="true">C:\FactographProjects\test2</LoadCassette-->
+
+</config>
