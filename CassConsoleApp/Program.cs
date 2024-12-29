@@ -24,16 +24,19 @@ namespace CassConsoleApp
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
-            string working_directory = @"D:\Home\bin";
+            string bin_directory = @"D:\Home\bin";
             // Директория с внешними запускаемыми программами или C:\Home\bin или D:\Home\bin
-            if (Directory.Exists(@"C:\Home\bin")) working_directory = @"C:\Home\bin";
+            if (Directory.Exists(@"C:\Home\bin")) bin_directory = @"C:\Home\bin";
 
-            Console.WriteLine("Usage: CassConsoleApp preview|compress|collect config.xml");
+            Console.WriteLine("Usage: CassConsoleApp preview|compress|collect config-file");
 
             string command = args.Length > 0 ? args[0] : "collect";
-            string second_arg = args.Length > 1 ? args[1] : @"D:\Home\dev2024\Factoria\CassConsoleApp\config.xml";
+            command = "preview";
+
+            string second_arg = args.Length > 1 ? args[1] : @"C:\Home\CoreSites\config.xml";
+
             var parts = second_arg.Split('\\', '/');
-            string filename = parts == null ? @"D:\Home\dev2024\Factoria\CassConsoleApp\config.xml" : parts[parts.Length - 1];
+            string filename = parts == null ? @"C:\Home\CoreSites\config.xml" : parts[parts.Length - 1];
             string[] cassnames = new string[0]; 
             if (filename.ToLower() == "config.xml")
             {
@@ -66,7 +69,7 @@ namespace CassConsoleApp
                             foreach (XElement xel in e.Elements())
                             {
                                 if (xel.Name.LocalName == "uri") uri = xel.Value;
-                                else if (xel.Name.LocalName == "documentinfo") documentinfo = xel.Value;
+                                else if (xel.Name.LocalName == "docmetainfo") documentinfo = xel.Value;
                                 else if (xel.Name.LocalName == "iisstore")
                                 {
                                     uri = xel.Attributes()
@@ -76,35 +79,43 @@ namespace CassConsoleApp
                                 }
                             }
                             if (uri == null) return null;
-                            if (documentinfo == null) return null;
-                            if (documentinfo.Contains("documenttype:application/fog;")) isfog = true;
+                            if (documenttype == null && documentinfo == null) return null;
+                            if (documentinfo != null && documentinfo.Contains("documenttype:application/fog;")) isfog = true;
                             else // поищу в iisstore
                             {
                                 if (documenttype == "application/fog") isfog = true; 
                             }
-                            if (isfog) return e.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
+                            if (isfog)
+                            {
+                                // надо преобразовать uri в имя файла
+                                string fname = casspath + @"\originals\" + uri.Substring(uri.Length - 10) + ".fog";
+                                //return e.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
+                                return fname;
+                            }
                             return null;
                         })
                         .Where(id => id != null)
                         );
                 }).ToArray();
 
-                string xdocroot0 = @"<?xml version='1.0' encoding='utf-8'?>
-<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' 
-xmlns='http://fogid.net/o/'></rdf:RDF>";
-                XElement xsbor = XElement.Parse(xdocroot0);
 
                 foreach (string? f_id in fog_ids)
                 {
                     if (f_id == null) continue;
-                    OneFog fog = new OneFog(f_id);
 
-                    //// Добавлю атрибуты uri, owner, prefix, counter
-                    //if (attributes.ContainsKey("uri")) xdoc.Add(new XAttribute("uri", attributes["uri"]));
-                    //if (attributes.ContainsKey("owner")) xdoc.Add(new XAttribute("owner", attributes["owner"]));
-                    //if (attributes.ContainsKey("prefix")) xdoc.Add(new XAttribute("prefix", attributes["prefix"]));
-                    //if (attributes.ContainsKey("counter")) xdoc.Add(new XAttribute("counter", attributes["counter"]));
-                    //xdoc.Add(new XAttribute("version", "fogid-2024"));
+                    string xdocroot0 = @"<?xml version='1.0' encoding='utf-8'?>
+<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' 
+xmlns='http://fogid.net/o/'></rdf:RDF>";
+                    XElement xsbor = XElement.Parse(xdocroot0);
+
+                    OneFog fog = new OneFog(f_id);
+                    var attributes = fog.FogAttributes();
+                    // Добавлю атрибуты uri, owner, prefix, counter
+                    if (attributes.ContainsKey("uri")) xsbor.Add(new XAttribute("uri", attributes["uri"]));
+                    if (attributes.ContainsKey("owner")) xsbor.Add(new XAttribute("owner", attributes["owner"]));
+                    if (attributes.ContainsKey("prefix")) xsbor.Add(new XAttribute("prefix", attributes["prefix"]));
+                    if (attributes.ContainsKey("counter")) xsbor.Add(new XAttribute("counter", attributes["counter"]));
+                    xsbor.Add(new XAttribute("version", "fogid-2024"));
 
                     // Теперь добавим преобразованные записи
                     foreach (XElement rec in fog.Records())
@@ -129,11 +140,11 @@ xmlns='http://fogid.net/o/'></rdf:RDF>";
                             })));
                     }
                     fog.Close();
+                    Console.WriteLine($"Запись документа " + f_id + ".xml");
+                    xsbor.Save(f_id + ".xml");
                 }
 
 
-                //Console.WriteLine(xsbor.ToString());
-                xsbor.Save("fogcollection.xml");
                 // Выход из collect
                 return;
             }
@@ -143,10 +154,9 @@ xmlns='http://fogid.net/o/'></rdf:RDF>";
 
             // =============== конец развертки ===============
 
+            // ============ Начало коррекции превьюшек ============
             foreach (string casspath in cassnames)
             {
-
-                //string casspath = args.Length > 0 ? args[0] : @"D:\Home\FactographProjects\t2";
                 string cass = casspath.Split('/', '\\').Last();
                 string cassfog = casspath + "/meta/" + cass + "_current.fog";
 
@@ -163,8 +173,9 @@ xmlns='http://fogid.net/o/'></rdf:RDF>";
     <medium videoBitrate='400K' audioBitrate='22050' rate='10' framesize='384x288' previewBase='600' />
   </video>
 </finfo>");
-
+                // Warning: пока нет чтения finfo из кассеты или из параметров команды 
                 OneFog fog = new OneFog(cassfog);
+                // Кажется, выделения атрибутов можно не делать, поскольку в FogAttributes они сформированы 
                 Dictionary<string, string> attributes = new Dictionary<string, string>();
                 foreach (var pair in fog.FogAttributes())
                 {
@@ -172,7 +183,7 @@ xmlns='http://fogid.net/o/'></rdf:RDF>";
                     attributes.Add(pair.Key, pair.Value);
                 }
 
-                Console.WriteLine("=====================<<<===========================");
+                Console.WriteLine("===========<<< начало вычисления превьюшек =============");
 
                 foreach (XElement rec in fog.Records())
                 {
@@ -181,7 +192,6 @@ xmlns='http://fogid.net/o/'></rdf:RDF>";
                     int width = 1440, height = 1080;
                     if (id == null) { continue; }
                     string? documenttype = null;
-
 
                     // Сначала выявим uri и infos - массив атрибутов в docmetainfo 
                     string? uri = rec.Element(XName.Get("uri", "http://fogid.net/o/"))?.Value;
@@ -193,6 +203,7 @@ xmlns='http://fogid.net/o/'></rdf:RDF>";
                     {
                         if (localname == "photo-doc" && uri != null)
                         {
+                            Console.WriteLine("photo-doc1: " + uri);
                             // Если есть tif как оригинал, его надо преобразовать в .jpg
                             string source = casspath + @"\originals\" + uri.Substring(uri.Length - 10) + ".tif";
                             string? target = null;
@@ -200,8 +211,8 @@ xmlns='http://fogid.net/o/'></rdf:RDF>";
                             {
                                 target = casspath + @"\originals\" + uri.Substring(uri.Length - 10) + ".jpg";
                                 Process proc1 = new Process();
-                                proc1.StartInfo.FileName = working_directory + @"\magick.exe";
-                                proc1.StartInfo.WorkingDirectory = working_directory;
+                                proc1.StartInfo.FileName = bin_directory + @"\magick.exe";
+                                proc1.StartInfo.WorkingDirectory = bin_directory;
                                 proc1.StartInfo.ArgumentList.Add(source);
                                 proc1.StartInfo.ArgumentList.Add(target);
                                 proc1.Start();
@@ -224,7 +235,7 @@ xmlns='http://fogid.net/o/'></rdf:RDF>";
                         continue;
                     }
                     // ============== end of "compress" =============
-
+                    
                     // Работаем в масштабах:
                     string[] frame_sizes = new string[] { "small", "medium", "normal" };
 
@@ -232,6 +243,8 @@ xmlns='http://fogid.net/o/'></rdf:RDF>";
                     // масштабирования и помещать команду вычисления превьюшки в поток команд.  
                     if (localname == "photo-doc" && uri != null)
                     {
+                        Console.WriteLine("photo-doc: " + uri);
+
                         foreach (string info in infos)
                         {
                             if (info.StartsWith("width:"))
@@ -284,8 +297,8 @@ xmlns='http://fogid.net/o/'></rdf:RDF>";
 
                             //Process process = Process.Start(magic_path + "\\magick.exe");
                             Process process = new Process();
-                            process.StartInfo.FileName = working_directory + @"\magick.exe";
-                            process.StartInfo.WorkingDirectory = working_directory;
+                            process.StartInfo.FileName = bin_directory + @"\magick.exe";
+                            process.StartInfo.WorkingDirectory = bin_directory;
                             //process.StartInfo.WorkingDirectory = @"D:\Home\data\tmp";
                             string ars = $"\"{original}\" \"-resize {ifactor}.{rfactor}%\" \"{fsize}\"";
 
@@ -307,6 +320,8 @@ xmlns='http://fogid.net/o/'></rdf:RDF>";
                     }
                     else if (localname == "video-doc" && uri != null) // ================ Обработка видео! =================
                     {
+                        Console.WriteLine("video-doc: " + uri);
+
                         foreach (string info in infos)
                         {
                             if (info.StartsWith("width:"))
@@ -318,17 +333,19 @@ xmlns='http://fogid.net/o/'></rdf:RDF>";
                         }
                         string? ext = documenttype?.Substring(documenttype.LastIndexOf('/') + 1);
 
-                        //if (ext == "jpeg") ext = "jpg";
+                        if (ext == "x-msvideo") ext = "avi";
 
                         // Документ-оригинал:
                         string original = casspath + "\\originals" + uri.Substring(uri.Length - 10) + "." + ext;
+
+                        Console.WriteLine("Файл: " + original);
 
                         // =============== Вычисление ширины и высоты через обращение к MediaInfo ===
                         XElement? xoutput = null;
                         using Process process1 = new Process();
                         {
-                            process1.StartInfo.FileName = working_directory + @"\MediaInfo.exe";
-                            process1.StartInfo.WorkingDirectory = working_directory;
+                            process1.StartInfo.FileName = bin_directory + @"\MediaInfo.exe";
+                            process1.StartInfo.WorkingDirectory = bin_directory;
                             process1.StartInfo.ArgumentList.Add("--Output=XML");
                             process1.StartInfo.ArgumentList.Add(original);
                             process1.StartInfo.UseShellExecute = false;
@@ -364,6 +381,8 @@ xmlns='http://fogid.net/o/'></rdf:RDF>";
                         // Вычислим фактор "увеличения" для каждого типоразмера
                         int more = width > height ? width : height;
 
+                        Console.WriteLine($"width: {width}, height: {height}, more: {more}");
+
                         Dictionary<string, double> factors = new Dictionary<string, double>();
                         string? pBs = finfo.Element("video")?.Element("small")?
                             .Attribute("previewBase")?.Value;
@@ -395,8 +414,8 @@ xmlns='http://fogid.net/o/'></rdf:RDF>";
 
                             // ======= Внешний ffmpeg вычисления превьюшки
                             Process process2 = new Process();
-                            process2.StartInfo.FileName = working_directory + @"\ffmpeg.exe";
-                            process2.StartInfo.WorkingDirectory = working_directory;
+                            process2.StartInfo.FileName = bin_directory + @"\ffmpeg.exe";
+                            process2.StartInfo.WorkingDirectory = bin_directory;
                             //string ars = $"\"{original}\" \"-resize {ifactor}.{rfactor}%\" \"{fsize}\"";
 
                             process2.StartInfo.ArgumentList.Add("-i");
@@ -475,6 +494,7 @@ xmlns='http://fogid.net/o/'></rdf:RDF>";
                     fog2.Close();
                     //Console.WriteLine(xdoc.ToString());
                     System.IO.File.Move(cassfog, cassfog + ".xml", true);
+                    Console.WriteLine($"Запись документа {cassfog}");
                     xdoc.Save(cassfog);
                 }
 

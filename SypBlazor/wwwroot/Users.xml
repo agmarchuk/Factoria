@@ -1,33 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <users>
 	<user>
-		<name>mag_9347</name>
-		<password>555</password>
-    <role>Administrator</role>
-	</user>
-	<user>
-		<name>test2</name>
-		<password>test2</password>
+		<name>tester</name>
+		<password>ttt</password>
     <role>User</role>
-  </user>
-	<user>
-		<name>mag111</name>
-		<password>111</password>
-    <role>User</role>
-  </user>
-	<user>
-		<name>Sergey</name>
-		<password>111</password>
-		<role>User</role>
 	</user>
-	<user>
-		<name>misha</name>
-		<password>145</password>
-		<role>User</role>
-	</user>
-  <user>
-    <name>peterbogatykh</name>
-    <password>belyaev</password>
-    <role>User</role>
-  </user>
 </users>
