@@ -54,6 +54,9 @@ namespace Factograph.Data
         private TRecordBuilder? _tbuilder = null;
         public TRecordBuilder? TBuilder { get { return _tbuilder; } }
 
+        private object? p_structure = null; 
+        public object? precalculated { get { return p_structure; } set { p_structure = value; } }
+
         private bool directreload = false;
         //private bool initiated = false;
         private bool nodatabase = false;

@@ -1,0 +1,122 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    Layout = "_Layout_S1957";
+    var m = (Factograph.Models.IndexModel)Model;
+    string lookfragment = "<div><h2>Это lookfragment</h2></div>";
+}
+
+@section look {
+    <div>
+        look section:
+        @Html.Raw(lookfragment)
+    </div>
+
+}
+
+<div>
+    <div><span style='text-align:center;' /></div>
+    <div>
+        <div ID='ListPanel'>
+            <div style='float:left;width:126px;height:170px;font-size:10px;'>
+                <table>
+                    <tr>
+                        <td>
+                            <a href='?id=PA_folders01-20_0001_0025'>
+                                <img style='border:0;' src='~/docs/GetImage?s=small&amp;u=iiss://bbb_cass@iis.nsk.su/0001/0001/0001' />
+                            </a>
+                        </td>
+                    <tr>
+                        <td style='text-align:center;'><span style='text-align:center;'><span>1962</span>, <span>Новосибирск</span></span></td>
+                    </tr>
+                    </tr>
+                </table>
+            </div>
+            <div style='float:left;width:126px;height:170px;font-size:10px;'>
+                <table>
+                    <tr>
+                        <td>
+                            <a href='?id=krai_100616111436_2771_0'>
+                                <img style='border:0;' src='~/docs/GetImage?s=small&amp;u=iiss://bbb_cass@iis.nsk.su/0001/0001/0002' />
+                            </a>
+                        </td>
+                    <tr>
+                        <td style='text-align:center;'>
+                            <span style='text-align:center;'><span>2005сен</span>, <span>Москва</span></span>
+                        </td>
+                    </tr>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div><hr /></div>
+</div>
+
+
+@section inputpanel {
+    <div id='search' style=''>
+        <form action=''>
+            <input type='hidden' name='p' value='typed-item-list' />
+            <input type='hidden' name='ch' value='search-form' />
+            <table cellpadding='0' cellspacing='0' border='0'>
+                <tr>
+                    <td class='search_option'><a href='?sdirection=photo-doc'>Фотографии</a></td>
+                    <td class='search_option_s'><a>Персоны</a></td>
+                    <td class='search_option'><a href='?sdirection=org-sys'>Организации</a></td>
+                </tr>
+            </table>
+            <table cellpadding='0' cellspacing='0' border='0' width='100%' height='55'>
+                <tr>
+                    <td width='100%' class='search_form'><input name='searchstring' type='text' class='form_search' /></td>
+                    <td class='search_form'>
+                        <input type='image' width='63' height='19' src='~/PublicuemCommon/soran1957styles/img/btn_search.gif' style='margin-right:5px;' />
+                    </td>
+                </tr>
+                <tr valign='top'>
+                    <td colspan='2' class='search_form'>
+                        <input type='checkbox' id='search_all' disabled='disabled' style='border:0px solid #036;' />
+                        <label for='search_all'>искать по отдельным словам</label> | <a>расширенный поиск</a>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+}
+@section rightpanel {
+    <div>
+        <div />
+        <img src='~/docs/GetImage?s=small&amp;u=iiss://PA_folders24-59@iis.nsk.su/0001/0004/0392' align='right' />
+        Проект посвящен истории Сибирского отделения Российской Академии Наук. Здесь можно найти уникальные фотографии, информацию о людях и организациях и статьи, касающиеся разных периодов жизни Сибирского отделения.
+        <h2>Коллекции сайта</h2>
+        <ul>
+            <li><a href='?id=PA_Users_furs_634395045531406250_2577'>Первопоселенцы Золотой долины</a></li>
+            <li><a href='?id=w20070417_3_7246'>Новосибирский Академгородок осенью</a></li>
+            <li><a href='?id=w20071113_9_8252'>Досуг в Новосибирском Академгородке</a></li>
+            <li><a href='?id=w20071113_9_11681'>Президенты АН и Председатели СО РАН </a></li>
+            <li><a href='?id=w20070417_3_3211'>Отцы-основатели</a></li>
+            <li><a href='?id=w20071113_9_3091'>Ветераны Великой Отечественной войны</a></li>
+            <li><a href='?id=w20070417_7_1735'>Лики науки</a></li>
+            <li><a href='?id=w20070417_3_7152'>Новосибирский Академгородок зимой</a></li>
+            <li><a href='?id=w20071113_9_12201'>Виды Новосибирского Академгородка</a></li>
+            <li><a href='?id=w20070417_3_7263'>Панорамные виды Новосибирского Академгородка</a></li>
+            <li><a href='?id=fog_pavlovskaya200812256983'>Гости Новосибирского Академгородка (люди науки)</a></li>
+            <li><a href='?id=fog_pavlovskaya200812256981'>Гости Новосибирского Академгородка (официальные лица)</a></li>
+            <li><a href='?id=w20070417_2_1046'>Гости Новосибирского Академгородка</a></li>
+            <li><a href='?id=w20070417_3_7197'>Строительство Новосибирского Академгородка</a></li>
+            <li><a href='?id=w20071113_9_9041'>Визит Н.С. Хрущева в Новосибирск (1959 г.)</a></li>
+            <li><a href='?id=krai_100616111436_1009'>Празднование 50-летия образования СО РАН</a></li>
+            <li><a href='?id=PA_Users_pavl_634395045572656250_4593'>Проект 'Сеть Интернет Академгородка'</a></li>
+            <li><a href='?id=PA_Users_svet_635182170969905234_19526'>Операция 'Дунай' глазами новосибирского студента</a></li>
+            <li><a href='?id=PA_Users_pavl_634395045572656250_12631'>Академгородок глазами французских журналистов</a></li>
+            <li><a href='?id=w20071030_1_26317'>Визит Шарля де Голля в Новосибирский Академгородок </a></li>
+            <li><a href='?id=w20071113_9_19474'>Фестиваль авторской песни (1968 г.)</a></li>
+            <li><a href='?id=w20070417_5_12843'>Фестиваль авторской песни 'Под интегралом' 40 лет спустя</a></li>
+            <li><a href='?id=fog_pavlovskaya200812254337'>Карнавал НГУ 1967 г.</a></li>
+            <li><a href='?id=fog_pavlovskaya200812254885'>Делегация космонавтов 'Союз-Аполлон' в Академгородке</a></li>
+            <li><a href='?id=pavl_100531115859_9984'>КВН НГУ (1985-1995)</a></li>
+            <li><a href='?id=fog_pavlovskaya200812254396'>КВН НГУ (1968-1970)</a></li>
+            <li><a href='?id=piu_200809053371'>Празднование масленицы (1967)</a></li>
+        </ul>
+    </div>
+}

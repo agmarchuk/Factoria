@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soran1957", "Soran1957\Sora
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S1957", "S1957\S1957.csproj", "{0A9B38F2-DCF6-4191-AC56-E06B9986E2FF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Factograph", "Factograph\Factograph.csproj", "{E88305D3-0141-44BF-99A2-428F0B09ADDF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{0A9B38F2-DCF6-4191-AC56-E06B9986E2FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A9B38F2-DCF6-4191-AC56-E06B9986E2FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A9B38F2-DCF6-4191-AC56-E06B9986E2FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E88305D3-0141-44BF-99A2-428F0B09ADDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E88305D3-0141-44BF-99A2-428F0B09ADDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E88305D3-0141-44BF-99A2-428F0B09ADDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E88305D3-0141-44BF-99A2-428F0B09ADDF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

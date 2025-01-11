@@ -11,6 +11,7 @@ namespace Factograph.Data
     public interface IFDataService
     {
         IOntology ontology { get; set; }
+        object? precalculated {  get; set; } // Сюда можно прицепить любую структуру и ее предвычислять перед использованием
         void Init(string connectionstring);
         void Close();
         void Reload();

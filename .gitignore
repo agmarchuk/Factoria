@@ -1,7 +1,12 @@
 #bin
 ConsoleTest/bin
+CassConsoleApp/bin
 Factograph.Data/bin
+Factograph/bin
 SypBlazor/bin
+Publicuem2/bin
+Soran1957/bin
+S1957/bin
 
 obj
 .vs

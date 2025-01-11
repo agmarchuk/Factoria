@@ -20,9 +20,9 @@ namespace Factograph.Data.r
             this.Props = props;
         }
         // =================== Самое главное: генерация дерева по шаблону ==========
-        public static Rec Build(RRecord r, Rec shablon, IOntology ontology, Func<string, RRecord?> getRecord)
+        public static Rec Build(RRecord? r, Rec? shablon, IOntology ontology, Func<string, RRecord?> getRecord)
         {
-            if (r == null) return new Rec("noname", "notype");
+            if (r == null || shablon == null) return new Rec("noname", "notype");
             Rec result = new(r.Id, r.Tp);
             // Следуем шаблону. Подсчитаем количество стрелок
             int[] nprops = Enumerable.Repeat<int>(0, shablon.Props.Length)
