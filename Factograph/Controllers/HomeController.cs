@@ -18,7 +18,7 @@ namespace S1957.Controllers
         // GET: Home
         public ActionResult Index()
         {
-            if (true) { return new RedirectResult("~/View/Portrait"); }
+            //if (true) { return new RedirectResult("~/View/Portrait"); }
             IndexModel model = new IndexModel(db);
             model.id = Request.Query["id"];
             model.searchstring = Request.Query["searchstring"];

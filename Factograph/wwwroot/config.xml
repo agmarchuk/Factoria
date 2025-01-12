@@ -1,12 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <config>
-<!--  
-	<database connectionstring="rr:C:\Home\CoreSites\S1957Database\"/>
-	<LoadCassette>C:\Home\FactographProjects\PA_folders01-20</LoadCassette>
-	<LoadCassette>C:\Home\FactographProjects\Cassette_20211014</LoadCassette>
-	<LoadCassette write="true">C:\Home\FactographProjects\usr_tester</LoadCassette>
--->
-  <database connectionstring="rr:C:\Home\CoreSites\rr-test\"/>
-  <LoadCassette>C:\Home\FactographProjects\bbb_cass</LoadCassette>
+  <database connectionstring="rr:C:\FactographProjects\Application\db\"/>
 
+  <LoadCassette>C:\FactographProjects\gi_pharchive</LoadCassette>
+  <LoadCassette>C:\FactographProjects\gi_disks</LoadCassette>
+  <LoadCassette>C:\FactographProjects\gi_disk2</LoadCassette>
+  <LoadCassette>C:\FactographProjects\gi_disk3</LoadCassette>
+  <LoadCassette>C:\FactographProjects\gi_arch_ran</LoadCassette>
+  <LoadCassette>C:\FactographProjects\gi_trudy</LoadCassette>
+  <LoadCassette>C:\FactographProjects\Ma</LoadCassette>
+  <LoadCassette>C:\FactographProjects\Ma_sbor</LoadCassette>
+  <LoadCassette>C:\FactographProjects\GeneTreeCass</LoadCassette>
+  <LoadCassette>C:\FactographProjects\ph_mix</LoadCassette>
+  <LoadCassette>C:\FactographProjects\onmarchuk_computer</LoadCassette>
+
+  <LoadCassette>C:\FactographProjects\an_cass</LoadCassette>
+  <LoadCassette>C:\FactographProjects\bogatykh</LoadCassette>
+
+  <LoadCassette>C:\FactographProjects\Ma_alb1-6</LoadCassette>
+
+  <LoadCassette write="true">C:\FactographProjects\Marchuk_common</LoadCassette>
 </config>
