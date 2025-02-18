@@ -7,6 +7,6 @@
 	<LoadCassette write="true">C:\Home\FactographProjects\usr_tester</LoadCassette>
 -->
   <database connectionstring="rr:C:\Home\CoreSites\rr-test\"/>
-  <LoadCassette>C:\Home\bbb-cass</LoadCassette>
+  <LoadCassette>C:\Home\FactographProjects\PA_folders01-20</LoadCassette>
 
 </config>

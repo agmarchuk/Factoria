@@ -5,4 +5,9 @@
 		<password>ttt</password>
     <role>User</role>
 	</user>
+  <user>
+    <name>mag</name>
+    <password>mmm</password>
+    <role>User</role>
+  </user>
 </users>
