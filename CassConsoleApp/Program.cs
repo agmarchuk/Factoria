@@ -15,8 +15,13 @@ namespace CassConsoleApp
             Console.WriteLine("Usage: CassConsoleApp [-tiff] [-ещечтото] config-file");
 
             // Директория с внешними запускаемыми программами
-            string ext_bin_directory = @"D:\Home\bin\"; // Это на всякий случай
-            ext_bin_directory = System.AppContext.BaseDirectory + "../../../ext_bin/";
+            string ext_bin_directory = @"D:\Home\bin\";
+            var path_variants = new string[] { @"D:\Home\bin\", @"C:\Home\bin\", System.AppContext.BaseDirectory + "../../../ext_bin/" };
+            foreach (var variant in path_variants)
+            {
+                ext_bin_directory = variant;
+                if (File.Exists(ext_bin_directory + "ffmpeg.exe")) break;
+            }
 
             // Параметры
             bool to_convert_tiff = false;
@@ -168,8 +173,6 @@ xmlns='http://fogid.net/o/'>
                         // масштабирования и помещать команду вычисления превьюшки в поток команд.  
                         if (localname == "photo-doc" && uri != null)
                         {
-                            Console.WriteLine("photo-doc: " + uri);
-
                             foreach (string info in infos)
                             {
                                 if (info.StartsWith("width:"))
@@ -187,6 +190,9 @@ xmlns='http://fogid.net/o/'>
                             // Оригинал может быть .jpg, надо проверить наличие файла
                             if (ext == "tif" && !System.IO.File.Exists(original))
                                 original = casspath + "\\originals" + uri.Substring(uri.Length - 10) + ".jpg";
+
+                            //XElement xmedia = GetMedia(ext_bin_directory, original); ////////////////////////////////
+                            PhotoSource.GetSource(original);
 
                             // Вычислим фактор "увеличения" для каждого типоразмера
                             int more = width > height ? width : height;
@@ -238,6 +244,7 @@ xmlns='http://fogid.net/o/'>
                                 try
                                 {
                                     process.WaitForExit();
+                                    Console.WriteLine("Preview photo-doc: " + uri);
                                     Console.WriteLine(target + " <- " + original + "   " + fsize + " " + ext + " OK");
                                 }
                                 finally
@@ -248,8 +255,6 @@ xmlns='http://fogid.net/o/'>
                         }
                         else if (localname == "video-doc" && uri != null) // ================ Обработка видео! =================
                         {
-                            Console.WriteLine("video-doc: " + uri);
-
                             foreach (string info in infos)
                             {
                                 if (info.StartsWith("width:"))
@@ -265,8 +270,11 @@ xmlns='http://fogid.net/o/'>
 
                             // Документ-оригинал:
                             string original = casspath + "\\originals" + uri.Substring(uri.Length - 10) + "." + ext;
-
-                            Console.WriteLine("Файл: " + original);
+                            if (ext == "mpeg" && !File.Exists(original))
+                            {
+                                ext = "mpg";
+                                original = casspath + "\\originals" + uri.Substring(uri.Length - 10) + "." + ext;
+                            }
 
                             // =============== Вычисление ширины и высоты через обращение к MediaInfo ===
                             XElement? xoutput = null;
@@ -287,7 +295,6 @@ xmlns='http://fogid.net/o/'>
                                                   //process1.BeginOutputReadLine(); //начинаем считывать данные из потока 
                                                   //process1.BeginErrorReadLine(); //начинаем считывать данные об ошибках 
 
-                                //Console.WriteLine(process1.StandardOutput.ReadToEnd());
                                 string output = process1.StandardOutput.ReadToEnd();
                                 xoutput = XElement.Parse(output);
                                 process1.WaitForExit(); //ожидаем окончания работы приложения, чтобы очистить буфер
@@ -307,8 +314,6 @@ xmlns='http://fogid.net/o/'>
 
                             // Вычислим фактор "увеличения" для каждого типоразмера
                             int more = width > height ? width : height;
-
-                            Console.WriteLine($"width: {width}, height: {height}, more: {more}");
 
                             Dictionary<string, double> factors = new Dictionary<string, double>();
                             string? pBs = finfo.Element("video")?.Element("small")?
@@ -356,6 +361,8 @@ xmlns='http://fogid.net/o/'>
                                 try
                                 {
                                     process2.WaitForExit();
+                                    Console.WriteLine("Preview video-doc: " + uri);
+                                    Console.WriteLine($"width: {width}, height: {height}, more: {more}");
                                     Console.WriteLine(fsize + " " + ext + " OK");
                                 }
                                 finally
@@ -390,7 +397,7 @@ xmlns='http://fogid.net/o/'>
                                         try
                                         {
                                             proc1.WaitForExit();
-                                            Console.WriteLine(target + " <- " + " OK");
+                                            Console.WriteLine("Original tiff transtorm " + target + " <- " + " OK");
                                         }
                                         finally
                                         {
@@ -438,7 +445,7 @@ xmlns='http://fogid.net/o/'>
 
                     if (to_save)
                     {
-                        Console.WriteLine($"Запись документа " + f_id);
+                        Console.WriteLine($"Saving of document " + f_id);
                         xsbor.Save(f_id + ".tmp");
                         System.IO.File.Move(f_id, f_id + ".old");
                         System.IO.File.Move(f_id + ".tmp", f_id);
@@ -448,11 +455,12 @@ xmlns='http://fogid.net/o/'>
             }
         }
 
+
         static void DataReceivedEventHandler(object sender, DataReceivedEventArgs e)
         {
             if (e.Data != null)
             {
-                Console.WriteLine($"Внешний процесс вернул данные: {e.Data}");
+                Console.WriteLine($"External process returned data: {e.Data}");
             }
 
         }
@@ -460,14 +468,49 @@ xmlns='http://fogid.net/o/'>
         {
             if (e.Data != null)
             {
-                Console.WriteLine($"Внешний процесс вернул ошибку: {e.Data}");
+                Console.WriteLine($"External process returned error: {e.Data}");
             }
         }
 
+        private static XElement GetMedia(string ext_bin_directory, string doc_file)
+        {
+            // =============== Вычисление ширины и высоты через обращение к MediaInfo ===
+            XElement? xoutput = null;
+            Process process1 = new Process();
+            process1.StartInfo.FileName = ext_bin_directory + @"MediaInfo.exe";
+            process1.StartInfo.WorkingDirectory = ext_bin_directory;
+            process1.StartInfo.ArgumentList.Add("--Output=XML");
+            process1.StartInfo.ArgumentList.Add(doc_file);
+            process1.StartInfo.UseShellExecute = false;
+            process1.StartInfo.RedirectStandardOutput = true;
+            process1.StartInfo.RedirectStandardError = true;
+            process1.Start(); //запускаем процесс
+                              //process1.BeginOutputReadLine(); //начинаем считывать данные из потока 
+                              //process1.BeginErrorReadLine(); //начинаем считывать данные об ошибках 
+            try
+            {
+                string output = process1.StandardOutput.ReadToEnd();
+                xoutput = XElement.Parse(output);
+                process1.WaitForExit(); //ожидаем окончания работы приложения, чтобы очистить буфер
+            }
+            finally
+            {
+                process1.Dispose();
+            }
+
+            // Оприходуем width и height
+            //var swidth = xoutput.Element("File")?
+            //    .Elements("track").FirstOrDefault(tr => tr.Attribute("type")?.Value == "Video")?
+            //    .Element("Width")?.Value?.Replace(" ", "");
+            //if (swidth != null) width = Int32.Parse(swidth.Substring(0, swidth.Length - "pixels".Length));
+            //var sheight = xoutput.Element("File")?
+            //    .Elements("track").FirstOrDefault(tr => tr.Attribute("type")?.Value == "Video")?
+            //    .Element("Height")?.Value?.Replace(" ", "");
+            //if (sheight != null) height = Int32.Parse(sheight.Substring(0, sheight.Length - "pixels".Length));
+            return xoutput;
+        }
+
+
     }
-
-
-
-
 }
 
