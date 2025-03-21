@@ -174,6 +174,9 @@ xmlns='http://fogid.net/o/'>
                                 try
                                 {
                                     bitmap = new System.Drawing.Bitmap(casspath + "/originals/" + doc9path + ext);
+                                    width = bitmap.Width;
+                                    height = bitmap.Height;
+
                                     // Сначала сохраним оригинал для специфического случая преобразования тиффов
                                     if (mimetype == "image/tiff")
                                     {
@@ -189,6 +192,7 @@ xmlns='http://fogid.net/o/'>
                                         double factor = width >= height ? (double)previewBase / (double)width : (double)previewBase / (double)height;
                                         System.Drawing.Bitmap bitmap2 = new System.Drawing.Bitmap(bitmap, (int)((double)width*factor), (int)((double)height * factor));
                                         bitmap2.Save(casspath + "/documents/" + sz + "/" + doc9path + ".jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                                        Console.WriteLine($"Preview {sz}/{doc9path}.jpg calculated");
                                     };
                                     if (nsm) calculatePreview("small");
                                     if (nme) calculatePreview("medium");
