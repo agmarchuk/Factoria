@@ -438,7 +438,7 @@ namespace Factograph.Data.Adapters
 
             // Вычисляем новую запись в объектном представлении
             object[] nrec;
-            if (record.Name == "delete")
+            if (record.Name.LocalName == "delete")
             {
                 nrec = new object[] { id, "delete", new object[0] };
             }

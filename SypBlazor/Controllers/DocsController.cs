@@ -94,7 +94,7 @@ namespace SypBlazor.Controllers
                 // чистим
                 foreach (var member in members)
                 {
-                    db.PutItem(new XElement("delete",
+                    db.PutItem(new XElement("{http://fogid.net/o/}delete",
                         new XAttribute("owner", user),
                         new XAttribute(ONames.rdfabout, member)));
                 }
@@ -120,7 +120,7 @@ namespace SypBlazor.Controllers
             // Теперь уничтожим собранные в relationIds отношения, если cut
             if (tocut) foreach (string? item_id in relationIds)
             {
-                    db.PutItem(new XElement("delete",
+                    db.PutItem(new XElement("{http://fogid.net/o/}delete",
                         new XAttribute(ONames.rdfabout, item_id),
                         new XAttribute("owner", user)));
             }

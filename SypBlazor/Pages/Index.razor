@@ -664,7 +664,7 @@ else // нет дерева
     {
         if (user != null)
         {
-            XElement xitem = new XElement("delete",
+            XElement xitem = new XElement("{http://fogid.net/o/}delete",
                 new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", id),
                 new XAttribute("owner", user),
                 //TODO: Зачем delete имя? Это из-за парсинга XML

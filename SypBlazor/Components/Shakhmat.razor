@@ -122,6 +122,7 @@
                     specificator = db.ontology.LabelOfOnto(tr.Tp);
                 }
                 if (documenttype == null || !documenttype.StartsWith("image/")) { uri = null; }
+                //CHANGE1 if (documenttype == null || !documenttype.StartsWith("image/")) { uri = null; }
                 string? sr = uri == null ? null : "docs/GetImage?u=" + uri + "&s=small";
                 string? enlarge = uri == null ? null : "docs/GetImage?u=" + uri + "&s=normal";
                 string reference = "index/" + tr.Id + "/" + entityId;

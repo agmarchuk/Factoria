@@ -728,7 +728,7 @@ namespace Factograph.Data
             XElement nitem;
 
             // substitute обрабатываем отдельно
-            if (item.Name == "substitute")
+            if (item.Name.LocalName == "substitute")
             {
                 nitem = item;
             }

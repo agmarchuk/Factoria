@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <config>
-  <database connectionstring="upi:D:\Home\FactographDatabases\upi-test\"/>
-  <LoadCassette>D:\Home\FactographProjects\syp_cassettes\SypCassete</LoadCassette>
+  <database connectionstring="rr:C:\Home\FactographDatabases\rr-test2\"/>
+  <LoadCassette>C:\Home\FactographProjects\bbb_cass</LoadCassette>
 </config>

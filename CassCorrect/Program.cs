@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Xml.Linq;
 
 namespace Factograph.Docs
 {
-    public class Program
+    public partial class Program
     {
-        public static void Main(string[] args)
+        public static void Main0(string[] args)
         {
             Console.WriteLine("usage: CassCorrect [-tiff] [-ещечтото] config-file");
 
@@ -96,8 +97,8 @@ namespace Factograph.Docs
                         to_save_fog = false;
                     }
 
-                    // Если версия правильная и не iscurremt_fog и не _tiff, то его не обрабатываем поскольку фог корректировать не надо
-                    if (ismodern_fog_version && iscurrent_fog && !to_convert_tiff) continue;
+                    // Если версия правильная и не iscurrent_fog, то его не обрабатываем поскольку фог корректировать не надо
+                    if (ismodern_fog_version && !iscurrent_fog) continue;
 
                     // ==== Начинаем формировать новый фог в xsbor
 
@@ -116,136 +117,114 @@ xmlns='http://fogid.net/o/'>
                     // добавлю версию
                     xsbor.Add(new XAttribute("version", "fogid-2024"));
 
-                    // Теперь сканируем записи, если надо, делаем преобразование или превьюшки
+                    // Теперь сканируем записи, если надо, делаем преобразование или превьюшки. Преобразования влекут вычисления и фиксацию метаинформации
                     foreach (XElement rec in fog.Records())
                     {
                         // Возможная замена
                         string? docmetainfo_next = null;
+                        XElement? fileStore = null;
+                        XElement? recNew = null;
 
                         string? id = rec.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value;
                         XName nm = rec.Name;
                         string? uri = null;
+                        Func<string, string> doc9path = (ur) => ur == null ? "" : ur.Substring(ur.Length - 9); // Добавок к пути к документам 
                         string[] infos = new string[0];
                         string mimetype = "unknown";
-                        //string? mimetype = null;
                         int width = -1, height = -1; // Чтобы что-то "ругнулось" в случае отсутствия
 
-                        // Теперь мы исходим из того, что метаинформация уже зафиксиована в записи.
-                        // Измениться может только documenttype
-                        // 
-                        // Сначала вычислим uri и infos documenttype, размеры, если фотка или видео  
-                        if ((nm.LocalName == "photo-doc" || nm.LocalName == "video-doc") && nm.NamespaceName == "http://fogid.net/o/")
+                        // ===== Есть 4 варианта, которые влекут обработку: фото, видео, файл, иначе.  
+
+                        if      (nm.LocalName == "photo-doc" && nm.NamespaceName == "http://fogid.net/o/")
                         {
-                            // Сначала выявим uri и infos - массив атрибутов в docmetainfo 
-                            uri = rec.Element(XName.Get("uri", "http://fogid.net/o/"))?.Value;
-                            string? docmetainfo = rec.Element(XName.Get("docmetainfo", "http://fogid.net/o/"))?.Value;
-                            infos = docmetainfo != null ? docmetainfo.Split(';').Select(s => s.ToLower()).ToArray() : new string[0];
-
-                            foreach (string info in infos)
-                            {
-                                if (info.StartsWith("width:"))
-                                    width = Int32.Parse(info.Substring("width:".Length));
-                                else if (info.StartsWith("height:"))
-                                    height = Int32.Parse(info.Substring("height:".Length));
-                                else if (info.StartsWith("documenttype:"))
-                                    mimetype = info.Substring("documenttype:".Length);
-                            }
-                        }
-                        // Добавок к пути к документам 
-                        string doc9path = uri == null ? "" : uri.Substring(uri.Length - 9);
-                        
-                        // ===== Будем преобразовывать, вычислять и корректировать. По-разному для фото и видео ====
-
-                        if (nm.LocalName == "photo-doc" && nm.NamespaceName == "http://fogid.net/o/")
-                        {
-                            string? fileToDelete = null;
-                            System.Drawing.Bitmap? bitmap = null;
-
-                            // Читаем битмап если: -tiff и документный тип image/tiff и расширение .tif или
-                            // нет какой-нибудь первьюшки
-                            bool nsm = !File.Exists(casspath + "/documents/small/" + doc9path + ".jpg");
-                            bool nme = !File.Exists(casspath + "/documents/medium/" + doc9path + ".jpg");
-                            bool nno = !File.Exists(casspath + "/documents/normal/" + doc9path + ".jpg");
-                            if ((to_convert_tiff && mimetype == "image/tiff") || nsm || nme || nno)
-                            {
-                                string ext = mimetype == "image/tiff" ? ".tif" :
-                                    (mimetype == "image/jpeg" ? ".jpg" : "." + mimetype.Substring(mimetype.IndexOf('/')+1));
-                                bool tifftransformed = false;
-                                try
-                                {
-                                    bitmap = new System.Drawing.Bitmap(casspath + "/originals/" + doc9path + ext);
-                                    width = bitmap.Width;
-                                    height = bitmap.Height;
-
-                                    // Сначала сохраним оригинал для специфического случая преобразования тиффов
-                                    if (mimetype == "image/tiff")
-                                    {
-                                        bitmap.Save(casspath + "/originals/" + doc9path + ".jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
-                                        tifftransformed = true;
-                                        //File.Delete(casspath + "/originals/" + doc9path + ext);
-                                        fileToDelete = casspath + "/originals/" + doc9path + ext;
-                                    }
-                                    // Вычислим превьюшки и сохраним их
-                                    Action<string> calculatePreview = (string sz) =>
-                                    {
-                                        int previewBase = Int32.Parse(finfo.Element("image")?.Element(sz)?.Attribute("previewBase")?.Value ?? "200");
-                                        double factor = width >= height ? (double)previewBase / (double)width : (double)previewBase / (double)height;
-                                        System.Drawing.Bitmap bitmap2 = new System.Drawing.Bitmap(bitmap, (int)((double)width*factor), (int)((double)height * factor));
-                                        bitmap2.Save(casspath + "/documents/" + sz + "/" + doc9path + ".jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
-                                        Console.WriteLine($"Preview {sz}/{doc9path}.jpg calculated");
-                                    };
-                                    if (nsm) calculatePreview("small");
-                                    if (nme) calculatePreview("medium");
-                                    if (nno) calculatePreview("normal");
-                                }
-                                catch (Exception) { }
-
-                                // Корректируем docmetainfo
-                                if (tifftransformed)
-                                {
-                                    docmetainfo_next = infos.Select(pa =>
-                                    {
-                                        if (pa.StartsWith("documenttype:")) return "documenttype:image/jpeg";
-                                        return pa;
-                                    })
-                                    .Aggregate((sum, s) => sum + ";" + s);
-                                    to_save_fog = true;
-                                }
-                            }
-                            if (bitmap != null) bitmap.Dispose();
-                            if (fileToDelete != null) { File.Delete(fileToDelete); }
-                        }
-                        else if (nm.NamespaceName == "http://fogid.net/o/" && nm.LocalName == "video-doc")
-                        {  // Коррекция записи, вычисление превьюшек
-                            Console.WriteLine("video-doc");
-                        }
-
-                        // Фиксация записи
-                        var nels = rec.Elements().Select(el =>
-                        {
-                            string pred = el.Name.LocalName;
-                            var att = el.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource");
-                            if (att != null)
-                            {
-                                return new XElement(XName.Get(pred, "http://fogid.net/o/"),
-                                    new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", att.Value));
-                            }
-                            else if (pred == "docmetainfo" && docmetainfo_next != null)
-                            {
-                                return new XElement(el.Name, docmetainfo_next);
+                            // Если новая версия, то нет метаинформации, если старая - то есть, ее надо извлечь
+                            // То же самое про конвертацию форрмата и изготовление превьюшек
+                            if (ismodern_fog_version) 
+                            { 
+                                xsbor.Add(new XElement(rec)); // Сохраняем без изменений
                             }
                             else
                             {
-                                var xlang = el.Attribute(XName.Get("lang", "http://www.w3.org/XML/1998/namespace"));
-                                return new XElement(XName.Get(pred, "http://fogid.net/o/"),
-                                    (xlang == null ? null : new XAttribute(xlang)),
-                                    new XText(el.Value));
-                            }
-                        });
-                        if (id != null) xsbor.Add(new XElement(nm,
-                                new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", id),
-                                nels));
+                                Console.Write("photo-doc (old version) ");
 
+                                // Поскольку это старый формат, в любом случае из записи изымается поле docmetainfo, запись обновляется.
+                                recNew = new XElement(rec.Name, new XAttribute(rec.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")),
+                                    rec
+                                    .Elements()
+                                    .Where(x => x.Name.LocalName != "docmetainfo" || x.Name.NamespaceName != "http://fogid.net/o/")
+                                    .Select(x => new XElement(x))
+                                    );
+                                xsbor.Add(recNew);
+
+                                // Если это не главный фог, то работать с метаинформацией не надо, просто пропускаем
+                                if (!iscurrent_fog) { continue; } 
+
+                                Extract_uri_infos_mimetype_width_height_fromrec(rec, out uri, out infos, ref mimetype, ref width, ref height);
+                                Possible_converttiff_calculatepreviews(to_convert_tiff, casspath, finfo, ref to_save_fog, ref docmetainfo_next, doc9path(uri), infos, mimetype, ref width, ref height);
+                                
+
+                                // Изготовливается запись FileStore в которую помещается
+                                // uri и модифицированная docmetainfo. Идентификатор изготавливается как модификация записи документа
+                                fileStore = new XElement("{http://fogid.net/o/}FileStore",
+                                    new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", id + "_"),
+                                    new XElement("{http://fogid.net/o/}forDocument", new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", id)),
+                                    new XElement("{http://fogid.net/o/}uri", uri),
+                                    new XElement("{http://fogid.net/o/}docmetainfo", docmetainfo_next)
+                                    );
+                                // Сохраняем новый вариант записи и элемент fileStore 
+                                xsbor.Add(fileStore);
+                            }
+                        }
+                        else if (nm.LocalName == "video-doc" && nm.NamespaceName == "http://fogid.net/o/")
+                        {
+                            if (ismodern_fog_version)
+                            {
+                                xsbor.Add(new XElement(rec)); // Сохраняем без изменений
+                            }
+                            else
+                            {
+                                // Поскольку это старый формат, в любом случае из записи изымается поле docmetainfo, запись обновляется.
+                                recNew = new XElement(rec.Name, new XAttribute(rec.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")),
+                                    rec
+                                    .Elements()
+                                    .Where(x => x.Name.LocalName != "docmetainfo" || x.Name.NamespaceName != "http://fogid.net/o/")
+                                    .Select(x => new XElement(x))
+                                    );
+                                xsbor.Add(recNew);
+
+                                // Если это не главный фог, то работать с метаинформацией не надо, просто пропускаем
+                                if (!iscurrent_fog) { continue; }
+
+                                Extract_uri_infos_mimetype_width_height_fromrec(rec, out uri, out infos, ref mimetype, ref width, ref height);
+                                using Process process1 = PreviewsCalculations(ext_bin_directory, casspath, finfo, doc9path, infos, ref width, ref height);
+                                // Изготовливается запись FileStore в которую помещается
+                                // uri и модифицированная docmetainfo. Идентификатор изготавливается как модификация записи документа
+                                fileStore = new XElement("{http://fogid.net/o/}FileStore",
+                                    new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about", id + "_"),
+                                    new XElement("{http://fogid.net/o/}forDocument", new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", id)),
+                                    new XElement("{http://fogid.net/o/}uri", uri),
+                                    new XElement("{http://fogid.net/o/}docmetainfo", docmetainfo_next)
+                                    );
+                                xsbor.Add(fileStore);
+                            }
+
+                        }
+                        else if (nm.LocalName == "FileStore" && nm.NamespaceName == "http://fogid.net/o/")
+                        {
+                            // FileStore это новая конструкция. Она допустима лишь в current фогах. В ней есть ссылка на документ (в данном
+                            // преобразователе она не используется, но ее необходимо сохранить). Есть uri и docmetainfo. Следующее действие выявит
+                            // uri, поля infos, размеры и mime-тип
+                            Extract_uri_infos_mimetype_width_height_fromrec(rec, out uri, out infos, ref mimetype, ref width, ref height);
+
+                            // Possible_converttiff_calculatepreviews(to_convert_tiff, casspath, finfo, ref to_save_fog, ref docmetainfo_next, doc9path(uri), infos, mimetype, ref width, ref height);
+
+                            // Простой вариант преобразования - ничего не делать
+                            xsbor.Add(new XElement(rec));
+                        }
+                        else // не фото,  не видео, не файл
+                        {
+                            xsbor.Add(new XElement(rec)); // Сохраняем без изменений
+                        }
                     }
                     fog.Close();
 
@@ -258,6 +237,234 @@ xmlns='http://fogid.net/o/'>
                     }
                 }
                 // ========== конец перебора фогов кассеты
+            }
+        }
+
+        private static Process PreviewsCalculations(string ext_bin_directory, string casspath, XElement finfo, Func<string, string> doc9path, string[] infos, ref int width, ref int height)
+        {
+            // Вычисление превьюшек
+            string documenttype = "video/mp4"; // дефолтный тип видео
+
+            // Выборка имеющейся информации из docmetainfo
+            foreach (string info in infos)
+            {
+                if (info.StartsWith("width:"))
+                    width = Int32.Parse(info.Substring("width:".Length));
+                else if (info.StartsWith("height:"))
+                    height = Int32.Parse(info.Substring("height:".Length));
+                else if (info.StartsWith("documenttype:"))
+                    documenttype = info.Substring("documenttype:".Length);
+            }
+            // Вычисление екстеншина
+            string? ext = documenttype?.Substring(documenttype.LastIndexOf('/') + 1);
+            if (ext == "x-msvideo") ext = "avi"; //TODO: надо другие типы видео также изымать, хотя можно "положиться" на ffmpeg
+
+            // Документ-оригинал: (наверное возможно  по-другому)
+            string original = casspath + "/originals/" + doc9path + "." + ext;
+            if (ext == "mpeg" && !File.Exists(original))
+            {
+                ext = "mpg";
+                original = casspath + "/originals/" + doc9path + "." + ext;
+            }
+
+            // =============== Вычисление ширины и высоты через обращение к MediaInfo ===
+            XElement? xoutput = null;
+            Process process1 = new Process();
+            {
+                process1.StartInfo.FileName = ext_bin_directory + @"MediaInfo.exe";
+                process1.StartInfo.WorkingDirectory = ext_bin_directory;
+                process1.StartInfo.ArgumentList.Add("--Output=XML");
+                process1.StartInfo.ArgumentList.Add(original);
+                process1.StartInfo.UseShellExecute = false;
+                process1.StartInfo.RedirectStandardOutput = true;
+                process1.StartInfo.RedirectStandardError = true;
+
+                process1.Start(); //запускаем процесс
+
+                string output = process1.StandardOutput.ReadToEnd();
+                xoutput = XElement.Parse(output);
+                process1.WaitForExit(); //ожидаем окончания работы приложения, чтобы очистить буфер
+            }
+            // Оприходуем width и height
+            var swidth = xoutput.Element("File")?
+                .Elements("track").FirstOrDefault(tr => tr.Attribute("type")?.Value == "Video")?
+                .Element("Width")?.Value?.Replace(" ", "");
+            if (swidth != null) width = Int32.Parse(swidth.Substring(0, swidth.Length - "pixels".Length));
+            var sheight = xoutput.Element("File")?
+                .Elements("track").FirstOrDefault(tr => tr.Attribute("type")?.Value == "Video")?
+                .Element("Height")?.Value?.Replace(" ", "");
+            if (sheight != null) height = Int32.Parse(sheight.Substring(0, sheight.Length - "pixels".Length));
+
+            // =============== конец вычисления ширины и высоты через обращение к MediaInfo ===
+
+
+
+            // получим массив элементов вида: <medium ... previewBase='600' /> 
+            var vi = finfo.Element("video");
+            XElement[] xframes = vi != null ? vi.Elements().ToArray() : Array.Empty<XElement>();
+
+            // Пройдемся по элементам массива
+            foreach (XElement xfr in xframes)
+            {
+                // Проверяем наличие превьюшки
+                string sz = xfr.Name.LocalName;
+                if (File.Exists(casspath + "/documents/medium/" + doc9path + ".mp4")) continue;
+
+                // Делаем преобразование 
+                Console.WriteLine($"video-doc {sz} w={width} h={height}");
+
+            }
+
+
+
+            //// Вычислим фактор "увеличения" для каждого типоразмера
+            //int more = width > height ? width : height;
+
+            //Dictionary<string, double> factors = new Dictionary<string, double>();
+            //string? pBs = finfo.Element("video")?.Element("small")?
+            //    .Attribute("previewBase")?.Value;
+            //factors.Add("small", pBs != null ? (double)Int32.Parse(pBs) / (double)more : -1);
+            //string? pBm = finfo.Element("video")?.Element("medium")?
+            //    .Attribute("previewBase")?.Value;
+            //factors.Add("medium", pBm != null ? (double)Int32.Parse(pBm) / (double)more : -1);
+            //string? pBn = finfo.Element("video")?.Element("normal")?
+            //    .Attribute("previewBase")?.Value;
+            //factors.Add("normal", pBn != null ? (double)Int32.Parse(pBn) / (double)more : -1);
+
+            //foreach (var fsize in xframes)
+            //{
+            //    // Превьюшки:
+            //    string target = casspath + "\\documents\\" + fsize.Name + uri.Substring(uri.Length - 10) + ".mp4";
+
+            //    // Не вычисляем если уже есть
+            //    if (File.Exists(target)) continue;
+
+            //    if (factors[fsize] < 0) continue;
+            //    // Вычислим целую и дробную части resize-фактора
+
+            //    double factor1000 = factors[fsize] * 1000;
+            //    int ifactor = (int)(factor1000 / 10);
+            //    int rfactor = (int)(factor1000) % 10;
+
+            //    // ======= Внешний ffmpeg вычисления превьюшки
+            //    Process process2 = new Process();
+            //    process2.StartInfo.FileName = ext_bin_directory + @"ffmpeg.exe";
+            //    process2.StartInfo.WorkingDirectory = ext_bin_directory;
+            //    //string ars = $"\"{original}\" \"-resize {ifactor}.{rfactor}%\" \"{fsize}\"";
+
+            //    process2.StartInfo.ArgumentList.Add("-i");
+            //    process2.StartInfo.ArgumentList.Add(original);
+            //    process2.StartInfo.ArgumentList.Add("-y");
+            //    process2.StartInfo.ArgumentList.Add("-s");
+
+            //    double factor = factors[fsize];
+            //    int w = (int)(width * factor); if (w % 2 == 1) w += 1;
+            //    int h = (int)(height * factor); if (h % 2 == 1) h += 1;
+            //    process2.StartInfo.ArgumentList.Add(w + "x" + h);
+            //    process2.StartInfo.ArgumentList.Add(target);
+            //    process2.Start();
+            //    try
+            //    {
+            //        process2.WaitForExit();
+            //        Console.WriteLine("Preview video-doc: " + uri);
+            //        Console.WriteLine($"width: {width}, height: {height}, more: {more}");
+            //        Console.WriteLine(fsize + " " + ext + " OK");
+            //    }
+            //    finally
+            //    {
+            //        process2.Dispose();
+            //    }
+            //}
+            return process1;
+        }
+
+        private static void Possible_converttiff_calculatepreviews(bool to_convert_tiff, string casspath, XElement finfo, ref bool to_save_fog, ref string? docmetainfo_next, string doc9, string[] infos, string mimetype, ref int width, ref int height)
+        {
+            // Возможно, нужно выполнить трансформацию файла документа
+            string? fileToDelete = null;
+            System.Drawing.Bitmap? bitmap = null;
+
+            // Читаем битмап если: -tiff и документный тип image/tiff и расширение .tif или
+            // нет какой-нибудь первьюшки
+            bool nsm = !File.Exists(casspath + "/documents/small/" + doc9 + ".jpg");
+            bool nme = !File.Exists(casspath + "/documents/medium/" + doc9 + ".jpg");
+            bool nno = !File.Exists(casspath + "/documents/normal/" + doc9 + ".jpg");
+            if ((to_convert_tiff && mimetype == "image/tiff") || nsm || nme || nno)
+            {
+                string ext = mimetype == "image/tiff" ? ".tif" :
+                    (mimetype == "image/jpeg" ? ".jpg" : "." + mimetype.Substring(mimetype.IndexOf('/') + 1));
+                bool tifftransformed = false;
+                try
+                {
+                    // Делаем битмап файл-документа! Заодно, скорректируем ширину и высоту
+                    bitmap = new System.Drawing.Bitmap(casspath + "/originals/" + doc9 + ext);
+                    width = bitmap.Width;
+                    height = bitmap.Height;
+                    Console.Write("bitmap based on " + (casspath + "/originals/" + doc9 + ext) + " ");
+
+                    // Будем сохранять. Сначала сохраним оригинал для специфического случая преобразования тиффов
+                    if (mimetype == "image/tiff")
+                    {
+                        bitmap.Save(casspath + "/originals/" + doc9 + ".jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                        tifftransformed = true;
+                        Console.Write("tifftransformed ");
+                        //File.Delete(casspath + "/originals/" + doc9path + ext);
+                        fileToDelete = casspath + "/originals/" + doc9 + ext;
+                    }
+
+                    // Опеределим вычисление превьюшки и сохрания ее
+                    Action<string, int, int, string> calculatePreview = (string sz, int width, int height, string doc9) =>
+                    {
+                        int previewBase = Int32.Parse(finfo.Element("image")?.Element(sz)?.Attribute("previewBase")?.Value ?? "200");
+                        double factor = width >= height ? (double)previewBase / (double)width : (double)previewBase / (double)height;
+                        System.Drawing.Bitmap bitmap2 = new System.Drawing.Bitmap(bitmap, (int)((double)width * factor), (int)((double)height * factor));
+                        bitmap2.Save(casspath + "/documents/" + sz + "/" + doc9 + ".jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                        Console.Write($"Preview {sz}/{doc9}.jpg calculated; ");
+                    };
+                    //  вычислим превьюшки если надо
+                    if (nsm) calculatePreview("small", width, height, doc9);
+                    if (nme) calculatePreview("medium", width, height, doc9);
+                    if (nno) calculatePreview("normal", width, height, doc9);
+                }
+                catch (Exception) { }
+
+                // Корректируем docmetainfo
+                if (tifftransformed)
+                {
+                    docmetainfo_next = infos.Select(pa =>
+                    {
+                        if (pa.StartsWith("documenttype:")) return "documenttype:image/jpeg";
+                        return pa;
+                    })
+                    .Aggregate((sum, s) => sum + ";" + s);
+                    to_save_fog = true;
+                }
+                else
+                {
+                    docmetainfo_next = infos
+                        .Aggregate((sum, s) => sum + ";" + s);
+                    to_save_fog = true;
+                }
+            }
+            if (bitmap != null) bitmap.Dispose();
+            if (fileToDelete != null) { File.Delete(fileToDelete); }
+            Console.WriteLine();
+        }
+
+        private static void Extract_uri_infos_mimetype_width_height_fromrec(XElement rec, out string? uri, out string[] infos, ref string mimetype, ref int width, ref int height)
+        {
+            uri = rec.Element(XName.Get("uri", "http://fogid.net/o/"))?.Value;
+            string? docmetainfo = rec.Element(XName.Get("docmetainfo", "http://fogid.net/o/"))?.Value;
+            infos = docmetainfo != null ? docmetainfo.Split(';').Select(s => s.ToLower()).ToArray() : new string[0];
+
+            foreach (string info in infos)
+            {
+                if (info.StartsWith("width:"))
+                    width = Int32.Parse(info.Substring("width:".Length));
+                else if (info.StartsWith("height:"))
+                    height = Int32.Parse(info.Substring("height:".Length));
+                else if (info.StartsWith("documenttype:"))
+                    mimetype = info.Substring("documenttype:".Length);
             }
         }
 

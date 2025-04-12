@@ -372,7 +372,7 @@ partial class Program
     public static void Main4()
     {
         Console.WriteLine("Start FactographData. Use sample.");
-        string wwwpath = @"D:\Home\dev2024\Factoria\ConsoleTest\wwwroot\"; // "../ConsoleTest/wwwroot/"; // Это для запуска через dotnet
+        string wwwpath = @"C:\Home\dev2025\Factoria\ConsoleTest\wwwroot\"; // "../ConsoleTest/wwwroot/"; // Это для запуска через dotnet
         Factograph.Data.IFDataService db = new Factograph.Data.FDataService(wwwpath, wwwpath + "Ontology_iis-v14.xml", null);
 
         Console.WriteLine($"Before Reload");
@@ -411,7 +411,7 @@ partial class Program
         };
 
         // Поиск записей по имени
-        string rname = "марчук";
+        string rname = "0043"; // "марчук";
         IEnumerable<RRecord> records = db.SearchRRecords(rname, false);
         Console.WriteLine($"{records.Count()} records with name {rname}");
         
@@ -431,6 +431,14 @@ partial class Program
         if (extendedRecord == null) throw new Exception($"Err: no item for {itemId}");
         Console.WriteLine("Extended record:");
         printRRecord(extendedRecord);
+
+        // == Локальный эксперимент
+        string id2 = "bbb_cass_0001_0002_";
+        var extendedRecord2 = db.GetRRecord(id2, true);
+        if (extendedRecord2 == null) throw new Exception($"Err: no item for {id2}");
+        Console.WriteLine("Extended record2:");
+        printRRecord(extendedRecord2);
+        // == конец локального эксперимента
 
         // Переходим к модели r.Rec. Сначала вычисляем универсальный шаблон для данного типа
         var shablon = Rec.GetUniShablon(extendedRecord.Tp, 2, null, db.ontology);

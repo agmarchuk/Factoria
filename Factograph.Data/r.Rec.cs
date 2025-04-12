@@ -116,8 +116,13 @@ namespace Factograph.Data.r
                         ((Dir)pros[nom]).Resources[pos[nom]] = r11;
                         pos[nom]++;
                     }
-                    //TODO: ВОзможно, надо что-то сделать и по else
-                    //else Console.WriteLine($"shablon=null {pros[nom].Pred} {r1?.Tp} {((Dir)shablon.Props[nom]).ToString()}");
+                    //Change2: ВОзможно, надо что-то сделать и по else !!!!!!!!
+                    // Пробую:
+                    else if (false)
+                    {
+                        ((Dir)pros[nom]).Resources[pos[nom]] = new Rec(id1, "unknown");
+                        pos[nom]++;
+                    }
                 }
                 else if (pros[nom] is Inv)
                 {
@@ -133,6 +138,28 @@ namespace Factograph.Data.r
                     }
                 }
             }
+
+            // Change3 =========== Заплата! ========== TODO: как-то более нормально решить эту проблему  
+            // Если в шаблоне(документа ?) есть прямое поле docmetainfo, то в конце генерации надо проверить есть ли в данных
+            // с обратное ссылкой Prop = "http://fogid.net/o/forDocument" и попробовать вытащить docmetainfo из FileStore.
+            // В случае успеха, заменить значение поля на найденное.
+            if (false)
+            {
+                var spec_nom = shablon.Props
+                    .Select((p, i) => p.Pred == "http://fogid.net/o/docmetainfo" ? (object)i : null)
+                    .FirstOrDefault(oi => oi != null);
+                if (spec_nom != null)
+                {
+                    var propp = r.Props.FirstOrDefault(p => p.Prop == "http://fogid.net/o/forDocument");
+                    if (propp != null)
+                    {
+                        string idd = ((RInverseLink)propp).Source;
+                        var fs = getRecord(idd);
+                    }
+                }
+            }
+            // ======= конец заплаты =======
+
             // Добавляем pros, устранив нулевые
             result.Props = pros.Where(p => p != null).ToArray();
             return result;
