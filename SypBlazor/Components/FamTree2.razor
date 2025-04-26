@@ -165,18 +165,7 @@
         uri = doc?.GetStr("http://fogid.net/o/uri");
         if (uri != null) 
         { 
-            var dmi = doc?.GetStr("http://fogid.net/o/docmetainfo");
-            if (dmi != null)
-            {
-                int pos = dmi.IndexOf("documenttype:");
-                string field = dmi.Substring(pos + "documenttype:".Length);
-                int pos2 = field.IndexOf(';');
-                contenttype = field.Substring(0, pos2);
-                if (contenttype.StartsWith("image/"))
-                {
-                    URL = "docs/GetImage?u=" + uri + "&s=small";
-                }
-            }
+            URL = "docs/GetImage?u=" + uri + "&s=small";
         }
         titles = tree.GetInverse("http://fogid.net/o/titled").ToArray();
         reflections = tree.GetInverse("http://fogid.net/o/reflected").ToArray();

@@ -2,7 +2,7 @@
 <config>
   <database connectionstring="rr:C:\Home\FactographDatabases\rr-test\"/>
 
-  <LoadCassette>C:\Home\FactographProjects\bbb_cass</LoadCassette>
+  <LoadCassette>C:\Home\FactographProjects\test_rot</LoadCassette>
   
   <!--<LoadCassette>C:\Home\FactographProjects\marchuk_cass_new\an_cass</LoadCassette>
   <LoadCassette>C:\Home\FactographProjects\marchuk_cass_new\bogatykh</LoadCassette>

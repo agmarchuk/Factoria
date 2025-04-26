@@ -94,12 +94,6 @@ namespace CassConsoleApp {
                                 {
                                     record.Add(new XElement(XName.Get("uri", "http://fogid.net/o/"),
                                         att.Value));
-                                    string combined = property.Attributes()
-                                        .Where(a => a.Name.LocalName != "uri" )
-                                        .Select(a => a.Name + ":" + a.Value)
-                                        .Aggregate((s, p) => s + ";" + p);    
-                                    record.Add(new XElement(XName.Get("docmetainfo", "http://fogid.net/o/"),
-                                        combined));
                                 }
                                     
                             }

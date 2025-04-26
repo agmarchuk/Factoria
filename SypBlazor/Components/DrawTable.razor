@@ -17,7 +17,7 @@
             @foreach (var p in Trees[0].Props.Where(p => p is Str || p is Tex || p is Dir).ToArray())
             {
                 string pred = p.Pred;
-                if (pred == "http://fogid.net/o/uri" || pred == "http://fogid.net/o/docmetainfo") { continue; }
+                if (pred == "http://fogid.net/o/uri") { continue; }
                 if (!allowedPredicates.Contains(pred)) { continue; }
                 ncolumns++;
                 string label = db.ontology.LabelOfOnto(p.Pred);
@@ -34,8 +34,6 @@
     {
         if (tree == null) continue;
         var fieldsdirects = tree.Props.Where(p => (p is Str || p is Tex || p is Dir)
-        //&& allowedPredicates.Contains(p.Pred)
-        //&& !(p.Pred == "http://fogid.net/o/uri" || p.Pred == "http://fogid.net/o/docmetainfo")
                                             ).ToArray();
         <tr class="bor">
             @if (erecord != null && tree.Id == erecord.Id)
@@ -82,7 +80,7 @@
                ).ToArray())
                 {
                     string pred = p.Pred;
-                    if (pred == "http://fogid.net/o/uri" || pred == "http://fogid.net/o/docmetainfo") { continue; }
+                    if (pred == "http://fogid.net/o/uri") { continue; }
                     if (!allowedPredicates.Contains(p.Pred)) { continue; }
                     if (p is Str)
                     {
@@ -456,7 +454,6 @@
     }
     private static bool Allowed(string prop, string? forbidden) =>
         prop != forbidden &&
-        prop != "http://fogid.net/o/uri" &&
-        prop != "http://fogid.net/o/docmetainfo";
+        prop != "http://fogid.net/o/uri";
 
 }

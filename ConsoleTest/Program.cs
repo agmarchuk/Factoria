@@ -779,8 +779,7 @@ partial class Program
     //                new Rec(null, "http://fogid.net/o/photo-doc",
     //                  new Tex("http://fogid.net/o/name"),
     //                  new Str("http://fogid.net/o/from-date"),
-    //                  new Str("http://fogid.net/o/uri"),
-    //                  new Str("http://fogid.net/o/docmetainfo"))))
+    //                  new Str("http://fogid.net/o/uri"))))
     //      ));
 
     //    string id = "p66";

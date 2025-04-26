@@ -2,7 +2,7 @@
 @using Factograph.Data.r
 @inject Factograph.Data.IFDataService db
 
-<div class="mdl-shadow--4dp" style="width:@(Width)px; height:@(Height)px; text-align:center; display:flex; flex-direction: column; background: url('@(PhotoUrl)') center no-repeat; background-color:#d9dabb; background-size:contain;a">
+<div class="mdl-shadow--4dp" style="width:@(Width)px; height:@(Height)px; text-align:center; font-size:small; font-weight:100; display:flex; flex-direction: column; background: url('@(PhotoUrl)') center no-repeat; background-color:#d9dabb; background-size:contain;a">
      <div style="margin: auto;height:@((Regime=="photo"||Regime=="fund")?"100":"50")%;">
         <span style="text-align: center; color:black; background-color: #d9dabb; background-size:contain; ">@(Prolog)</span>
     </div>

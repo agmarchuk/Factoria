@@ -31,7 +31,7 @@
         <td colspan="2" style="width:100%;">
             @if (s != null)
             {
-                if (property.Pred == "http://fogid.net/o/uri" || property.Pred == "http://fogid.net/o/docmetainfo")
+                if (property.Pred == "http://fogid.net/o/uri")
                 {
                     <input type="hidden" @bind-value="s.Value" style="width:100%;"></input>
                 }

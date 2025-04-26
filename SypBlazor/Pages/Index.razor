@@ -16,14 +16,14 @@
 @inject ProtectedLocalStorage browserStorage
 
 <div style="width:100%;display:flex;flex-direction:row;">
-     <div style="width:100%;">
+    <div style="width:100%;">
         <SypBlazor.Components.SearchPanel typs="@typs" user="@user"
-            onNewItem="stss => NewItem(((Tuple<string, string>)stss).Item1, ((Tuple<string, string>)stss).Item2)"
-            onSelected="id => OnSelected((string)id)"  />
+        onNewItem="stss => NewItem(((Tuple<string, string>)stss).Item1, ((Tuple<string, string>)stss).Item2)"
+        onSelected="id => OnSelected((string)id)"  />
     </div>
 
     @if (rrec != null && rrec.Tp == "http://fogid.net/o/person" &&
-        configuration.GetSection("App:fam")?.Value == "true")
+    configuration.GetSection("App:fam")?.Value == "true")
     {
         <div style="width:300px;">
             индекс | <a href="fam/@(entityId)">семья</a> | <a href="gene/@(entityId)">семейное дерево</a>
@@ -53,93 +53,96 @@
     }
     else
     {
-    bool hasdocimage = false;
-    var invProps = tree.Props.Where(p => p is Inv).Cast<Inv>().ToArray();
-    <div>
-        <span style="color:green;">@(db.ontology.LabelOfOnto(tree.Tp))</span>
-        &nbsp;
-        <span>@(tree.Id)</span>
-    </div>
-
-    // ========    Это вставка полоски пред. след. к документу =========
-    @if (externalId != null)
-    {
-        string pr = "index/" + prev + "/" + externalId;
-        string d = "index/" + externalId;
-        string nx = "index/" + next + "/" + externalId;
-        <div style="text-align: center;">
-            <NavLink href="@d">к источнику</NavLink>
+        bool hasdocimage = false;
+        var invProps = tree.Props.Where(p => p is Inv).Cast<Inv>().ToArray();
+        <div>
+            <span style="color:green;">@(db.ontology.LabelOfOnto(tree.Tp))</span>
             &nbsp;
-            @if (prev == null)
-            {
-                <span>пред.</span>
-            }
-            else
-            {
-                <NavLink href="@pr"><span>пред.</span></NavLink>
-            }
-            &nbsp;
-            @if (next == null)
-            {
-                <span>след.</span>
-            }
-            else
-            {
-                <NavLink href="@nx"><span>след.</span></NavLink>
-            }
+            <span>@(tree.Id)</span>
         </div>
-    }
+
+        // ========    Это вставка полоски пред. след. к документу =========
+        @if (externalId != null)
+        {
+            string pr = "index/" + prev + "/" + externalId;
+            string d = "index/" + externalId;
+            string nx = "index/" + next + "/" + externalId;
+            <div style="text-align: center;">
+                <NavLink href="@d">к источнику</NavLink>
+                &nbsp;
+                @if (prev == null)
+                {
+                    <span>пред.</span>
+                }
+                else
+                {
+                    <NavLink href="@pr"><span>пред.</span></NavLink>
+                }
+                &nbsp;
+                @if (next == null)
+                {
+                    <span>след.</span>
+                }
+                else
+                {
+                    <NavLink href="@nx"><span>след.</span></NavLink>
+                }
+            </div>
+        }
 
 
-    @if (db.ontology.DescendantsAndSelf("http://fogid.net/o/document").Contains(tree.Tp))
-    {
-        var uriprop = tree.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/uri");
-        string? uri = ((Str?)uriprop)?.Value;
-      
-        if (tree.Tp == "http://fogid.net/o/photo-doc")
+        @if (db.ontology.DescendantsAndSelf("http://fogid.net/o/document").Contains(tree.Tp))
         {
-            string sr = "docs/GetImage?u=" + uri + "&s=normal";
-            hasdocimage = true;
-            <img src="@sr" />
+            var uriprop = tree.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/uri");
+            string? uri = ((Str?)uriprop)?.Value;
 
-        }
-        else if (tree.Tp == "http://fogid.net/o/video-doc")
-        {
-            hasdocimage = true;
-            string sr = "docs/GetVideo?u=" + uri + "&s=medium";
-            <video width="480" controls>
-                @* <source type="video/webm" src='@(sr + "&ext=webm")' /> *@
-                <source type="video/mp4" src='@(sr + "&ext=mp4")' />
-                Your browser does not support the video tag.
-            </video>
-        }
-        else if (tree.Tp == "http://fogid.net/o/audio-doc")
-        {
-            string sr = "docs/GetAudio?u=" + uri;
-            <audio controls>
-                <source type="audio/mp3" src='@(sr)' />
-                Your browser does not support the audio tag.
-            </audio>
-        }
-        else if (tree.Tp == "http://fogid.net/o/document")
-        {
-            string? docmetainfo = ((Str?)tree.Props.FirstOrDefault(p => p.Pred == "http://fogid.net/o/docmetainfo"))?.Value;
-            if (docmetainfo != null && docmetainfo.Contains("application/pdf"))
-            {   // Это PDF - его надо напечатать
+            if (tree.Tp == "http://fogid.net/o/photo-doc")
+            {
+                string sr = "docs/GetImage?u=" + uri + "&s=normal";
                 hasdocimage = true;
-                string sr = "docs/GetPdf?u=" + uri;
+                <img src="@sr" />
+
+            }
+            else if (tree.Tp == "http://fogid.net/o/video-doc")
+            {
+                hasdocimage = true;
+                string sr = "docs/GetVideo?u=" + uri + "&s=medium";
+                <video width="480" controls>
+                    @* <source type="video/webm" src='@(sr + "&ext=webm")' /> *@
+                    <source type="video/mp4" src='@(sr + "&ext=mp4")' />
+                    Your browser does not support the video tag.
+                </video>
+            }
+            else if (tree.Tp == "http://fogid.net/o/audio-doc")
+            {
+                string sr = "docs/GetAudio?u=" + uri;
+                <audio controls>
+                    <source type="audio/mp3" src='@(sr)' />
+                    Your browser does not support the audio tag.
+                </audio>
+            }
+            else if (tree.Tp == "http://fogid.net/o/document" && uri != null)
+            {
+                string ext = db.GetFileExt(uri);
+
+                if (ext == ".pdf")
+                {   // Это PDF - его надо напечатать
+                    hasdocimage = true;
+                    string sr = "docs/GetPdf?u=" + uri;
                     <embed src="@sr" width="100%" height="800" />
-            }
-            else if (docmetainfo != null && docmetainfo.Contains("application/fog"))
-            {   // Это FOG - он недоступен
-            }
-            else if (docmetainfo != null) // Все типы документов кроме .fog
-            {   // Другие документы с docmetainfo
-                string sr = "docs/GetDoc?u=" + uri;
-                var mime = docmetainfo.Split(';')
-                        .FirstOrDefault(s => s.StartsWith("documenttype:"))?.Substring("documenttype:".Length);
-                <div>Документ [@(mime)] получить копию: </div>
-                <div style="margin-bottom:10px;"><a href="@sr"><img src="icons/document_m.jpg" /></a></div>
+                }
+                else if (uri == ".fog")
+                {   // Это FOG - он недоступен
+                }
+                else // Все типы документов кроме предыдущих
+                {   
+                    string sr = "docs/GetDoc?u=" + uri;
+                    // В конце uri должен быть экстеншн
+                    if (ext != "")
+                    {
+                        <div>Документ [@(ext)] получить копию: </div>
+                        <div style="margin-bottom:10px;"><a href="@sr"><img src="icons/document_m.jpg" /></a></div>
+                    }
             }
 
         }
@@ -399,8 +402,7 @@ else // нет дерева
                             new Dir("http://fogid.net/o/collection-item",
                                 new Rec(null, null,
                                     new Tex("http://fogid.net/o/name"),
-                                    new Str("http://fogid.net/o/uri"),
-                                    new Str("http://fogid.net/o/docmetainfo"))
+                                    new Str("http://fogid.net/o/uri"))
                                     ))),
                     new Inv("http://fogid.net/o/collection-item",
                         new Rec(null, "http://fogid.net/o/collection-member",
@@ -418,7 +420,6 @@ else // нет дерева
                     new Str("http://fogid.net/o/from-date"),
                     new Tex("http://fogid.net/o/description"),
                     new Str("http://fogid.net/o/uri"),
-                    new Str("http://fogid.net/o/docmetainfo"),
                     inv_parts["http://fogid.net/o/collection-item"]
                     );
             }
@@ -617,8 +618,7 @@ else // нет дерева
                 new Rec(null, "http://fogid.net/o/collection-member",
                     new Dir("http://fogid.net/o/collection-item",
                         new Rec(null, "http://fogid.net/o/photo-doc",
-                            new Str("http://fogid.net/o/uri"),
-                            new Str("http://fogid.net/o/docmetainfo")),
+                            new Str("http://fogid.net/o/uri")),
                         new Rec(null, null,
                             new Tex("http://fogid.net/o/name"))
                             ))));

@@ -91,26 +91,23 @@ namespace Factograph.Docs
                         {
                             if (property != null && property.Name.LocalName == "iisstore")
                             {
-                                XAttribute? att = property.Attribute("uri");
-                                if (att != null) 
-                                {
-                                    record.Add(new XElement(XName.Get("uri", "http://fogid.net/o/"),
-                                        att.Value));
-                                    string combined = property.Attributes()
-                                        .Where(a => a.Name.LocalName != "uri" )
-                                        .Select(a => a.Name + ":" + a.Value)
-                                        .Aggregate((s, p) => s + ";" + p);    
-                                    record.Add(new XElement(XName.Get("docmetainfo", "http://fogid.net/o/"),
-                                        combined));
+                                    XAttribute? att = property.Attribute("uri");
+                                    if (att != null)
+                                    {
+                                        record.Add(new XElement(XName.Get("uri", "http://fogid.net/o/"),
+                                            att.Value));
+                                    }
+                                    XAttribute? att_transform = property.Attribute("transform");
+                                    if (att_transform != null && att_transform.Value != "")
+                                    {
+                                        record.Add(new XElement("{http://fogid.net/o/}transform",
+                                            att_transform.Value));
+                                    }
                                 }
-                                    
-                            }
-                            else record.Add(property);
+                                else record.Add(property);
                             property = null;
                         }
                     }
- 
-
                     break;
                 case XmlNodeType.Text:
                     //Console.Write($"{reader.Value}");

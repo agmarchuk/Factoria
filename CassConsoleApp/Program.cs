@@ -76,7 +76,6 @@ namespace CassConsoleApp
                         foreach (XElement xel in e.Elements())
                         {
                             if (xel.Name.LocalName == "uri") uri = xel.Value;
-                            else if (xel.Name.LocalName == "docmetainfo") documentinfo = xel.Value;
                             else if (xel.Name.LocalName == "iisstore")
                             {
                                 uri = xel.Attributes()

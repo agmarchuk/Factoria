@@ -320,22 +320,22 @@ namespace Factograph.Data
         public void FillDb(IEnumerable<FogInfo> fogflow, Action<string> turlog)
         {
             // Коррекция идентификаторов
-            Func<string, string> ConvertId = (string id) => { if (id.Contains('|')) return id.Replace("|", ""); else return id; };
+            Func<string, string> ConvertId0 = (string id) => { if (id.Contains('|')) return id.Replace("|", ""); else return id; };
 
-            // Коррекция элемента до канонического состояния
-            Func<XElement, XElement> ConvertXElement = xel =>
+            // Коррекция элемента до канонического состояния (старый вариант)
+            Func<XElement, XElement> ConvertXElement0 = xel =>
             {
                 if (xel.Name == "delete" || xel.Name == ONames.fogi + "delete") return new XElement(ONames.fogi + "delete",
                     xel.Attribute("id") != null ?
-                        new XAttribute(ONames.rdfabout, ConvertId(xel.Attribute("id").Value)) :
+                        new XAttribute(ONames.rdfabout, ConvertId0(xel.Attribute("id").Value)) :
                         new XAttribute(xel.Attribute(ONames.rdfabout)),
                     xel.Attribute("mT") == null ? null : new XAttribute(xel.Attribute("mT")));
                 else if (xel.Name == "substitute" || xel.Name == ONames.fogi + "substitute") return new XElement(ONames.fogi + "substitute",
-                    new XAttribute("old-id", ConvertId(xel.Attribute("old-id").Value)),
-                    new XAttribute("new-id", ConvertId(xel.Attribute("new-id").Value)));
+                    new XAttribute("old-id", ConvertId0(xel.Attribute("old-id").Value)),
+                    new XAttribute("new-id", ConvertId0(xel.Attribute("new-id").Value)));
                 else
                 {
-                    string id = ConvertId(xel.Attribute(ONames.rdfabout).Value);
+                    string id = ConvertId0(xel.Attribute(ONames.rdfabout).Value);
                     XAttribute mt_att = xel.Attribute("mT");
                     XElement iisstore = xel.Element("iisstore");
                     if (iisstore != null)
@@ -352,7 +352,7 @@ namespace Factograph.Data
                         if (docmetainfo != "") xel.Add(new XElement("docmetainfo", docmetainfo));
                     }
                     XElement xel1 = new XElement(XName.Get(xel.Name.LocalName, ONames.fog),
-                        new XAttribute(ONames.rdfabout, ConvertId(xel.Attribute(ONames.rdfabout).Value)),
+                        new XAttribute(ONames.rdfabout, ConvertId0(xel.Attribute(ONames.rdfabout).Value)),
                         mt_att == null ? null : new XAttribute("mT", mt_att.Value),
                         xel.Elements()
                         .Where(sub => sub.Name.LocalName != "iisstore")
@@ -360,12 +360,81 @@ namespace Factograph.Data
                             sub.Value,
                             sub.Attributes()
                             .Select(att => att.Name == ONames.rdfresource ?
-                                new XAttribute(ONames.rdfresource, ConvertId(att.Value)) :
+                                new XAttribute(ONames.rdfresource, ConvertId0(att.Value)) :
                                 new XAttribute(att)))));
                     return xel1;
                 }
                 //return null;
             };
+
+            string noid = "no ident";
+
+            // Коррекция идентификаторов (новый вариант)
+            Func<string?, string> ConvertId = (string? id) => 
+            {
+                if (id == null) return noid;
+                if (id.Contains('|')) return id.Replace("|", ""); else return id; 
+            };
+
+            // Коррекция элемента до канонического состояния (новый вариант)
+            Func<XElement, XElement> ConvertXElement = xel =>
+            {
+                string id = ConvertId(xel.Attribute(ONames.rdfabout)?.Value);
+                var mtatt = xel.Attribute("mT");
+                if (xel.Name == "delete" || xel.Name == ONames.fogi + "delete")
+                {
+                    if (id == noid) id = ConvertId(xel.Attribute("id")?.Value);
+                    return new XElement(ONames.fogi + "delete",
+                        new XAttribute(ONames.rdfabout, id),
+                        mtatt == null ? null : new XAttribute(mtatt));
+                }
+                else if (xel.Name == "substitute" || xel.Name == ONames.fogi + "substitute")
+                {
+                    return new XElement(ONames.fogi + "substitute",
+                        new XAttribute("old-id", ConvertId(xel.Attribute("old-id")?.Value)),
+                        new XAttribute("new-id", ConvertId(xel.Attribute("new-id")?.Value)),
+                        mtatt == null ? null : new XAttribute(mtatt));
+                }
+                else
+                {
+                    // Формируем результирующий элемент
+                    XElement xel1 = new XElement(XName.Get(xel.Name.LocalName, ONames.fog),
+                        new XAttribute(ONames.rdfabout, id),
+                        mtatt == null ? null : new XAttribute("mT", mtatt.Value),
+                        xel.Elements().Select(sub =>
+                        {
+                            XName pred = sub.Name;
+                            // Есть два варианта, которые обрабатываются по-разному: iisstore, обычный
+                            if (pred == "iisstore")
+                            {
+                                // Вернем только uri
+                                var att_uri = sub.Attribute("uri");
+                                return att_uri == null ? null : new XElement(XName.Get("uri", ONames.fog), att_uri.Value);
+                            }
+                            else
+                            {
+                                // Есть два варианта: поле и ссылка
+                                var resource_att = sub.Attribute(ONames.rdfresource);
+                                var lang_att = sub.Attribute(ONames.xmllang);
+                                // Специфически копируем
+                                return new XElement(XName.Get(pred.LocalName, ONames.fog),
+                                    resource_att == null ? 
+                                        new XElement(XName.Get(pred.LocalName, ONames.fog), 
+                                            lang_att == null ? null : new XAttribute(ONames.xmllang, lang_att),
+                                            new XText(sub.Value))
+                                                        :
+                                        new XElement(XName.Get(pred.LocalName, ONames.fog),
+                                            new XAttribute(ONames.rdfresource, ConvertId(resource_att.Value))
+                                        ));
+                            }
+
+
+                        }));
+                    return xel1;
+                }
+                //return null;
+            };
+
             // Опеределим поток элементов при сканировании фог-файлов
             var fogelementsflow = fogflow
                     .Where(fi => fi.vid == ".fog")
@@ -582,6 +651,14 @@ namespace Factograph.Data
             if (qu.Length == 0) return null;
 
             return qu[0].FullName;
+        }
+        public string GetFileExt(string uri)
+        {
+            string? filepath = GetOriginalPath(uri);
+            if (filepath == null) return "";
+            int pos = filepath.LastIndexOf('.');
+            if (pos < filepath.Length - 9) return ""; // extention меньше 8 символов
+            return filepath.Substring(pos).ToLower();
         }
 
 
