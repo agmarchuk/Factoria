@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <config>
-  <database connectionstring="rr:C:\Home\FactographDatabases\rr-test2\"/>
-  <LoadCassette>C:\Home\FactographProjects\bbb_cass</LoadCassette>
+  <database connectionstring="rr:C:\Home\FactographDatabases\rr-test\"/>
+  <LoadCassette>C:\Home\FactographProjects\SypCassete</LoadCassette>
   
   <!--<database connectionstring="rr:C:\FactographProjects\Application\db\"/>
   <LoadCassette>C:\FactographProjects\gi_pharchive</LoadCassette>

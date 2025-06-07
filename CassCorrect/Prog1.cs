@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
+using System.Numerics;
 using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -25,12 +27,18 @@ namespace Factograph.Docs
             public static XName Docmetainfo = XName.Get("docmetainfo", "http://fogid.net/o/");
             public static XName Fordoc = XName.Get("forDocument", "http://fogid.net/o/");
         }
+        // Параметры
+        static bool to_convert_tiff = false;
+        static bool to_compress_video = true;
+
+
+        static string ext_bin_directory = @"D:\Home\bin\";
 
         public static void Main(string[] args)
         {
-            Console.WriteLine("usage: CassCorr [-tiff] [-ещечтото] config-file");
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
+            Console.WriteLine("usage: CassCorr [-tiff] [-compress] config-file");
             // Директория с внешними запускаемыми программами
-            string ext_bin_directory = @"D:\Home\bin\";
             var path_variants = new string[] { @"D:\Home\bin\", @"C:\Home\bin\", System.AppContext.BaseDirectory + "../../../ext_bin/" };
             foreach (var variant in path_variants)
             {
@@ -38,8 +46,6 @@ namespace Factograph.Docs
                 if (File.Exists(ext_bin_directory + "ffmpeg.exe")) break;
             }
 
-            // Параметры
-            bool to_convert_tiff = false;
 
             string config_or_cass = System.AppContext.BaseDirectory + "../../../config.xml";
             string[] cassnames = new string[0];
@@ -50,13 +56,19 @@ namespace Factograph.Docs
                 {
                     to_convert_tiff = true;
                 }
+                else if (arg == "-compress")
+                {
+                    to_compress_video = true;
+                }
                 else if (arg[0] != '-') // конфигуратор или кассета
                 {
                     config_or_cass = arg;
                 }
             }
+            // == Силовая устанвока параметров
             //to_convert_tiff = true; // Буду конвертировать все встретившиеся тиффы
-            to_convert_tiff = false; //  Не буду конвертировать тиффы
+            //to_convert_tiff = false; //  Не буду конвертировать тиффы
+            to_compress_video = true;
 
             var parts = config_or_cass.Split('\\', '/');
             string filename = parts[parts.Length - 1];
@@ -106,7 +118,6 @@ namespace Factograph.Docs
                     bool ismodern_fog_version = false; // Если уже новая версия фога
                     bool to_save_fog = true; // Сохранять новый fog-документ
 
-                    Console.Write($"fog {f_id.Substring(f_id.LastIndexOf('/'))} ");
                     // Заглядываем в fog, получаем версию, готовим чтение атрибутов
                     OneFog fog = new OneFog(f_id);
                     var attributes = fog.FogAttributes();
@@ -166,7 +177,8 @@ xmlns='http://fogid.net/o/'>
                                 string? ur = rec.Element(XName.Get("uri", XNms.fog))?.Value; 
                                 if (ur != null && !uries.Contains(ur))
                                 {
-                                    ProcessFile(casspath, rec, ur, null, fog_date, finfo); // Без трансформации 
+                                    bool originalchanged = ProcessFile(casspath, rec, ur, null, fog_date, finfo); // Без трансформации 
+                                    if (originalchanged) to_save_fog = true;
                                     uries.Add(ur);
                                 }
                             }
@@ -190,16 +202,14 @@ xmlns='http://fogid.net/o/'>
                                 xsbor.Add(new XElement(rec)); // Сохраняем без изменений
                             }
                         }
-                        Console.Write("ft ");
                     }
                     else { Console.WriteLine($"Assert: strange variant {ismodern_fog_version} {iscurrent_fog}"); }
 
-                    Console.WriteLine();
                     fog.Close();
 
                     if (to_save_fog)
                     {
-                        Console.WriteLine($"Saving of document " + f_id);
+                        Console.WriteLine($"Saving of fog {f_id} ");
                         xsbor.Save(f_id + ".tmp");
                         if (File.Exists(f_id + ".old")) File.Delete(f_id + ".old");
                         System.IO.File.Move(f_id, f_id + ".old");
@@ -211,10 +221,12 @@ xmlns='http://fogid.net/o/'>
         // Процедура конвертирования записи документа. На вход подаются константы имен, путь к кассете, собирательный xsbor,
         // словарь мультимедиа файлов данной кассеты и, главное, анализируемая и преобразуемая запись.
         // В результате, в xsbor будет помещена копия rec, возможно с изъятием docmetainfo и если в словаре uri нет, то  
-        // словарь пополнится элементом rec под именем uri, а в xsbor добавится еще и новый FileStore.  
-        private static void ConvertDocument(string casspath, XElement xsbor, HashSet<string> uries, XElement rec, 
+        // словарь пополнится элементом rec под именем uri, а в xsbor добавится еще и новый FileStore.
+        // Результат true если оригинал преобразован
+        private static bool ConvertDocument(string casspath, XElement xsbor, HashSet<string> uries, XElement rec, 
             DateTime fog_dt, XElement finfo)
         {
+            bool originalchanged = false;
             // Добываем uri и  docmetainfo
             string? ur = rec.Element(XNms.Uri)?.Value;
             string? transform = rec.Element("{http://fogid.net/o/}transform")?.Value;
@@ -236,21 +248,24 @@ xmlns='http://fogid.net/o/'>
                    
                     if (!uries.Contains(ur))
                     {
-                        ProcessFile(casspath, rec, ur, transform, fog_dt, finfo); 
+                        originalchanged = ProcessFile(casspath, rec, ur, transform, fog_dt, finfo); 
                         uries.Add(ur);
                     }
                         
                 }
             }
+            return originalchanged;
         }
-        private static void ProcessFile(string casspath, XElement rec, string ur, string? transform, 
+        // Результат true если оригинал изменен
+        private static bool ProcessFile(string casspath, XElement rec, string ur, string? transform, 
             DateTime fog_dt, XElement finfo)
         {
+            bool originaltransformed = false; // Если будет true, то в имени надо убрать .new 
             // Находим файл документа, проверяем что там за документ
             string last9 = ur.Substring(ur.Length - 9);
             var pth = new DirectoryInfo(casspath + "/originals/" + last9.Substring(0, 4));
             var ff = pth.GetFiles(last9.Substring(5) + "*");
-            var files = ff.Where(f => !f.Name.EndsWith(".old"));
+            var files = ff.Where(f => !f.Name.EndsWith(".old") && !f.Name.EndsWith(".neworiginal.jpg"));
             int fc = files.Count();
             if (fc != 1)
             {
@@ -263,6 +278,10 @@ xmlns='http://fogid.net/o/'>
             // Будем формировать атрибуты (метаданные) документа
             DateTime writeTime = fileinfo.LastWriteTime; // Возможно, будет корректироваться позже
             int width = -1; int height = -1; // Будут вычислены позже
+            int dur_mils = -1; // продолжительность в миллисекундах
+            double file_size = 0.0;
+            DateTime encoded_date = DateTime.Now;
+
             long size = fileinfo.Length;
 
             // Определим MIME тип документа
@@ -295,7 +314,7 @@ xmlns='http://fogid.net/o/'>
             }
             else
             {
-                Console.WriteLine($"err: unknown mime type for {ext} in {rec.Name}");
+                Console.WriteLine($"[err: unknown mime type for {ext} in {rec.Name}] ");
             }
 
             // == Поработаем над преобразованиями имиджа и вычисления превьюшек (только для битмапов) ==
@@ -305,42 +324,34 @@ xmlns='http://fogid.net/o/'>
                 // Когда преобразование нужно делать?
                 // 1) есть transform или
                 // 2) дата имиджа больше даты фог-файла (ее еще надо иметь) или
-                bool image_changed = fog_dt < fileinfo.LastWriteTime; Console.WriteLine($"image changed {image_changed}");
+                bool image_changed = fog_dt < fileinfo.LastWriteTime; 
                 // 3) нет какой-нибудь превьюшки
                 bool nsm = !File.Exists(casspath + "/documents/small/" + last9 + ".jpg");
                 bool nme = !File.Exists(casspath + "/documents/medium/" + last9 + ".jpg");
                 bool nno = !File.Exists(casspath + "/documents/normal/" + last9 + ".jpg");
                 // 4) mime == "image/tiff"
-                if (transform != null || image_changed || (nsm|nme|nno) || mime == "image/tiff")
+                if (transform != null || image_changed || (nsm|nme|nno) ||
+                    (to_convert_tiff && mime == "image/tiff"))
                 {
-                    bool tifftransformed = false;
-                    string? fileToDelete = null;
+                    string doc9 = ur.Substring(ur.Length - 9);
+                    string oldname = casspath + "/originals/" + doc9 + ext;
+                    string newname = casspath + "/originals/" + doc9 + ".neworiginal.jpg";
                     try
                     {
                         // Делаем битмап файл-документа! Заодно, скорректируем ширину и высоту
-                        string doc9 = ur.Substring(ur.Length - 9);
                         //bitmap = new System.Drawing.Bitmap(casspath + "/originals/" + doc9 + ext);
                         string fname = casspath + "/originals/" + doc9 + ext;
-                        var image = System.Drawing.Image.FromFile(fname);
-                        bitmap = new Bitmap(image);
+                        //var image = System.Drawing.Image.FromFile(fname);
+                        //bitmap = new Bitmap(image);
+                        bitmap = new Bitmap(fname);
                         width = bitmap.Width;
                         height = bitmap.Height;
-                        Console.Write("bitmap based on " + (casspath + "/originals/" + doc9 + ext) + " ");
+                        Console.Write("b ");
 
                         // Возможно, надо повернуть
                         if (transform == "r") bitmap.RotateFlip(RotateFlipType.Rotate90FlipNone);
                         else if (transform == "rr") bitmap.RotateFlip(RotateFlipType.Rotate180FlipNone);
                         else if (transform == "rrr") bitmap.RotateFlip(RotateFlipType.Rotate270FlipNone);
-
-                        // Будем сохранять оригинал при преобразовании и для специфического случая преобразования тиффа
-                        if (true || transform != null || mime == "image/tiff")
-                        {
-                            bitmap.Save(casspath + "/originals/" + doc9 + ".jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
-                            tifftransformed = true;
-                            Console.Write("tifftransformed ");
-                            
-                            if (ext != ".jpg") fileToDelete = casspath + "/originals/" + doc9 + ext;
-                        }
 
                         // Будем вычислять и сохранять превьюшки
                         Action<string> mk_preview = (string sz) =>
@@ -351,23 +362,273 @@ xmlns='http://fogid.net/o/'>
                             System.Drawing.Bitmap bm = new Bitmap(bitmap,
                                 new Size((int)((double)width * factor), (int)((double)height * factor)));
                             bm.Save(casspath + "/documents/" + sz + "/" + doc9 + ".jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                            Console.Write(sz[0] + " ");
                         };
+
                         if (nsm) mk_preview("small");
                         if (nme) mk_preview("medium");
                         if (nno) mk_preview("normal");
 
+                        // Будем сохранять оригинал при преобразовании и для специфического случая преобразования тиффа
+                        if (image_changed || transform != null || mime == "image/tiff")
+                        {
+                            bitmap.Save(newname, System.Drawing.Imaging.ImageFormat.Jpeg);
+                            originaltransformed = true;
+                            Console.Write("ot ");
+                            mk_preview("small");
+                            mk_preview("medium");
+                            mk_preview("normal");
+                        }
+
+
                     }
-                    catch (Exception ex) { Console.WriteLine($"Err: {ex.Message}"); }
+                    catch (Exception ex) 
+                    { 
+                        Console.WriteLine($"[Err: {ex.Message}] file {oldname} not changed"); 
+                    }
                     
                     // Разрушим то, что должно быть разрушено
                     if (bitmap != null) bitmap.Dispose();
-                    if (fileToDelete != null) { File.Delete(fileToDelete); }
+                    int pos = newname.LastIndexOf(".neworiginal.jpg");
+                    if (originaltransformed) 
+                    { 
+                        File.Delete(oldname);
+                        File.Move(newname, newname.Substring(0, pos) + ".jpg");
+                    }
+                    else if (pos >= 0)
+                    {
+                        File.Delete(newname);
+                    }
                     Console.WriteLine();
                 }
             }
+            // == А теперь поработаем над преобразованиями видео и вычисления превьюшек ==
+            else if (mime.StartsWith("video/"))
+            {
+                string doc9 = ur.Substring(ur.Length - 9);
+                string oldname = casspath + "/originals/" + doc9 + ext;
+                string newname = casspath + "/originals/" + doc9 + ".neworiginal.mp4";
 
+                // Когда преобразование нужно делать?
+                // 1) to_compress_video == true, тогда проверим, что оригинал сжат плохо
+                // 2) дата имиджа больше даты фог-файла (ее еще надо иметь) или
+                bool video_changed = fog_dt < fileinfo.LastWriteTime; 
+                // 3) нет какой-нибудь нужной превьюшки
+                XElement? fv = finfo.Element("video");
+                string[] p_v = fv==null ? new string[0] : fv.Elements().Select(el => el.Name.LocalName).ToArray();
+                bool nsm = p_v.Any(s =>s == "small") && !File.Exists(casspath + "/documents/small/" + last9 + ".mp4");
+                bool nme = p_v.Any(s => s == "medium") && !File.Exists(casspath + "/documents/medium/" + last9 + ".mp4");
+                bool nno = p_v.Any(s => s == "normal") && !File.Exists(casspath + "/documents/normal/" + last9 + ".mp4");              
 
-            Console.Write($"_");
+                // Для указанных случаев вычисляем метаинформацию
+                if (to_compress_video || video_changed || (nsm | nme | nno))
+                {
+                    // =============== Вычисление ширины и высоты через обращение к MediaInfo ===
+                    XElement? xoutput = null;
+                    using Process process1 = new Process();
+                    {
+                        process1.StartInfo.FileName = ext_bin_directory + @"MediaInfo.exe";
+                        process1.StartInfo.WorkingDirectory = ext_bin_directory;
+                        process1.StartInfo.ArgumentList.Add("--Output=XML");
+                        process1.StartInfo.ArgumentList.Add(oldname);
+                        process1.StartInfo.UseShellExecute = false;
+                        process1.StartInfo.RedirectStandardOutput = true;
+                        process1.StartInfo.RedirectStandardError = true;
+
+                        process1.Start(); //запускаем процесс
+
+                        string output = process1.StandardOutput.ReadToEnd();
+                        xoutput = XElement.Parse(output);
+                        process1.WaitForExit(); //ожидаем окончания работы приложения, чтобы очистить буфер
+                    }
+                    // В элементе xoutput (имя: Mediainfo/File) обработаем элементы: 
+                    //<track type="General">
+                    //  <Complete_name>C:\Home\FactographProjects\Cassette_20211014/originals/0001/0005.mp4</Complete_name>
+                    //  <Format>MPEG-4</Format>
+                    //  <Format_profile>Base Media / Version 2</Format_profile>
+                    //  <Codec_ID>mp42</Codec_ID>
+                    //  <File_size>68.9 MiB</File_size>
+                    //  <Duration>12s 864ms</Duration>
+                    //  <Overall_bit_rate>44.9 Mbps</Overall_bit_rate>
+                    //  <Encoded_date>UTC 2021-01-01 08:38:56</Encoded_date>
+                    //  <Tagged_date>UTC 2021-01-01 08:38:56</Tagged_date>
+                    //</track>
+                    //<track type="Video">
+                    //  <ID>1</ID>
+                    //  <Format>AVC</Format>
+                    //  <Format_Info>Advanced Video Codec</Format_Info>
+                    //  <Format_profile>Baseline@L4.0</Format_profile>
+                    //  <Format_settings__CABAC>No</Format_settings__CABAC>
+                    //  <Format_settings__ReFrames>2 frames</Format_settings__ReFrames>
+                    //  <Codec_ID>avc1</Codec_ID>
+                    //  <Codec_ID_Info>Advanced Video Coding</Codec_ID_Info>
+                    //  <Duration>12s 800ms</Duration>
+                    //  <Bit_rate_mode>Variable</Bit_rate_mode>
+                    //  <Bit_rate>19.2 Mbps</Bit_rate>
+                    //  <Width>1 920 pixels</Width>
+                    //  <Height>1 080 pixels</Height>
+                    //  <Display_aspect_ratio>16:9</Display_aspect_ratio>
+                    //  <Frame_rate_mode>Constant</Frame_rate_mode>
+                    //  <Frame_rate>30.000 fps</Frame_rate>
+                    //  <Original_frame_rate>60.000 fps</Original_frame_rate>
+                    //  <Color_space>YUV</Color_space>
+                    //  <Chroma_subsampling>4:2:0</Chroma_subsampling>
+                    //  <Bit_depth>8 bits</Bit_depth>
+                    //  <Scan_type>Progressive</Scan_type>
+                    //  <Bits__Pixel_Frame_>0.309</Bits__Pixel_Frame_>
+                    //  <Stream_size>29.3 MiB (43%)</Stream_size>
+                    //  <Encoded_date>UTC 2021-01-01 08:38:56</Encoded_date>
+                    //  <Tagged_date>UTC 2021-01-01 08:38:56</Tagged_date>
+                    //</track>                    
+
+                    // Из General берем File_size, Duration, Encoded_date
+                    // Из Mediainfo/File/Track type="Video" берем Width, Height
+                    XElement? meta_gen = xoutput.Element("File")?
+                        .Elements("track").FirstOrDefault(tr => tr.Attribute("type")?.Value == "General");
+                    XElement? meta_vid = xoutput.Element("File")?
+                        .Elements("track").FirstOrDefault(tr => tr.Attribute("type")?.Value == "Video");
+                    if (meta_gen != null && meta_vid != null)
+                    {
+                        // Оприходуем width и height
+                        var sw = meta_vid.Element("Width")?.Value?.Replace(" ", "");
+                        if (sw != null) width = Int32.Parse(sw.Substring(0, sw.Length - "pixels".Length));
+                        var sh = meta_vid.Element("Height")?.Value?.Replace(" ", "");
+                        if (sh != null) height = Int32.Parse(sh[..^"pixels".Length]);
+                        // теперь вычислим Duration
+                        var sd = meta_gen.Element("Duration")?.Value?.Replace(" ", "");
+                        if (sd != null)
+                        {
+                            dur_mils = 0; int h = 0, mn = 0, s = 0, ms = 0;
+                            int pos = sd.IndexOf("h");
+                            if (pos != -1)
+                            {
+                                h = Int32.Parse(sd.Substring(0, pos));
+                                sd = sd.Substring(pos + 1);
+                            }
+                            pos = sd.IndexOf("mn");
+                            if (pos != -1)
+                            {
+                                mn = Int32.Parse(sd.Substring(0, pos));
+                                sd = sd.Substring(pos + 2);
+                            }
+                            pos = sd.IndexOf("s");
+                            if (pos != -1)
+                            {
+                                s = Int32.Parse(sd.Substring(0, pos));
+                                sd = sd.Substring(pos + 1);
+                            }
+                            pos = sd.IndexOf("ms");
+                            if (pos != -1)
+                            {
+                                ms = Int32.Parse(sd.Substring(0, pos));
+                                //sd = sd.Substring(pos + 2);
+                            }
+                            dur_mils = ms + (s + mn * 60 + h * 3600) * 1000;
+                        }
+                        // теперь вычислим Stream_size, Encoded_date
+                        var ss = meta_gen.Element("File_size")?.Value?.Replace(" ", "");
+                        if (ss != null)
+                        {
+                            int pos = ss.IndexOf("MiB");
+                            if (pos != -1)
+                            {
+                                file_size = Double.Parse(ss.Substring(0, pos));
+                            }
+                        }
+                        var ed = meta_gen.Element("Encoded_date")?.Value; // можно и из meta_vid
+                        if (ed != null)
+                        {
+                            encoded_date = DateTime.Parse(ed.Substring(4));
+                        }
+                        // =============== конец вычислений через обращение к MediaInfo ===
+                    }
+                }
+
+                // преобразование оригинала возможно в случае, когда вычисденный bit-rate больше 4000 (можно будет уточнять)
+                var bitrate = file_size * 8000000.0 / dur_mils * 1000.0; 
+                if (to_compress_video && bitrate > 4500000.0) //TODO: порог может быть другим или записанным в finfo
+                {
+                    using Process process2 = new Process();
+                    {
+                        process2.StartInfo.FileName = ext_bin_directory + @"ffmpeg.exe";
+                        process2.StartInfo.WorkingDirectory = ext_bin_directory;
+                        process2.StartInfo.ArgumentList.Add("-i");
+                        process2.StartInfo.ArgumentList.Add(oldname);
+                        process2.StartInfo.ArgumentList.Add("-y");
+                        
+                        //process2.StartInfo.ArgumentList.Add("-s");
+                        //double factor = factors[fsize];
+                        //int w = (int)(width * factor); if (w % 2 == 1) w += 1;
+                        //int h = (int)(height * factor); if (h % 2 == 1) h += 1;
+                        //process2.StartInfo.ArgumentList.Add(w + "x" + h);
+                        
+                        process2.StartInfo.ArgumentList.Add(newname);
+                        
+                        process2.Start(); //запускаем процесс
+
+                        //string output = process2.StandardOutput.ReadToEnd();
+                        //xoutput = XElement.Parse(output);
+                        process2.WaitForExit(); //ожидаем окончания работы приложения, чтобы очистить буфер
+                    }
+
+                }
+                // Процедура вычисления превьюшек
+                Action<string, string, double> Mk_video_preview = (oname, nname, fact) =>
+                {
+                    using Process process3 = new Process();
+                    {
+                        process3.StartInfo.FileName = ext_bin_directory + @"ffmpeg.exe";
+                        process3.StartInfo.WorkingDirectory = ext_bin_directory;
+                        process3.StartInfo.ArgumentList.Add("-i");
+                        process3.StartInfo.ArgumentList.Add(oname);
+                        process3.StartInfo.ArgumentList.Add("-y");
+
+                        process3.StartInfo.ArgumentList.Add("-s");
+                        int w = (int)(width * fact); if (w % 2 == 1) w += 1;
+                        int h = (int)(height * fact); if (h % 2 == 1) h += 1;
+                        process3.StartInfo.ArgumentList.Add(w + "x" + h);
+
+                        process3.StartInfo.ArgumentList.Add(nname);
+
+                        process3.Start(); //запускаем процесс
+
+                        process3.WaitForExit(); //ожидаем окончания работы приложения, чтобы очистить буфер
+                    }
+                };
+                // Делаем превьюшки для тех, которые нужны, но их нет
+                int more = width > height ? width : height;
+                if (nsm)
+                {
+                    string? pBs = finfo.Element("video")?.Element("small")?.Attribute("previewBase")?.Value;
+                    double factor = pBs != null ? (double)Int32.Parse(pBs) / (double)more : -1;
+                    Mk_video_preview(oldname, casspath + "/documents/small/" + last9 + ".mp4", factor);
+                }
+                if (nme)
+                {
+                    var a = finfo.Element("video");
+                    var b = finfo.Element("video")?.Element("medium");
+                    var c = finfo.Element("video")?.Element("medium")?.Attribute("previewBase");
+                    var pBs = finfo.Element("video")?.Element("medium")?.Attribute("previewBase")?.Value;
+                    //string? pBs = finfo.Element("video")?.Element("meduim")?.Attribute("previewBase")?.Value;
+                    double factor = pBs != null ? (double)Int32.Parse(pBs) / (double)more : -1;
+                    Mk_video_preview(oldname, casspath + "/documents/medium/" + last9 + ".mp4", factor);
+                }
+                if (nno)
+                {
+                    string? pBs = finfo.Element("video")?.Element("normal")?.Attribute("previewBase")?.Value;
+                    double factor = pBs != null ? (double)Int32.Parse(pBs) / (double)more : -1;
+                    Mk_video_preview(oldname, casspath + "/documents/normal/" + last9 + ".mp4", factor);
+                }
+
+                if (originaltransformed)
+                {
+                    File.Delete(oldname);
+                    int pos = newname.LastIndexOf(".new");
+                    File.Move(newname, newname.Substring(0, pos));
+                }
+                //Console.WriteLine();
+            }
+            return originaltransformed;
         }
 
         private static FileInfo? GetFileInfo(string casspath, string uri)

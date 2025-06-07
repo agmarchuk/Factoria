@@ -113,7 +113,7 @@
                 }
 
                 if (tr.Tp == "http://fogid.net/o/document") { }
-                
+
                 if (tr.Tp == "http://fogid.net/o/video-doc" ||
                     tr.Tp == "http://fogid.net/o/audio-doc" ||
                     (tr.Tp == "http://fogid.net/o/document" && uri != null && db.GetFileExt(uri) != ".jpg")
@@ -122,6 +122,7 @@
                     uri = null;
                 }
                 string? sr = uri == null ? null : "docs/GetImage?u=" + uri + "&s=small";
+                if (sr != null) sr += "&i=" + (new System.Random()).Next(256);
                 string? enlarge = uri == null ? null : "docs/GetImage?u=" + uri + "&s=normal";
                 string reference = "index/" + tr.Id + "/" + entityId;
                 regime = tr.Tp=="http://fogid.net/o/photo-doc"?"photo": regime;

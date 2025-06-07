@@ -2,23 +2,20 @@
 <config>
   <database connectionstring="rr:C:\Home\FactographDatabases\rr-test\"/>
 
-  <LoadCassette>C:\Home\FactographProjects\test_rot</LoadCassette>
-  
-  <!--<LoadCassette>C:\Home\FactographProjects\marchuk_cass_new\an_cass</LoadCassette>
-  <LoadCassette>C:\Home\FactographProjects\marchuk_cass_new\bogatykh</LoadCassette>
-  <LoadCassette>C:\Home\FactographProjects\marchuk_cass_new\GeneTreeCass</LoadCassette>
-  <LoadCassette>C:\Home\FactographProjects\marchuk_cass_new\gi_arch_ran</LoadCassette>
-  <LoadCassette>C:\Home\FactographProjects\marchuk_cass_new\gi_disk2</LoadCassette>
-  <LoadCassette>C:\Home\FactographProjects\marchuk_cass_new\gi_disk3</LoadCassette>
-  <LoadCassette>C:\Home\FactographProjects\marchuk_cass_new\gi_disks</LoadCassette>
-  <LoadCassette>C:\Home\FactographProjects\marchuk_cass_new\gi_pharchive</LoadCassette>
-  <LoadCassette>C:\Home\FactographProjects\marchuk_cass_new\gi_trudy</LoadCassette>
-  <LoadCassette>C:\Home\FactographProjects\marchuk_cass_new\Ma</LoadCassette>
-  <LoadCassette>C:\Home\FactographProjects\marchuk_cass_new\Ma_alb1-6</LoadCassette>
-  <LoadCassette>C:\Home\FactographProjects\marchuk_cass_new\Ma_sbor</LoadCassette>
-  <LoadCassette write="true">C:\Home\FactographProjects\marchuk_cass_new\marchuk_common</LoadCassette>
-  <LoadCassette>C:\Home\FactographProjects\marchuk_cass_new\onmarchuk_computer</LoadCassette>
-  <LoadCassette>C:\Home\FactographProjects\marchuk_cass_new\ph_mix</LoadCassette>
-  <LoadCassette write="true">C:\Home\FactographProjects\mag_tester</LoadCassette>-->
+  <LoadCassette>C:\Home\FactographProjects\marchuk_cassettes\marchuk_cass_new\an_cass</LoadCassette>
+  <LoadCassette>C:\Home\FactographProjects\marchuk_cassettes\marchuk_cass_new\bogatykh</LoadCassette>
+  <LoadCassette>C:\Home\FactographProjects\marchuk_cassettes\marchuk_cass_new\GeneTreeCass</LoadCassette>
+  <LoadCassette>C:\Home\FactographProjects\marchuk_cassettes\marchuk_cass_new\gi_arch_ran</LoadCassette>
+  <LoadCassette>C:\Home\FactographProjects\marchuk_cassettes\marchuk_cass_new\gi_disk2</LoadCassette>
+  <LoadCassette>C:\Home\FactographProjects\marchuk_cassettes\marchuk_cass_new\gi_disk3</LoadCassette>
+  <LoadCassette>C:\Home\FactographProjects\marchuk_cassettes\marchuk_cass_new\gi_disks</LoadCassette>
+  <LoadCassette>C:\Home\FactographProjects\marchuk_cassettes\marchuk_cass_new\gi_pharchive</LoadCassette>
+  <LoadCassette>C:\Home\FactographProjects\marchuk_cassettes\marchuk_cass_new\gi_trudy</LoadCassette>
+  <LoadCassette>C:\Home\FactographProjects\marchuk_cassettes\marchuk_cass_new\Ma</LoadCassette>
+  <LoadCassette>C:\Home\FactographProjects\marchuk_cassettes\marchuk_cass_new\Ma_alb1-6</LoadCassette>
+  <LoadCassette>C:\Home\FactographProjects\marchuk_cassettes\marchuk_cass_new\Ma_sbor</LoadCassette>
+  <LoadCassette write="true">C:\Home\FactographProjects\marchuk_cassettes\marchuk_cass_new\marchuk_common</LoadCassette>
+  <LoadCassette>C:\Home\FactographProjects\marchuk_cassettes\marchuk_cass_new\onmarchuk_computer</LoadCassette>
+  <LoadCassette>C:\Home\FactographProjects\marchuk_cassettes\marchuk_cass_new\ph_mix</LoadCassette>
 
 </config>
