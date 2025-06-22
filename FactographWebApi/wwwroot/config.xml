@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+  <database connectionstring="rr:C:\Home\FactographDatabases\rr-test2\"/>
+
+	<!--<LoadCassette>С:\Home\FactographProjects\syp_cassettes\Syp_Cassete</LoadCassette>-->
+	<LoadCassette>C:\Home\FactographProjects\Cassette_20211014</LoadCassette>
+
+</config>

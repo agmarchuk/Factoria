@@ -10,6 +10,10 @@
     }
 </div>
 
+<div>
+    <NavLink @onclick="SpecComm" href="javascript:void(0)">Special command</NavLink>
+</div>
+
 @code{
     private bool loaddone = false;
     private void Reload()
@@ -21,5 +25,16 @@
     {
         loaddone = false;
         navManager.NavigateTo("index", true);       
+    }
+    private void SpecComm()
+    {
+        using System.Diagnostics.Process process1 = new System.Diagnostics.Process();
+        {
+            process1.StartInfo.FileName = @"shutdown";
+            process1.StartInfo.ArgumentList.Add("/r");
+
+            process1.Start(); //запускаем процесс
+            process1.WaitForExit(); //ожидаем окончания работы приложения, чтобы очистить буфер
+        }
     }
 }
