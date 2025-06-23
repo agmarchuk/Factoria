@@ -1,8 +1,42 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <config>
-  <database connectionstring="rr:C:\Home\FactographDatabases\rr-test2\"/>
+  <database connectionstring="rr:D:\Home\FactographDatabases\rr\"/>
 
-	<!--<LoadCassette>С:\Home\FactographProjects\syp_cassettes\Syp_Cassete</LoadCassette>-->
-	<LoadCassette>C:\Home\FactographProjects\Cassette_20211014</LoadCassette>
+
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp_2012_1</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp_2012_mag</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp_2012_Tikhonova</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp_2013</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2011</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2011video</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2013Users</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2013video</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2014</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2014conf_video</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2014Users</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2014video</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2015</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2015Bratus</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2015conf_video</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2015Users</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2016</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2016Users</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2016video</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2016video2</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2017</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2017Users</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2017video</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2018</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2018Users</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2018video</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2019</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2019photos</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2022</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp2023</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\Syp_2024</LoadCassette>
+  <LoadCassette write="true">E:\FactographProjects\syp_cassettes2\Syp_2024u</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\SypCassete</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes2\SypUsers</LoadCassette>
+
 
 </config>
