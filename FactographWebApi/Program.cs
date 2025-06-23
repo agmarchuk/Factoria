@@ -14,9 +14,9 @@ var app = builder.Build();
 //app.MapGet("/", () => "Hello World!");
 app.MapGet("/", () => Results.Content(
     $@"<html><head><meta charset='utf-8'</head><body>
-<div><a href='xml/search/кассеты'>кассеты</a></div>
-<div><a href='xml/portrait/cassetterootcollection'>Коллекция кассет</a></div>
-<div><a href='photo/uri/uri'>Фото uri</a></div>
+<div><a href='/xml/search/кассеты'>кассеты</a></div>
+<div><a href='/xml/portrait/cassetterootcollection'>Коллекция кассет</a></div>
+<div><a href='/photo/uri/uri'>Фото uri</a></div>
 </body></html>
 ", "text/html"));
 app.MapGet("/xml/search/{ss}", (Factograph.Data.IFDataService db, HttpRequest request, string ss) =>
@@ -41,21 +41,33 @@ app.MapGet("/xml/tree/{id}", (Factograph.Data.IFDataService db, HttpRequest requ
     }
     return Results.Content($"{tree.ToString()}", "text/xml");
 });
-app.MapGet("/photo/{uri}", (Factograph.Data.IFDataService db, HttpRequest request, string uri) =>
+app.MapGet("/photo", (Factograph.Data.IFDataService db, HttpRequest request) =>
 {
-    string? c = db.CassDirPath(uri);
-    string cdp = c ?? "";
-    //if (cdp == null) return EmptyResult;
-    string fn = cdp;
+    string? uri = request.Query["uri"];
+    string? s = request.Query["s"];
+    string sz = s ?? "small";
     string ct = "image/jpeg";
-    return new MimeResult(fn, ct);
+    if (uri != null)
+    {
+        string fn = db.GetFilePath(uri, sz) + ".jpg";
+        Console.WriteLine($"{uri} fn={fn}");
+        return new MimeResult(fn, ct);
+    }
+    else return new MimeResult("filenotfound.jpg", ct);
 });
-app.MapGet("/video/{uri}", (Factograph.Data.IFDataService db, HttpRequest request, string uri) =>
+app.MapGet("/video", (Factograph.Data.IFDataService db, HttpRequest request) =>
 {
-    string fn = "wwwroot/img/0005.mp4";
+    string? uri = request.Query["uri"];
     string ct = "video/mp4";
-    return new MimeResult(fn, ct);
+    if (uri != null)
+    {
+        string fn = db.GetFilePath(uri, "medium") + ".mp4";
+        Console.WriteLine($"Video == {uri} fn={fn}");
+        return new MimeResult(fn, ct);
+    }
+    else return new MimeResult("filenotfound.jpg", ct);
 });
+
 app.Run();
 
 class Util
