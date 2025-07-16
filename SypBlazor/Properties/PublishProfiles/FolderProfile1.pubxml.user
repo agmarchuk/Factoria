@@ -4,8 +4,8 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 -->
 <Project>
   <PropertyGroup>
-    <_PublishTargetUrl>C:\Home\CoreSites\MagBlazor</_PublishTargetUrl>
-    <History>True|2024-12-27T14:06:11.9989195Z||;True|2024-12-27T20:36:52.0233998+07:00||;</History>
+    <_PublishTargetUrl>C:\Home\CoreSites\Family</_PublishTargetUrl>
+    <History>True|2025-06-27T12:20:41.5500956Z;True|2024-12-27T21:06:11.9989195+07:00;True|2024-12-27T20:36:52.0233998+07:00;</History>
     <LastFailureDetails />
   </PropertyGroup>
 </Project>
