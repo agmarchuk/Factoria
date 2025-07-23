@@ -244,7 +244,7 @@
   <DatatypeProperty rdf:about="http://fogid.net/o/uri" priority="c" essential="yes">
     <label xml:lang="ru">опубликован в</label>
     <label xml:lang="en">published in</label>
-    <domain rdf:resource="http://fogid.net/o/document"/>
+    <domain rdf:resource="http://fogid.net/o/sys-obj"/> <!-- Поднял уровень домена с document до sys-obj  -->
     <range rdf:resource="http://fogid.net/o/string"/>
   </DatatypeProperty>
   <DatatypeProperty rdf:about="http://fogid.net/o/docmetainfo" priority="d" essential="yes">
