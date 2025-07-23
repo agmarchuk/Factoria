@@ -41,18 +41,18 @@ app.MapGet("/xml/tree/{id}", (Factograph.Data.IFDataService db, HttpRequest requ
     }
     return Results.Content($"{tree.ToString()}", "text/xml");
 });
-app.MapGet("/xml/tree2/{id}", (Factograph.Data.IFDataService db, HttpRequest request, string id) =>
-{
-    var rrec = db.GetRRecord(id, true);
-    XElement tree = new XElement("empty");
-    if (rrec != null)
-    {
-        var shablon = Rec.GetUniShablon(rrec.Tp, 2, null, db.ontology);
-        var rec = Rec.Build(rrec, shablon, db.ontology, idd => db.GetRRecord(idd, false));
-        tree = Util.RecToXml2(rec);
-    }
-    return Results.Content($"{tree.ToString()}", "text/xml");
-});
+//app.MapGet("/xml/tree2/{id}", (Factograph.Data.IFDataService db, HttpRequest request, string id) =>
+//{
+//    var rrec = db.GetRRecord(id, true);
+//    XElement tree = new XElement("empty");
+//    if (rrec != null)
+//    {
+//        var shablon = Rec.GetUniShablon(rrec.Tp, 2, null, db.ontology);
+//        var rec = Rec.Build(rrec, shablon, db.ontology, idd => db.GetRRecord(idd, false));
+//        tree = Util.RecToXml2(rec);
+//    }
+//    return Results.Content($"{tree.ToString()}", "text/xml");
+//});
 app.MapGet("/photo", (Factograph.Data.IFDataService db, HttpRequest request) =>
 {
     string? uri = request.Query["uri"];
@@ -113,72 +113,6 @@ class Util
                     Inv inv = (Inv) p;
                     if (inv.Sources.Length > 0) return new XElement("inverse", new XAttribute("prop", pr), inv.Sources
                         .Select(s => { if (s == null) return null; return RecToXml(s); }));
-                }
-                return null;
-            }));
-    }
-    // public static XElement RecToXml(Rec rec)
-    // {
-    //     int lastslash = rec.Tp.LastIndexOf('/');
-    //     return new XElement("r", new XAttribute("tp", rec.Tp.Substring(lastslash + 1)), new XAttribute("id", rec.Id), rec.Props
-    //         .Select(p =>
-    //         {
-    //             string pred = p.Pred; int last = pred.LastIndexOf('/'); string pr = pred.Substring(last + 1);
-    //             if (p is Str)
-    //             {
-    //                 Str s = (Str) p;
-    //                 if (!string.IsNullOrEmpty(s.Value)) return new XElement("s", new XAttribute("p", pr), s.Value);
-    //             }
-    //             else if (p is Tex)
-    //             {
-    //                 Tex t = (Tex) p;
-    //                 if (t.Values.Length > 0) return new XElement("t", new XAttribute("p", pr), t.Values
-    //                     .Select(v => new XElement("v", new XAttribute("lang", v.Lang), v.Text)));                        
-    //             }
-    //             else if (p is Dir)
-    //             {
-    //                 Dir d = (Dir) p;
-    //                 if (d.Resources.Length > 0) return new XElement("d", new XAttribute("p", pr), d.Resources
-    //                     .Select(r => RecToXml(r)));
-    //             }
-    //             else if (p is Inv)
-    //             {
-    //                 Inv inv = (Inv) p;
-    //                 if (inv.Sources.Length > 0) return new XElement("i", new XAttribute("p", pr), inv.Sources
-    //                     .Select(s => RecToXml(s)));
-    //             }
-    //             return null;
-    //         }));
-    // }
-    public static XElement RecToXml2(Rec rec)
-    {
-        int lastslash = rec.Tp.LastIndexOf('/');
-        return new XElement("record", new XAttribute("tp", rec.Tp.Substring(lastslash + 1)), new XAttribute("id", rec.Id), rec.Props
-            .Select(p =>
-            {
-                string pred = p.Pred; int last = pred.LastIndexOf('/'); string pr = pred.Substring(last + 1);
-                if (p is Str)
-                {
-                    Str s = (Str)p;
-                    if (!string.IsNullOrEmpty(s.Value)) return new XElement("string", new XAttribute("pred", pr), s.Value);
-                }
-                else if (p is Tex)
-                {
-                    Tex t = (Tex)p;
-                    if (t.Values.Length > 0) return new XElement("text", new XAttribute("pred", pr), t.Values
-                        .Select(v => new XElement("v", new XAttribute("lang", v.Lang), v.Text)));
-                }
-                else if (p is Dir)
-                {
-                    Dir d = (Dir)p;
-                    if (d.Resources.Length > 0) return new XElement("direct", new XAttribute("pred", pr), d.Resources
-                        .Select(r => RecToXml2(r)));
-                }
-                else if (p is Inv)
-                {
-                    Inv inv = (Inv)p;
-                    if (inv.Sources.Length > 0) return new XElement("inverse", new XAttribute("pred", pr), inv.Sources
-                        .Select(s => RecToXml2(s)));
                 }
                 return null;
             }));
