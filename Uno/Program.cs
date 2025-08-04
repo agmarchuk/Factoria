@@ -1,4 +1,4 @@
-using Factograph.Data;
+п»їusing Factograph.Data;
 using Factograph.Data.r;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -21,21 +21,21 @@ Dictionary<string, Rec>? shablons = tips.Select(t => Rec.GetUniShablon(t, 2, nul
 app.MapGet("/", () => Results.Redirect("/view/cassetterootcollection")); //"/view/syp2001-p-marchuk_a"));
 app.MapGet("/room216", () => { db.Reload(); Results.Redirect("/"); }); //"/view/syp2001-p-marchuk_a"));
 
-// Вход view - основной в сервисе. Может присутствовать основной параметр id - идентификатор сущности. Также могут быть параметры:
-// ss (search string) - поисковый образ; tp - тип результата поиска, IsBullOrEmpty(tp) - все типы; bw (by words) - поиск "по словам";
-// idd - идентификатор "верхнего" уровня, напр. идентификатор "охватывающей" коллекции.
+// Р’С…РѕРґ view - РѕСЃРЅРѕРІРЅРѕР№ РІ СЃРµСЂРІРёСЃРµ. РњРѕР¶РµС‚ РїСЂРёСЃСѓС‚СЃС‚РІРѕРІР°С‚СЊ РѕСЃРЅРѕРІРЅРѕР№ РїР°СЂР°РјРµС‚СЂ id - РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃСѓС‰РЅРѕСЃС‚Рё. РўР°РєР¶Рµ РјРѕРіСѓС‚ Р±С‹С‚СЊ РїР°СЂР°РјРµС‚СЂС‹:
+// ss (search string) - РїРѕРёСЃРєРѕРІС‹Р№ РѕР±СЂР°Р·; tp - С‚РёРї СЂРµР·СѓР»СЊС‚Р°С‚Р° РїРѕРёСЃРєР°, IsBullOrEmpty(tp) - РІСЃРµ С‚РёРїС‹; bw (by words) - РїРѕРёСЃРє "РїРѕ СЃР»РѕРІР°Рј";
+// idd - РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ "РІРµСЂС…РЅРµРіРѕ" СѓСЂРѕРІРЅСЏ, РЅР°РїСЂ. РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ "РѕС…РІР°С‚С‹РІР°СЋС‰РµР№" РєРѕР»Р»РµРєС†РёРё.
 app.MapGet("/view/{id?}", (HttpRequest request, string? id) =>
 {
     string? ss = request.Query["ss"].FirstOrDefault();
     string? tp = request.Query["tp"].FirstOrDefault();
-    string? sbw = request.Query["bw"].FirstOrDefault(); // признак bywords "словами"
+    string? sbw = request.Query["bw"].FirstOrDefault(); // РїСЂРёР·РЅР°Рє bywords "СЃР»РѕРІР°РјРё"
     bool bywords = sbw != null ? true : false;
     string? idd = request.Query["idd"].FirstOrDefault();
 
-    // Далее, мы вычисляем части результирующей страницы или как XElement или как текст, каждая часть имеет свой идентификатор,
-    // в конце будут вставлены в макет. Части:
-    string selectsbor = BuildSelectResults(db, ss, tp, bywords); // раздел выдачи результатов поиска
-    string portrait = BuildPortrait(db, id, shablons); // раздел портрета
+    // Р”Р°Р»РµРµ, РјС‹ РІС‹С‡РёСЃР»СЏРµРј С‡Р°СЃС‚Рё СЂРµР·СѓР»СЊС‚РёСЂСѓСЋС‰РµР№ СЃС‚СЂР°РЅРёС†С‹ РёР»Рё РєР°Рє XElement РёР»Рё РєР°Рє С‚РµРєСЃС‚, РєР°Р¶РґР°СЏ С‡Р°СЃС‚СЊ РёРјРµРµС‚ СЃРІРѕР№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ,
+    // РІ РєРѕРЅС†Рµ Р±СѓРґСѓС‚ РІСЃС‚Р°РІР»РµРЅС‹ РІ РјР°РєРµС‚. Р§Р°СЃС‚Рё:
+    string selectsbor = BuildSelectResults(db, ss, tp, bywords); // СЂР°Р·РґРµР» РІС‹РґР°С‡Рё СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ РїРѕРёСЃРєР°
+    string portrait = BuildPortrait(db, id, shablons); // СЂР°Р·РґРµР» РїРѕСЂС‚СЂРµС‚Р°
 
     string maket = $@"<!DOCTYPE html>
 <html>
@@ -48,8 +48,8 @@ app.MapGet("/view/{id?}", (HttpRequest request, string? id) =>
     <div class='container' style='width:100%; background-color:lime;'>
         <a href='/view'> <img src='/img/logossyp.png' style='height:60px;margin-left: 16px;margin-right:16px;'> </a>
         <div style='display: flex; flex-direction: column;font-size:large;align-items:center;'>
-            <div style='font-size:x-large;font-weight:bold;color:white;'>Летние школы юных программистов</div>
-            <div>Сезон 2025 года: 14-27 июля</div>
+            <div style='font-size:x-large;font-weight:bold;color:white;'>Р›РµС‚РЅРёРµ С€РєРѕР»С‹ СЋРЅС‹С… РїСЂРѕРіСЂР°РјРјРёСЃС‚РѕРІ</div>
+            <div>РЎРµР·РѕРЅ 2025 РіРѕРґР°: 14-27 РёСЋР»СЏ</div>
         </div>
     </div>
 
@@ -58,12 +58,12 @@ app.MapGet("/view/{id?}", (HttpRequest request, string? id) =>
             <input name ='ss' value='{ss}' />
             <select name ='tp' >
                 <option value='' ></option>
-                <option value='http://fogid.net/o/person' {(tp == "http://fogid.net/o/person" ? "selected" : "")}>персона</option>
-                <option value='http://fogid.net/o/org-sys' {(tp == "http://fogid.net/o/org-sys" ? "selected" : "")}>орг.сист.</option>
-                <option value='http://fogid.net/o/collection' {(tp == "http://fogid.net/o/collection" ? "selected" : "")}>коллекция</option>
+                <option value='http://fogid.net/o/person' {(tp == "http://fogid.net/o/person" ? "selected" : "")}>РїРµСЂСЃРѕРЅР°</option>
+                <option value='http://fogid.net/o/org-sys' {(tp == "http://fogid.net/o/org-sys" ? "selected" : "")}>РѕСЂРі.СЃРёСЃС‚.</option>
+                <option value='http://fogid.net/o/collection' {(tp == "http://fogid.net/o/collection" ? "selected" : "")}>РєРѕР»Р»РµРєС†РёСЏ</option>
             </select>
-            <span>словами<input type='checkbox' name='bw' {(bywords ? "checked" : "")}  /></span>
-            <input type='submit' value='искать' />    
+            <span>СЃР»РѕРІР°РјРё<input type='checkbox' name='bw' {(bywords ? "checked" : "")}  /></span>
+            <input type='submit' value='РёСЃРєР°С‚СЊ' />    
         </form>
     </div>
 
@@ -120,7 +120,7 @@ app.MapGet("/document", (HttpRequest request) =>
     if (uri == null) return Results.Empty;
     string? path = db.GetOriginalPath(uri);
     if (path == null) return Results.NotFound();
-    int pos1 = path.LastIndexOfAny(new char[] { '/', '\\' }); // позиия последнего слеша
+    int pos1 = path.LastIndexOfAny(new char[] { '/', '\\' }); // РїРѕР·РёРёСЏ РїРѕСЃР»РµРґРЅРµРіРѕ СЃР»РµС€Р°
     DirectoryInfo di = new DirectoryInfo(path.Substring(0, pos1));
     string filefirst = path.Substring(pos1 + 1);
     var files = di.GetFiles(filefirst + ".*");
@@ -133,25 +133,25 @@ app.MapGet("/document", (HttpRequest request) =>
         string ext = fname.Substring(lastpoint + 1);
         return Results.File(files[0].FullName, $"application/{ext}");
     }
-    else return Results.Empty; // Не учтен вариант, когда есть документ и посторонний файл
+    else return Results.Empty; // РќРµ СѓС‡С‚РµРЅ РІР°СЂРёР°РЅС‚, РєРѕРіРґР° РµСЃС‚СЊ РґРѕРєСѓРјРµРЅС‚ Рё РїРѕСЃС‚РѕСЂРѕРЅРЅРёР№ С„Р°Р№Р»
 });
 
 app.Run();
 
-// ===================== Процедуры =======================
+// ===================== РџСЂРѕС†РµРґСѓСЂС‹ =======================
 static Dictionary<string, string> Doctipnames()
 {
     return new Tuple<string, string>[] 
     {
-        new Tuple<string, string>("http://fogid.net/o/photo-doc", "фото"),
-        new Tuple<string, string>("http://fogid.net/o/video-doc", "видео"),
-        new Tuple<string, string>("http://fogid.net/o/audio-doc", "аудио"),
-        new Tuple<string, string>("http://fogid.net/o/document", "док."),
-        new Tuple<string, string>("http://fogid.net/o/cassette", "касс."),
-        new Tuple<string, string>("http://fogid.net/o/collection", "колл."),
-        new Tuple<string, string>("http://fogid.net/o/person", "перс."),
-        new Tuple<string, string>("http://fogid.net/o/orh-sys", "орг."),
-        new Tuple<string, string>("http://fogid.net/o/city", "гор."),
+        new Tuple<string, string>("http://fogid.net/o/photo-doc", "С„РѕС‚Рѕ"),
+        new Tuple<string, string>("http://fogid.net/o/video-doc", "РІРёРґРµРѕ"),
+        new Tuple<string, string>("http://fogid.net/o/audio-doc", "Р°СѓРґРёРѕ"),
+        new Tuple<string, string>("http://fogid.net/o/document", "РґРѕРє."),
+        new Tuple<string, string>("http://fogid.net/o/cassette", "РєР°СЃСЃ."),
+        new Tuple<string, string>("http://fogid.net/o/collection", "РєРѕР»Р»."),
+        new Tuple<string, string>("http://fogid.net/o/person", "РїРµСЂСЃ."),
+        new Tuple<string, string>("http://fogid.net/o/orh-sys", "РѕСЂРі."),
+        new Tuple<string, string>("http://fogid.net/o/city", "РіРѕСЂ."),
     }.ToDictionary(pa => pa.Item1, pa => pa.Item2);
 }
 
@@ -170,14 +170,14 @@ static string BuildSelectResults(IFDataService db, string? ss, string? tp, bool 
                 (date != null && date.Length > 3 ? new XElement("span", " " + date.Substring(0, 4)) : null),
                 null);
         }),
-        new XElement("div", "== поиск завершен =="))
+        new XElement("div", "== РїРѕРёСЃРє Р·Р°РІРµСЂС€РµРЅ =="))
         .ToString() : "";
 }
 //
 
 //static string HTMLSquare(string url, string href, string name, string text, string bs)
 //{
-//    // варианты bs: contain - max растяжка, auto, cover
+//    // РІР°СЂРёР°РЅС‚С‹ bs: contain - max СЂР°СЃС‚СЏР¶РєР°, auto, cover
 //    return 
 // @$"<div class='square' style='background: url({url}) center no-repeat; background-size:{bs}'>
 //        <div style='height:92%;'></div>
@@ -209,12 +209,12 @@ static string Kvad(string ttip, string iid, string name, string uri, string date
 // 97FF97 ffffd8
 static string BuildPortrait(Factograph.Data.IFDataService db, string id, Dictionary<string, Rec>? shablons)
 {
-    // Формировани портрета
+    // Р¤РѕСЂРјРёСЂРѕРІР°РЅРё РїРѕСЂС‚СЂРµС‚Р°
     StringBuilder portrait = new StringBuilder();
     if (id != null)
     {
         var rrec = db.GetRRecord(id, true);
-        while (rrec != null) // Цикл вместо условия для выхода по break
+        while (rrec != null) // Р¦РёРєР» РІРјРµСЃС‚Рѕ СѓСЃР»РѕРІРёСЏ РґР»СЏ РІС‹С…РѕРґР° РїРѕ break
         {
             string? subtype = shablons.Keys.FirstOrDefault(k => db.ontology.DescendantsAndSelf(k).Any(tt => tt == rrec.Tp));
 
@@ -224,8 +224,8 @@ static string BuildPortrait(Factograph.Data.IFDataService db, string id, Diction
                 idd => db.GetRRecord(idd, false));
             string tip = tree.Tp;
 
-            // ======== источники: либо внешний источник (параметр idd), либо внешние коллекции 
-            // Элемент коллекций
+            // ======== РёСЃС‚РѕС‡РЅРёРєРё: Р»РёР±Рѕ РІРЅРµС€РЅРёР№ РёСЃС‚РѕС‡РЅРёРє (РїР°СЂР°РјРµС‚СЂ idd), Р»РёР±Рѕ РІРЅРµС€РЅРёРµ РєРѕР»Р»РµРєС†РёРё 
+            // Р­Р»РµРјРµРЅС‚ РєРѕР»Р»РµРєС†РёР№
             var member_in_collections = tree.GetInverse("http://fogid.net/o/collection-item")
                 .Select(me =>
                 {
@@ -241,37 +241,37 @@ static string BuildPortrait(Factograph.Data.IFDataService db, string id, Diction
                     return $"<a href='/view/{idna[0]}'>{idna[1]}</a>";
                 })
                 .Aggregate("", (sum, s) => sum + " " + s);
-            if (!string.IsNullOrEmpty(member_in_collections)) portrait.Append($"<div>!========== источники: {member_in_collections}</div>");
+            if (!string.IsNullOrEmpty(member_in_collections)) portrait.Append($"<div>!========== РёСЃС‚РѕС‡РЅРёРєРё: {member_in_collections}</div>");
 
 
-            // Выдадим поля: тип и идентификатор, главное поле - name, потом даты, описание
+            // Р’С‹РґР°РґРёРј РїРѕР»СЏ: С‚РёРї Рё РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ, РіР»Р°РІРЅРѕРµ РїРѕР»Рµ - name, РїРѕС‚РѕРј РґР°С‚С‹, РѕРїРёСЃР°РЅРёРµ
             portrait.Append($@"<div><span style='background-color:lime;'>{db.ontology.LabelOfOnto(tree.Tp)}</span> {tree.Id}</div>
 ");
-            // Теперь будут отличия для разных типов
+            // РўРµРїРµСЂСЊ Р±СѓРґСѓС‚ РѕС‚Р»РёС‡РёСЏ РґР»СЏ СЂР°Р·РЅС‹С… С‚РёРїРѕРІ
             if (tip == "http://fogid.net/o/person")
             {
-                // Поля
+                // РџРѕР»СЏ
                 portrait.Append($@"<div style='margin:10px 0px 10px 0px;'><span style='font-size:large; font-weight:bold; '>{tree.GetText("http://fogid.net/o/name")}</span> {tree.GetDates()} {tree.GetText("http://fogid.net/o/description")}
 </div>");
-                // Участия
+                // РЈС‡Р°СЃС‚РёСЏ
                 var particip = tree.GetInverse("http://fogid.net/o/participant")
                     .Select(p =>
                     {
                         var dir = p.GetDirect("http://fogid.net/o/in-org");
                         if (dir == null) return "";
                         string? r = p.GetText("http://fogid.net/o/role");
-                        string role = r == null ? "участник" : r;
+                        string role = r == null ? "СѓС‡Р°СЃС‚РЅРёРє" : r;
                         string? orgname = dir.GetText("http://fogid.net/o/name");
                         string? orgcat = dir.GetText("http://fogid.net/o/org-category");
                         string? oc = dir.GetStr("http://fogid.net/o/org-classification");
                         string? oo = oc == null ? null : db.ontology.EnumValue("http://fogid.net/o/org-classificator", oc, "ru");
-                        string orgvid = orgcat != null ? orgcat : (oo == null && oc != null ? oc : "орг.");
+                        string orgvid = orgcat != null ? orgcat : (oo == null && oc != null ? oc : "РѕСЂРі.");
                         string? dtpart = p.GetDates();
                         string? dates = dtpart != null ? dtpart : dir.GetDates();
                         return $"<div>{role} <span style='background-color:lime;'>{orgvid}</span> <a href='/view/{dir.Id}'> {orgname} </a>  <span style='font-size:smaller;'>{dates ?? ""}</span></div>";
                     }).Aggregate("", (sum, s) => sum + " " + s);
                 portrait.Append($@"<div>{particip}</div>");
-                // Теперь отражения
+                // РўРµРїРµСЂСЊ РѕС‚СЂР°Р¶РµРЅРёСЏ
                 var reflect = tree.GetInverse("http://fogid.net/o/reflected")
                     .Select(p =>
                     {
@@ -305,8 +305,8 @@ static string BuildPortrait(Factograph.Data.IFDataService db, string id, Diction
             }
             else if (tip == "http://fogid.net/o/collection" || tip == "http://fogid.net/o/cassette")
             {
-                // Здесь будут учитываться поля и обратные отношения: collection-member (в обе стороны)
-                //// Элемент других коллекций
+                // Р—РґРµСЃСЊ Р±СѓРґСѓС‚ СѓС‡РёС‚С‹РІР°С‚СЊСЃСЏ РїРѕР»СЏ Рё РѕР±СЂР°С‚РЅС‹Рµ РѕС‚РЅРѕС€РµРЅРёСЏ: collection-member (РІ РѕР±Рµ СЃС‚РѕСЂРѕРЅС‹)
+                //// Р­Р»РµРјРµРЅС‚ РґСЂСѓРіРёС… РєРѕР»Р»РµРєС†РёР№
                 //var member_in_collections = tree.GetInverse("http://fogid.net/o/collection-item")
                 //    .Select(me =>
                 //    {
@@ -322,9 +322,9 @@ static string BuildPortrait(Factograph.Data.IFDataService db, string id, Diction
                 //        return $"<a href='/view/{idna[0]}'>{idna[1]}</a>";
                 //    })
                 //    .Aggregate("", (sum, s) => sum + " " + s);
-                //if (!string.IsNullOrEmpty(member_in_collections)) portrait.Append($"<div>В коллекциях: {member_in_collections}</div>");
+                //if (!string.IsNullOrEmpty(member_in_collections)) portrait.Append($"<div>Р’ РєРѕР»Р»РµРєС†РёСЏС…: {member_in_collections}</div>");
 
-                // Элементы этой коллекции
+                // Р­Р»РµРјРµРЅС‚С‹ СЌС‚РѕР№ РєРѕР»Р»РµРєС†РёРё
                 var elements_of_collection = tree.GetInverse("http://fogid.net/o/in-collection")
                     .Select(me =>
                     {
@@ -355,9 +355,9 @@ static string BuildPortrait(Factograph.Data.IFDataService db, string id, Diction
             }
             else if (db.ontology.DescendantsAndSelf("http://fogid.net/o/document").Contains(tip))
             {
-                // Здесь будут учитываться поля и следующие обратные отношения: reflection, collection-member
+                // Р—РґРµСЃСЊ Р±СѓРґСѓС‚ СѓС‡РёС‚С‹РІР°С‚СЊСЃСЏ РїРѕР»СЏ Рё СЃР»РµРґСѓСЋС‰РёРµ РѕР±СЂР°С‚РЅС‹Рµ РѕС‚РЅРѕС€РµРЅРёСЏ: reflection, collection-member
 
-                //string tip = tree.Tp; // уже было
+                //string tip = tree.Tp; // СѓР¶Рµ Р±С‹Р»Рѕ
                 string? name = tree.GetText("http://fogid.net/o/name");
                 string? date = tree.GetStr("http://fogid.net/o/from-date");
                 string? uri = tree.GetStr("http://fogid.net/o/uri");
@@ -368,13 +368,13 @@ static string BuildPortrait(Factograph.Data.IFDataService db, string id, Diction
                         (tip == "http://fogid.net/o/audio-doc" ?
                             $"<audio src='/audio?uri={uri}' controls/>" :
                             (tip == "http://fogid.net/o/document" ?
-                                $"<a href='/document?uri={uri}'>читать документ</a>" :
-                    $"Здесь должен быть контент документа {tree.Id} типа {tip}"))));
+                                $"<a href='/document?uri={uri}'>С‡РёС‚Р°С‚СЊ РґРѕРєСѓРјРµРЅС‚</a>" :
+                    $"Р—РґРµСЃСЊ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РєРѕРЅС‚РµРЅС‚ РґРѕРєСѓРјРµРЅС‚Р° {tree.Id} С‚РёРїР° {tip}"))));
                 portrait.Append(docview);
                 portrait.Append($"<div><span style='font-size:small;'>{name}</span> {date}</div>");
 
 
-                // Отражения
+                // РћС‚СЂР°Р¶РµРЅРёСЏ
                 var reflections = tree.GetInverse("http://fogid.net/o/in-doc")
                     .Select(x =>
                     {
