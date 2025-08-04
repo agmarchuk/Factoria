@@ -13,7 +13,7 @@ var app = builder.Build();
 
 //app.MapGet("/", () => "Hello World!");
 app.MapGet("/", () => Results.Content(
-    $@"<html><head><meta charset='utf-8'</head><body>
+    $@"<html><head><meta charset='utf-8'></head><body>
 <div><a href='/xml/search/кассеты'>кассеты</a></div>
 <div><a href='/xml/portrait/cassetterootcollection'>Коллекция кассет</a></div>
 <div><a href='/photo/uri/uri'>Фото uri</a></div>

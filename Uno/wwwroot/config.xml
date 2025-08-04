@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+  <database connectionstring="rr:D:\Home\FactographDatabases\rr-uno\"/>
+
+  <LoadCassette>E:\FactographProjects\syp_cassettes\SypCassete</LoadCassette>
+  <LoadCassette>E:\FactographProjects\syp_cassettes\SypUsers</LoadCassette>
+  <LoadCassette>D:\Home\FactographProjects\syp_cassettes\Syp2025video</LoadCassette>
+
+
+</config>
