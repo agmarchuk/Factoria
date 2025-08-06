@@ -1,8 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <config>
   <database connectionstring="rr:C:\Home\FactographDatabases\rr-test\"/>
-
-  <LoadCassette>D:\Home\FactographProjects\Syp2025ex</LoadCassette>
-
+  <!--<LoadCassette>D:\Home\FactographProjects\syp_cassettes\Syp2025video</LoadCassette>-->
+  <LoadCassette>E:\FactographProjects\syp_cassettes\SypCassete</LoadCassette>
 
 </config>

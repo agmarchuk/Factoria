@@ -1,0 +1,40 @@
+﻿body {
+    
+}
+.container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items:center;
+}
+.header1 {
+    width: 100%;
+    background-color: lightgoldenrodyellow;
+    font-size: large;
+    height: 60px;
+    background-color: lime;
+    justify-content: space-between;
+}
+.box  {
+    width:180px;
+    height:200px;
+    background-color:aliceblue;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin:4px 4px 4px 4px;
+}
+.square {
+    width: 180px;
+    height: 180px;
+    align-self: end;
+    text-align: center;
+    font-size: small;
+    font-weight: 100;
+    display: flex;
+    flex-direction: column;
+    /*    background: url('@(PhotoUrl)') center no-repeat;*/
+    /*background-size:contain;*/
+    background-color:lightyellow;
+    margin: 4px 4px 4px 4px;
+}
