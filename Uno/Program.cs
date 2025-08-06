@@ -18,13 +18,13 @@ Dictionary<string, Rec>? shablons = tips.Select(t => Rec.GetUniShablon(t, 2, nul
     .ToDictionary(rec => rec.Tp);
 
 
-app.MapGet("/", () => Results.Redirect("/view/cassetterootcollection")); //"/view/syp2001-p-marchuk_a"));
-app.MapGet("/room216", () => { db.Reload(); Results.Redirect("/"); }); //"/view/syp2001-p-marchuk_a"));
+//app.MapGet("~/", () => Results.Redirect("/view/cassetterootcollection")); //"/view/syp2001-p-marchuk_a"));
+app.MapGet("~/room216", () => { db.Reload(); Results.Redirect("/view"); }); //"/view/syp2001-p-marchuk_a"));
 
 // Вход view - основной в сервисе. Может присутствовать основной параметр id - идентификатор сущности. Также могут быть параметры:
 // ss (search string) - поисковый образ; tp - тип результата поиска, IsBullOrEmpty(tp) - все типы; bw (by words) - поиск "по словам";
 // idd - идентификатор "верхнего" уровня, напр. идентификатор "охватывающей" коллекции.
-app.MapGet("/view/{id?}", (HttpRequest request, string? id) =>
+app.MapGet("~/view/{id?}", (HttpRequest request, string? id) =>
 {
     string? ss = request.Query["ss"].FirstOrDefault();
     string? tp = request.Query["tp"].FirstOrDefault();
@@ -41,12 +41,12 @@ app.MapGet("/view/{id?}", (HttpRequest request, string? id) =>
 <html>
     <head> 
         <meta charset='utf-8'> 
-        <link href='/css/site.css' rel='stylesheet' />
+        <link href='css/site.css' rel='stylesheet' />
     </head>
     <body>
 
     <div class='container' style='width:100%; background-color:lime;'>
-        <a href='/view'> <img src='/img/logossyp.png' style='height:60px;margin-left: 16px;margin-right:16px;'> </a>
+        <a href='/view'> <img src='img/logossyp.png' style='height:60px;margin-left: 16px;margin-right:16px;'> </a>
         <div style='display: flex; flex-direction: column;font-size:large;align-items:center;'>
             <div style='font-size:x-large;font-weight:bold;color:white;'>Летние школы юных программистов</div>
             <div>Сезон 2025 года: 14-27 июля</div>
@@ -83,7 +83,7 @@ app.MapGet("/view/{id?}", (HttpRequest request, string? id) =>
     return Results.Content(maket, "text/html");
 });
 
-app.MapGet("/photo", (HttpRequest request) =>
+app.MapGet("~/photo", (HttpRequest request) =>
 {
     string? uri = request.Query["uri"].FirstOrDefault();
     string? sz = request.Query["size"].FirstOrDefault();
@@ -102,7 +102,7 @@ app.MapGet("/photo", (HttpRequest request) =>
     return Results.File(path + ".jpg", "image/jpeg");
 });
 
-app.MapGet("/video", (HttpRequest request) =>
+app.MapGet("~/video", (HttpRequest request) =>
 {
     string? uri = request.Query["uri"].FirstOrDefault();
     if (uri == null) return Results.Empty;
@@ -114,7 +114,7 @@ app.MapGet("/video", (HttpRequest request) =>
     return Results.File(path + ".mp4", "video/mp4");
 });
 
-app.MapGet("/document", (HttpRequest request) =>
+app.MapGet("~/document", (HttpRequest request) =>
 {
     string? uri = request.Query["uri"].FirstOrDefault();
     if (uri == null) return Results.Empty;
@@ -150,7 +150,7 @@ static Dictionary<string, string> Doctipnames()
         new Tuple<string, string>("http://fogid.net/o/cassette", "касс."),
         new Tuple<string, string>("http://fogid.net/o/collection", "колл."),
         new Tuple<string, string>("http://fogid.net/o/person", "перс."),
-        new Tuple<string, string>("http://fogid.net/o/orh-sys", "орг."),
+        new Tuple<string, string>("http://fogid.net/o/org-sys", "орг."),
         new Tuple<string, string>("http://fogid.net/o/city", "гор."),
     }.ToDictionary(pa => pa.Item1, pa => pa.Item2);
 }
@@ -166,26 +166,14 @@ static string BuildSelectResults(IFDataService db, string? ss, string? tp, bool 
             return new XElement("div",
                 new XElement("span", db.ontology.LabelOfOnto(tp)),
                 " ",
-                new XElement("a", new XAttribute("href", "/view/" + rec.Id), rec.GetName()),
+                new XElement("a", new XAttribute("href", "~/view/" + rec.Id), rec.GetName()),
                 (date != null && date.Length > 3 ? new XElement("span", " " + date.Substring(0, 4)) : null),
                 null);
         }),
         new XElement("div", "== поиск завершен =="))
         .ToString() : "";
 }
-//
 
-//static string HTMLSquare(string url, string href, string name, string text, string bs)
-//{
-//    // варианты bs: contain - max растяжка, auto, cover
-//    return 
-// @$"<div class='square' style='background: url({url}) center no-repeat; background-size:{bs}'>
-//        <div style='height:92%;'></div>
-//        <div style='background-color:white;'>
-//            <a href='{href}'>{name}</a>  {text}
-//        </div>
-//    </div>";
-//}
 static string Kvad(string ttip, string iid, string name, string uri, string dates)
 {
     string url ="";
@@ -241,18 +229,17 @@ static string BuildPortrait(Factograph.Data.IFDataService db, string id, Diction
                     return $"<a href='/view/{idna[0]}'>{idna[1]}</a>";
                 })
                 .Aggregate("", (sum, s) => sum + " " + s);
-            if (!string.IsNullOrEmpty(member_in_collections)) portrait.Append($"<div>!========== источники: {member_in_collections}</div>");
+            if (!string.IsNullOrEmpty(member_in_collections)) portrait.Append($"<div>................ источники: {member_in_collections}</div>");
 
 
             // Выдадим поля: тип и идентификатор, главное поле - name, потом даты, описание
-            portrait.Append($@"<div><span style='background-color:lime;'>{db.ontology.LabelOfOnto(tree.Tp)}</span> {tree.Id}</div>
-");
+            portrait.Append($@"<div><span style='background-color:lime;'>{db.ontology.LabelOfOnto(tree.Tp)}</span> {tree.Id}</div>");
+            portrait.Append($@"<div style='margin:10px 0px 10px 0px;'><span style='font-size:large; font-weight:bold; '>{tree.GetText("http://fogid.net/o/name")}</span> {tree.GetDates()} {tree.GetText("http://fogid.net/o/description")}
+</div>");
+
             // Теперь будут отличия для разных типов
             if (tip == "http://fogid.net/o/person")
             {
-                // Поля
-                portrait.Append($@"<div style='margin:10px 0px 10px 0px;'><span style='font-size:large; font-weight:bold; '>{tree.GetText("http://fogid.net/o/name")}</span> {tree.GetDates()} {tree.GetText("http://fogid.net/o/description")}
-</div>");
                 // Участия
                 var particip = tree.GetInverse("http://fogid.net/o/participant")
                     .Select(p =>
@@ -301,29 +288,50 @@ static string BuildPortrait(Factograph.Data.IFDataService db, string id, Diction
             }
             else if (tip == "http://fogid.net/o/org-sys")
             {
-                portrait.Append(tip);
+                // Есть обратные: члены и отражения
+                var particip = tree.GetInverse("http://fogid.net/o/in-org")
+                    .Select(p =>
+                    {
+                        var dir = p.GetDirect("http://fogid.net/o/participant");
+                        if (dir == null) return "";
+                        string? r = p.GetText("http://fogid.net/o/role");
+                        string role = r == null ? "участник" : r;
+                        string? pname = dir.GetText("http://fogid.net/o/name");
+                        string? dtpart = p.GetDates();
+                        string? dates = dtpart != null ? dtpart : dir.GetDates();
+                        return $"<div><a href='/view/{dir.Id}'> {pname} </a>  <span style='font-size:smaller;'>{dates ?? ""}</span></div>";
+                    }).Aggregate("", (sum, s) => sum + " " + s);
+                portrait.Append($@"<div>{particip}</div>");
+                // Теперь отражения
+                var reflect = tree.GetInverse("http://fogid.net/o/reflected")
+                    .Select(p =>
+                    {
+                        var dir = p.GetDirect("http://fogid.net/o/in-doc");
+                        if (dir == null) return new string[] { "", "", "", "" };
+                        string doctyp = dir.Tp;
+                        string? docname = dir.GetText("http://fogid.net/o/name");
+                        string? uri = dir.GetStr("http://fogid.net/o/uri");
+                        string? dates = dir.GetDates();
+                        return new string[] { doctyp, docname ?? "", uri ?? "", dates ?? "", dir.Id ?? "" };
+                    })
+                    .OrderBy(dud => dud[3])
+                    .Select(dud =>
+                    {
+                        if (db.ontology.DescendantsAndSelf("http://fogid.net/o/document").Contains(dud[0]))
+                        {
+                            //string ttip = (Doctipnames())[dud[0]];
+                            string name = dud[1];
+                            if (string.IsNullOrEmpty(name)) name = "noname";
+                            if (name.Length > 24) name = name.Substring(0, 24);
+                            return Kvad(dud[0], dud[4], name, dud[2], dud[3]);
+                        }
+                        else return "";
+                    })
+                    .Aggregate("", (sum, s) => sum + " " + s);
+                portrait.Append($@"<div class='container'>{reflect}</div>");
             }
             else if (tip == "http://fogid.net/o/collection" || tip == "http://fogid.net/o/cassette")
             {
-                // Здесь будут учитываться поля и обратные отношения: collection-member (в обе стороны)
-                //// Элемент других коллекций
-                //var member_in_collections = tree.GetInverse("http://fogid.net/o/collection-item")
-                //    .Select(me =>
-                //    {
-                //        var coll = me.GetDirect("http://fogid.net/o/in-collection");
-                //        if (coll == null) return null;
-                //        string? name = coll.GetText("http://fogid.net/o/name");
-                //        string[] idna = new string[] { coll.Id ?? "", name ?? "noname" };
-                //        return idna;
-                //    })
-                //    .Where(x => x != null)
-                //    .Select(idna =>
-                //    {
-                //        return $"<a href='/view/{idna[0]}'>{idna[1]}</a>";
-                //    })
-                //    .Aggregate("", (sum, s) => sum + " " + s);
-                //if (!string.IsNullOrEmpty(member_in_collections)) portrait.Append($"<div>В коллекциях: {member_in_collections}</div>");
-
                 // Элементы этой коллекции
                 var elements_of_collection = tree.GetInverse("http://fogid.net/o/in-collection")
                     .Select(me =>
@@ -344,14 +352,10 @@ static string BuildPortrait(Factograph.Data.IFDataService db, string id, Diction
                     {
 
                         return idtna == null ? "" :
-                        //$"<div><a href='/view/{idtna[0]}'>{idtna[2]}</a></div>";
-                        //HTMLSquare(idtna[3], $"/view/{idtna[0]}", idtna[2], "addition", idtna[4]);
                         Kvad(idtna[1], idtna[0], idtna[2], idtna[3], idtna[4]);
                     })
                     .Aggregate("", (sum, s) => sum + " " + s);
                 portrait.Append($"<div class='container'>{elements_of_collection}</div>");
-
-
             }
             else if (db.ontology.DescendantsAndSelf("http://fogid.net/o/document").Contains(tip))
             {

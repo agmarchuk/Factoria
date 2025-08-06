@@ -1,8 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <config>
-  <database connectionstring="rr:C:\Home\FactographDatabases\rr-uno\"/>
-  
-  <LoadCassette>C:\Home\FactographProjects\syp_cassettes\Syp_2012_1</LoadCassette>
+  <database connectionstring="rr:D:\Home\FactographDatabases\rr-uno\"/>
+
+  <LoadCassette>D:\Home\FactographProjects\syp_cassettes\SypCassete</LoadCassette>
+  <LoadCassette>D:\Home\FactographProjects\syp_cassettes\SypUsers</LoadCassette>-->
+
+  <!--<LoadCassette>C:\Home\FactographProjects\syp_cassettes\Syp_2012_1</LoadCassette>
   <LoadCassette>C:\Home\FactographProjects\syp_cassettes\Syp_2012_mag</LoadCassette>
   <LoadCassette>C:\Home\FactographProjects\syp_cassettes\Syp_2012_Tikhonova</LoadCassette>
   <LoadCassette>C:\Home\FactographProjects\syp_cassettes\Syp_2013</LoadCassette>
@@ -41,6 +44,6 @@
   <LoadCassette write="true">C:\Home\FactographProjects\syp_cassettes\Syp2025u</LoadCassette>
 
   <LoadCassette>C:\Home\FactographProjects\syp_cassettes\SypCassete</LoadCassette>
-  <LoadCassette>C:\Home\FactographProjects\syp_cassettes\SypUsers</LoadCassette>
+  <LoadCassette>C:\Home\FactographProjects\syp_cassettes\SypUsers</LoadCassette>-->
 
 </config>
