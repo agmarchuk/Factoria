@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FactographWebApi", "Factogr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno", "Uno\Uno.csproj", "{7CAEF068-2991-44E1-80B5-1B99A2841EAA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tres", "Tres\Tres.csproj", "{0C5EF68C-80D8-83B9-6435-971AB7D005E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{7CAEF068-2991-44E1-80B5-1B99A2841EAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CAEF068-2991-44E1-80B5-1B99A2841EAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7CAEF068-2991-44E1-80B5-1B99A2841EAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C5EF68C-80D8-83B9-6435-971AB7D005E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C5EF68C-80D8-83B9-6435-971AB7D005E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C5EF68C-80D8-83B9-6435-971AB7D005E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C5EF68C-80D8-83B9-6435-971AB7D005E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
