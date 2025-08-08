@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text;
 using System.Xml.Linq;
 
-namespace Tres.Pages;
+namespace Uno.Controllers;
 
-public class IndexModel : PageModel
+public class VController : PageModel
 {
-    private readonly ILogger<IndexModel> _logger;
+    private readonly ILogger<VController> _logger;
     
     // Ёто база данных
     private readonly Factograph.Data.IFDataService db;
@@ -28,7 +28,7 @@ public class IndexModel : PageModel
     public bool bywords = false;
     
 
-    public IndexModel(ILogger<IndexModel> logger, Factograph.Data.IFDataService db )
+    public VController(ILogger<VController> logger, Factograph.Data.IFDataService db )
     {
         _logger = logger;
         this.db = db;
@@ -39,14 +39,13 @@ public class IndexModel : PageModel
     public XElement? selectsbor = null;
     public string? portrait = null;
 
-    public void OnGet()
+    public void OnGet(HttpRequest request)
     {
-        id = this.Request.Query["id"].FirstOrDefault();
-        ss = this.Request.Query["ss"].FirstOrDefault();
-        tp = this.Request.Query["tp"].FirstOrDefault();
-        string? sbw = this.Request.Query["bw"].FirstOrDefault(); // признак bywords "словами"
+        id = request.Query["id"].FirstOrDefault();
+        ss = request.Query["ss"].FirstOrDefault();
+        string? sbw = request.Query["bw"].FirstOrDefault(); // признак bywords "словами"
         bywords = sbw != null ? true : false;
-        idd = this.Request.Query["idd"].FirstOrDefault();
+        idd = request.Query["idd"].FirstOrDefault();
 
         // ƒалее, мы вычисл€ем части результирующей страницы или как XElement или как текст, кажда€ часть имеет свой идентификатор,
         // в конце будут вставлены в макет. „асти:
@@ -65,7 +64,7 @@ public class IndexModel : PageModel
                 return new XElement("div",
                     new XElement("span", db.ontology.LabelOfOnto(tp)),
                     " ",
-                    new XElement("a", new XAttribute("href", Url.Content("?id=" + rec.Id)), rec.GetName()),
+                    new XElement("a", new XAttribute("href", "?id=" + rec.Id), rec.GetName()),
                     (date != null && date.Length > 3 ? new XElement("span", " " + date.Substring(0, 4)) : null),
                     null);
             }),
@@ -118,19 +117,14 @@ public class IndexModel : PageModel
                     .Where(x => x != null)
                     .Select(idna =>
                     {
-                        string url = Url.Content($"?id={idna[0]}");
-                        return $"<a href='{url}'>{idna[1]}</a>";
+                        return $"<a href='/view/{idna[0]}'>{idna[1]}</a>";
                     })
                     .Aggregate("", (sum, s) => sum + " " + s);
-                string mics = ""; 
-                if (!string.IsNullOrEmpty(member_in_collections)) mics = "............. источники: " + member_in_collections;
+                if (!string.IsNullOrEmpty(member_in_collections)) portrait.Append($"<div>................ источники: {member_in_collections}</div>");
+
 
                 // ¬ыдадим пол€: тип и идентификатор, главное поле - name, потом даты, описание
-                portrait.Append($@"<div style='display:flex;justify-content:space-between;'>
-<span style='background-color:lime;'>{db.ontology.LabelOfOnto(tree.Tp)} {tree.Id}</span>
-<span>{mics}</span>
-</div>");
-                
+                portrait.Append($@"<div><span style='background-color:lime;'>{db.ontology.LabelOfOnto(tree.Tp)}</span> {tree.Id}</div>");
                 portrait.Append($@"<div style='margin:10px 0px 10px 0px;'><span style='font-size:large; font-weight:bold; '>{tree.GetText("http://fogid.net/o/name")}</span> {tree.GetDates()} {tree.GetText("http://fogid.net/o/description")}
 </div>");
 
@@ -152,8 +146,7 @@ public class IndexModel : PageModel
                             string orgvid = orgcat != null ? orgcat : (oo == null && oc != null ? oc : "орг.");
                             string? dtpart = p.GetDates();
                             string? dates = dtpart != null ? dtpart : dir.GetDates();
-                            string url = Url.Content("?id=" + dir.Id);
-                            return $"<div>{role} <span style='background-color:lime;'>{orgvid}</span> <a href='{url}'> {orgname} </a>  <span style='font-size:smaller;'>{dates ?? ""}</span></div>";
+                            return $"<div>{role} <span style='background-color:lime;'>{orgvid}</span> <a href='/view/{dir.Id}'> {orgname} </a>  <span style='font-size:smaller;'>{dates ?? ""}</span></div>";
                         }).Aggregate("", (sum, s) => sum + " " + s);
                     portrait.Append($@"<div>{particip}</div>");
                     // “еперь отражени€
@@ -197,8 +190,7 @@ public class IndexModel : PageModel
                             string? pname = dir.GetText("http://fogid.net/o/name");
                             string? dtpart = p.GetDates();
                             string? dates = dtpart != null ? dtpart : dir.GetDates();
-                            string url = Url.Content("?id=" + dir.Id);
-                            return $"<div><a href='{url}'> {pname} </a>  <span style='font-size:smaller;'>{dates ?? ""}</span></div>";
+                            return $"<div><a href='/view/{dir.Id}'> {pname} </a>  <span style='font-size:smaller;'>{dates ?? ""}</span></div>";
                         }).Aggregate("", (sum, s) => sum + " " + s);
                     portrait.Append($@"<div>{particip}</div>");
                     // “еперь отражени€
@@ -299,8 +291,7 @@ public class IndexModel : PageModel
                         //.OrderBy(na => na[1] ?? "")
                         .Select(na =>
                         {
-                            string url = Url.Content("?id=" + na[0]);
-                            return $"<div><a href='{url}'>{na[1]}</a></div>";
+                            return $"<div><a href='/view/{na[0]}'>{na[1]}</a></div>";
                         })
                         .Aggregate("", (sum, te) => sum + te);
 
@@ -321,14 +312,13 @@ public class IndexModel : PageModel
         else if (ttip == "http://fogid.net/o/document") url = Url.Content("/img/document_m.jpg");
         var dic = Doctipnames();
         string tword = dic.ContainsKey(ttip) ? dic[ttip] : ttip;
-        string urllink = Url.Content("?id=" + iid);
         return
     @$"<div style='background-color:#CCFFCC; width:200px;height:200px;margin:10px 10px 10px 10px;'>
 <div class='square' style='background: url({url}) center no-repeat; background-size:{(ttip == "http://fogid.net/o/photo-doc" ? "contain" : "auto")};margin:15px 20px 0px 10px;'>
     <div style='background-color:white;width:50px;align-self:end;'>{tword}</div>
     <div style='height:84%;'></div>
     <div style='background-color:white;'>
-      <a href='{urllink}'>{name}</a>  {dates}
+      <a href='?id={iid}'>{name}</a>  {dates}
     </div>
 </div></div>";
     }

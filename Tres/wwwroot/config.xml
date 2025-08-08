@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <config>
-  <database connectionstring="rr:C:\Home\FactographDatabases\rr-tres\"/>
+  <database connectionstring="rr:D:\Home\FactographDatabases\rr-tres\"/>
 
-  <LoadCassette>C:\Home\FactographProjects\syp_cassettes\SypCassete</LoadCassette>
-  <LoadCassette>C:\Home\FactographProjects\syp_cassettes\SypUsers</LoadCassette>-->
+  <LoadCassette>D:\Home\FactographProjects\syp_cassettes\SypCassete</LoadCassette>
+  <LoadCassette>D:\Home\FactographProjects\syp_cassettes\SypUsers</LoadCassette>-->
 
   <!--<LoadCassette>C:\Home\FactographProjects\syp_cassettes\Syp_2012_1</LoadCassette>
   <LoadCassette>C:\Home\FactographProjects\syp_cassettes\Syp_2012_mag</LoadCassette>

@@ -1,4 +1,3 @@
-
 var builder = WebApplication.CreateBuilder(args);
 
 //Factograph.Data.IFDataService db = new Factograph.Data.FDataService();
@@ -23,31 +22,32 @@ var app = builder.Build();
 //app.UseAuthorization();
 
 
-app.MapGet("/photo", (HttpRequest request, Factograph.Data.IFDataService db) =>
-{
-    string? uri = request.Query["uri"].FirstOrDefault();
-    string? sz = request.Query["size"].FirstOrDefault();
-    string s = sz ?? "small";
-    string path = db.GetFilePath(uri, s);
-    if (!System.IO.File.Exists(path + ".jpg"))
-    {
-        s = s == "medium" ? "normal" : "medium";
-        path = db.GetFilePath(uri, s);
-    }
-    if (string.IsNullOrEmpty(path))
-    {
-        return Results.Empty; //new EmptyResult();
-    }
-    //return PhysicalFile(path + ".jpg", "image/jpg");
-    return Results.File(path + ".jpg", "image/jpeg");
-});
+
+//app.MapGet("/photo", (HttpRequest request, Factograph.Data.IFDataService db) =>
+//{
+//    string? uri = request.Query["uri"].FirstOrDefault();
+//    string? sz = request.Query["size"].FirstOrDefault();
+//    string s = sz ?? "small";
+//    string path = db.GetFilePath(uri, s);
+//    if (!System.IO.File.Exists(path + ".jpg"))
+//    {
+//        s = s == "medium" ? "normal" : "medium";
+//        path = db.GetFilePath(uri, s);
+//    }
+//    if (string.IsNullOrEmpty(path))
+//    {
+//        return Results.Empty; //new EmptyResult();
+//    }
+//    //return PhysicalFile(path + ".jpg", "image/jpg");
+//    return Results.File(path + ".jpg", "image/jpeg");
+//});
 
 
 app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
 // не сумел следующим воспользоваться...
-//app.MapControllerRoute(name: "default",
-//         pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapControllerRoute(name: "default",
+         pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

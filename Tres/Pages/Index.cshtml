@@ -3,12 +3,12 @@
 @{
     IndexModel m = Model;
     ViewData["Title"] = "Home page";
-    string tp = "http://fogid.net/o/person";
+    string tp = m.tp ?? "";
     string id = m.id ?? "";
     string ss = m.ss ?? "";
     bool bywords = m.bywords;
 }
-    <h2>@id</h2>
+
     <div style='margin-top:20px;'>
         <form method='get' action=''>
             <input name ='ss' value='@ss' />
@@ -22,7 +22,7 @@
                 {
                     <option value='http://fogid.net/o/person'>персона</option>
                 }
-                if (tp == "http://fogid.net/o/org-sys")
+                @if (tp == "http://fogid.net/o/org-sys")
                 {
                     <option value='http://fogid.net/o/org-sys' selected='selected'>орг.сист.</option>
                 }
@@ -30,7 +30,7 @@
                 {
                     <option value='http://fogid.net/o/org-sys'>орг.сист.</option>
                 }
-                if (tp == "http://fogid.net/o/collection")
+                @if (tp == "http://fogid.net/o/collection")
                 {
                     <option value='http://fogid.net/o/collection' selected='selected'>коллекция</option>
                 }

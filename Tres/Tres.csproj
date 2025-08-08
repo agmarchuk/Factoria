@@ -10,8 +10,4 @@
     <ProjectReference Include="..\Factograph.Data\Factograph.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>
