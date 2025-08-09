@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Net;
 using System.Xml.Linq;
+using static System.Net.Mime.MediaTypeNames;
 using static System.Net.WebRequestMethods;
 
 namespace Tres.Controllers
@@ -34,8 +35,26 @@ namespace Tres.Controllers
             return PhysicalFile(path + ".jpg", "image/jpg");
         }
 
+        [HttpGet("docs/Room216")]
+        public IActionResult Room216()
+        {
+            db.Reload();
+            return Redirect(Url.Content("/"));
+        }
+
         [HttpGet("docs/GetVideo")]
         public IActionResult GetVideo(string uri)
+        {
+            if (uri == null) return new EmptyResult();
+            string path = db.GetFilePath(uri, "medium");
+            if (string.IsNullOrEmpty(path) || !System.IO.File.Exists(path + ".mp4"))
+            {
+                return new EmptyResult();
+            }
+            return PhysicalFile(path + ".mp4", "video/mp4"); 
+        }
+        [HttpGet("docs/GetVideo0")]
+        public IActionResult GetVideo0(string uri)
         {
             string path = db.GetFilePath(uri, "medium");
             if (path == null) return NotFound();
