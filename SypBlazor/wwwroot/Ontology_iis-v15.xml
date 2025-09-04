@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <!--
-  Онтология Ontology_iis-v15.xml Изменения 20250811:
+  Онтология Ontology_iis-v15.xml 
+  Изменения 20250814:
+  - ввел порядковый номер для элемента коллекции http://fogid.net/o/orderNumber 
+  Изменения 20250811:
   - Повысил уровень объекта для uri до sys-obj
   Онтология Ontology_iis-v14.xml Изменения 20230902:
   - Убрал reg-phone-code и прилегающие
@@ -198,6 +201,12 @@
     <label xml:lang="en">Collection's element</label>
     <SubClassOf rdf:resource="http://fogid.net/o/entity"/>
   </Class>
+  <DatatypeProperty rdf:about="http://fogid.net/o/orderNumber" essential="yes">
+    <label xml:lang="ru">порядковый номер</label>
+    <label xml:lang="en">order number</label>
+    <domain rdf:resource="http://fogid.net/o/collection-member"/>
+    <range rdf:resource="http://fogid.net/o/string"/>
+  </DatatypeProperty>
   <ObjectProperty rdf:about="http://fogid.net/o/in-collection" essential="yes" priority="a" weight="200">
     <label xml:lang="ru">в коллекции</label>
     <label xml:lang="en">in collection</label>

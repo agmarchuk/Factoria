@@ -10,4 +10,9 @@
     <password>mmm</password>
     <role>User</role>
   </user>
+  <user>
+    <name>mag111</name>
+    <password>111</password>
+    <role>User</role>
+  </user>
 </users>

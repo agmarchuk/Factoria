@@ -39,7 +39,7 @@ namespace Tres.Controllers
         public IActionResult Room216()
         {
             db.Reload();
-            return Redirect(Url.Content("/"));
+            return Redirect(Url.Content("~/"));
         }
 
         [HttpGet("docs/GetVideo")]

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -300,6 +301,8 @@ xmlns='http://fogid.net/o/'>
                 if (ext == ".mp4") mime = "video/mp4";
                 else if (ext == ".avi") mime = "video/x-msvideo";
                 else if (ext == ".mpeg") mime = "video/mpeg";
+                else if (ext == ".mts") mime = "video/mp2t";
+                else if (ext == ".wmv") { mime = "video/x-ms-wmv"; }
             }
             else if (rec.Name == XNms.Audio)
             {
@@ -534,6 +537,19 @@ xmlns='http://fogid.net/o/'>
                             {
                                 file_size = Double.Parse(ss.Substring(0, pos));
                             }
+                            else 
+                            {
+                                pos = ss.IndexOf("GiB");
+                                if (pos != -1)
+                                {
+                                    file_size = Double.Parse(ss.Substring(0, pos)) * 1000;
+                                }
+                                else
+                                {
+                                    file_size = size;
+                                }
+                            }
+                            
                         }
                         var ed = meta_gen.Element("Encoded_date")?.Value; // можно и из meta_vid
                         if (ed != null)
@@ -546,7 +562,7 @@ xmlns='http://fogid.net/o/'>
 
                 // преобразование оригинала возможно в случае, когда вычисденный bit-rate больше 4000 (можно будет уточнять)
                 var bitrate = file_size * 8000000.0 / dur_mils * 1000.0; 
-                if (to_compress_video && bitrate > 4500000.0) //TODO: порог может быть другим или записанным в finfo
+                if (to_compress_video && bitrate > 4000000.0) //TODO: порог может быть другим или записанным в finfo
                 {
                     using Process process2 = new Process();
                     {
@@ -556,12 +572,14 @@ xmlns='http://fogid.net/o/'>
                         process2.StartInfo.ArgumentList.Add(oldname);
                         process2.StartInfo.ArgumentList.Add("-y");
                         
-                        //process2.StartInfo.ArgumentList.Add("-s");
-                        //double factor = factors[fsize];
-                        //int w = (int)(width * factor); if (w % 2 == 1) w += 1;
-                        //int h = (int)(height * factor); if (h % 2 == 1) h += 1;
-                        //process2.StartInfo.ArgumentList.Add(w + "x" + h);
-                        
+                        process2.StartInfo.ArgumentList.Add("-c:v");
+                        process2.StartInfo.ArgumentList.Add("libx264");
+
+                        process2.StartInfo.ArgumentList.Add("-c:v");
+                        process2.StartInfo.ArgumentList.Add("libx264");
+                        process2.StartInfo.ArgumentList.Add("-c:a");
+                        process2.StartInfo.ArgumentList.Add(ext==".mts"? "libmp3lame" : "aac");
+
                         process2.StartInfo.ArgumentList.Add(newname);
                         
                         process2.Start(); //запускаем процесс
@@ -582,6 +600,11 @@ xmlns='http://fogid.net/o/'>
                         process3.StartInfo.ArgumentList.Add("-i");
                         process3.StartInfo.ArgumentList.Add(oname);
                         process3.StartInfo.ArgumentList.Add("-y");
+
+                        process3.StartInfo.ArgumentList.Add("-c:v");
+                        process3.StartInfo.ArgumentList.Add("libx264");
+                        process3.StartInfo.ArgumentList.Add("-c:a");
+                        process3.StartInfo.ArgumentList.Add(ext == ".mts" ? "libmp3lame" : "aac");
 
                         process3.StartInfo.ArgumentList.Add("-s");
                         int w = (int)(width * fact); if (w % 2 == 1) w += 1;
