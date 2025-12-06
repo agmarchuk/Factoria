@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <config>
   <database connectionstring="rr:C:\Home\FactographDatabases\rr-test3\"/>
-
 	<LoadCassette>C:\Home\FactographProjects\syp_cassettes\SypCassete</LoadCassette>
 
   <!--LoadCassette write="true">C:\FactographProjects\test2</LoadCassette-->

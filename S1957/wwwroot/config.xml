@@ -6,7 +6,8 @@
 	<LoadCassette>C:\Home\FactographProjects\Cassette_20211014</LoadCassette>
 	<LoadCassette write="true">C:\Home\FactographProjects\usr_tester</LoadCassette>
 -->
-  <database connectionstring="rr:C:\Home\CoreSites\rr-test\"/>
-  <LoadCassette>C:\Home\FactographProjects\PA_folders01-20</LoadCassette>
+  <database connectionstring="rr:C:\Home\FactographDatabases\rr-test\"/>
+  <LoadCassette>C:\Home\FactographProjects\syp_cassettes\SypCassete</LoadCassette>
+
 
 </config>
