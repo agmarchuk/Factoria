@@ -18,11 +18,18 @@ namespace CUtils
             string command = "-fog",
                 filein = "C:\\Home\\FactographProjects\\syp_cassettes\\SypCassete\\meta\\SypCassete_current.fog", 
                 fileout = "fogout.fog";
-            command = "-last";
+            //command = "-last";
 
             if (command == "-fog")
             {
                 var fog = new Factograph.Docs.OneFog(filein);
+                int cnt = 0;
+                foreach (var r in fog.Records())
+                {
+                    if (cnt % 100 == 0) Console.WriteLine(
+                        r.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")?.Value);
+                    cnt++;
+                }
             }
             else if (command == "-last")
             {
