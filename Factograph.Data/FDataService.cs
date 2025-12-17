@@ -869,7 +869,24 @@ namespace Factograph.Data
                     null);
 
             }
-            fi.fogx.Add(nitem);
+            // Добавление nitem в фог-документ
+            // Коррекция delete в старую сторону (rdf:about -> id) //TODO Надо будет убрать!!! 
+            if (nitem.Name.LocalName == "delete")
+            {
+                XAttribute? att_id = nitem.Attribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about");
+                if (att_id != null)
+                {
+                    XElement nitem1 = new XElement(nitem);
+                    var attributes = nitem1.Attributes().ToArray();
+                    nitem1.RemoveAttributes();
+                    nitem1.Add(new XAttribute("id", att_id.Value));
+                    nitem1.Add(attributes.Where(a => a.Name.LocalName != "about"));
+
+                    fi.fogx.Add(nitem1);
+                }
+                else fi.fogx.Add(nitem);
+            }
+            else fi.fogx.Add(nitem);
 
             // Сохраняем файл
             fi.fogx.Save(fi.pth);
