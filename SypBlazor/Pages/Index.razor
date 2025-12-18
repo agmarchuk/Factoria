@@ -143,104 +143,111 @@
                         <div>Документ [@(ext)] получить копию: </div>
                         <div style="margin-bottom:10px;"><a href="@sr"><img src="icons/document_m.jpg" /></a></div>
                     }
-            }
+                }
 
+            }
         }
-    }
 
-    // ========    Это вставка НИЖНЕЙ полоски пред. след. к документу =========
-    @if (externalId != null && hasdocimage)
-    {
-        string pr = "index/" + prev + "/" + externalId;
-        string d = "index/" + externalId;
-        string nx = "index/" + next + "/" + externalId;
-        <div style="text-align: center;">
-            <NavLink href="@d">к источнику</NavLink>
-            &nbsp;
-            @if (prev == null)
-            {
-                <span>пред.</span>
-            }
-            else
-            {
-                <NavLink href="@pr"><span>пред.</span></NavLink>
-            }
-            &nbsp;
-            @if (next == null)
-            {
-                <span>след.</span>
-            }
-            else
-            {
-                <NavLink href="@nx"><span>след.</span></NavLink>
-            }
-        </div>
-    }
+        // ========    Это вставка НИЖНЕЙ полоски пред. след. к документу =========
+        @if (externalId != null && hasdocimage)
+        {
+            string pr = "index/" + prev + "/" + externalId;
+            string d = "index/" + externalId;
+            string nx = "index/" + next + "/" + externalId;
+            <div style="text-align: center;">
+                <NavLink href="@d">к источнику</NavLink>
+                &nbsp;
+                @if (prev == null)
+                {
+                    <span>пред.</span>
+                }
+                else
+                {
+                    <NavLink href="@pr"><span>пред.</span></NavLink>
+                }
+                &nbsp;
+                @if (next == null)
+                {
+                    <span>след.</span>
+                }
+                else
+                {
+                    <NavLink href="@nx"><span>след.</span></NavLink>
+                }
+            </div>
+        }
 
-    <SypBlazor.Components.DrawTable Trees="@(new Rec[] { tree })" 
+        <SypBlazor.Components.DrawTable Trees="@(new Rec[] { tree })" 
         onDelete="(id) => Delete((string)id)"
         onCancel="() => StateHasChanged()"
         onOk="() => Build(entityId)"
         th_noms="@th_noms"
         user="@user" />
-    @if ( true || invProps.Length > 0) //TODO: надо разобраться почему нет пустых обратных списков свойств
-    {
-        var allowed = SypBlazor.Data.Theme.Allowed(th_noms);
-        <table style="">
-
-        @foreach (var iProp in invProps)
+        @if ( true || invProps.Length > 0) //TODO: надо разобраться почему нет пустых обратных списков свойств
         {
-            string pred = iProp.Pred;
-            if (!allowed.Contains(pred)) { continue; }            
-            Rec[] inv_items = iProp.Sources.Where(g => g != null)
-                .ToArray();
-            if (user != null || inv_items.Length > 0)
-            {
-                <tr valign="top">
-                    <td>
-                        <span style="color:green;">@(db.ontology.InvLabelOfOnto(pred))</span>
-                    </td>
-                    <td style="">
-                        @if (inv_items.Length > 0 || user != null)
-                        {
-                            if (pred == "http://fogid.net/o/in-collection" 
-                                || pred == "http://fogid.net/o/reflected"
-                                || pred == "http://fogid.net/o/inDocument") // TODO: Можно было бы выделить функцию 
-                            {
-                                string? dir_pred = null;
-                                if (pred == "http://fogid.net/o/in-collection") dir_pred = "http://fogid.net/o/collection-item";
-                                else if (pred == "http://fogid.net/o/reflected") dir_pred = "http://fogid.net/o/in-doc";
-                                    else if (pred == "http://fogid.net/o/inDocument") dir_pred = "http://fogid.net/o/partItem";
-                                if (pred == "http://fogid.net/o/inDocument")
-                                {  // Посортируем части
-                                    Rec[] query = inv_items.OrderBy<Rec, string>(r =>
+            var allowed = SypBlazor.Data.Theme.Allowed(th_noms);
+            <table style="">
+
+                @foreach (var iProp in invProps)
+                {
+                    string pred = iProp.Pred;
+                    if (!allowed.Contains(pred)) { continue; }            
+                    Rec[] inv_items = iProp.Sources.Where(g => g != null)
+                        .ToArray();
+                    if (user != null || inv_items.Length > 0)
+                    {
+                        <tr valign="top">
+                            <td>
+                                <span style="color:green;">@(db.ontology.InvLabelOfOnto(pred))</span>
+                            </td>
+                            <td style="">
+                                @if (inv_items.Length > 0 || user != null)
+                                {
+                                    if (pred == "http://fogid.net/o/in-collection" 
+                                        || pred == "http://fogid.net/o/reflected"
+                                        || pred == "http://fogid.net/o/inDocument") // TODO: Можно было бы выделить функцию 
                                     {
-                                        var pg = r.GetStr("http://fogid.net/o/pageNumbers");
-                                        return pg ?? "";
-                                    }).ToArray();
+                                        string dir_pred = "";
+                                        if (pred == "http://fogid.net/o/in-collection") dir_pred = "http://fogid.net/o/collection-item";
+                                        else if (pred == "http://fogid.net/o/reflected") dir_pred = "http://fogid.net/o/in-doc";
+                                        else if (pred == "http://fogid.net/o/inDocument") dir_pred = "http://fogid.net/o/partItem";
+                                        if (pred == "http://fogid.net/o/inDocument")
+                                        {  // Посортируем части
+                                            Rec[] query = inv_items.OrderBy<Rec, string>(r =>
+                                            {
+                                                var pg = r.GetStr("http://fogid.net/o/pageNumbers");
+                                                if (pg != null) return pg;
+                                                var target = r.GetDirect(dir_pred);
+                                                if (target != null) return target.GetText("http://fogid.net/o/name") ?? "";
+                                                return "";
+                                            }).ToArray();
                                     inv_items = query;                                        
                                 }
                                 else if (pred == "http://fogid.net/o/in-collection")
                                 {
                                     Rec[] query = inv_items.OrderBy<Rec, string>(r =>
                                     {
-                                        var dt = r.GetDirect("http://fogid.net/o/collection-item")?
-                                            .GetStr("http://fogid.net/o/from-date");
-                                        return dt ?? "";
-                                    }).ToArray();
+                                        var dt = r.GetDirect("http://fogid.net/o/collection-item")?.GetStr("http://fogid.net/o/from-date");
+                                        if (dt != null) return dt;
+                                        var target = r.GetDirect(dir_pred);
+                                        if (target != null) return target.GetText("http://fogid.net/o/name") ?? "";
+                                        return "";
+                                            }).ToArray();
                                     inv_items = query;
                                 }
                                 else if (pred == "http://fogid.net/o/reflected")
                                 {
                                     Rec[] query = inv_items.OrderBy<Rec, string>(r =>
                                     {
-                                        var dt = r.GetDirect("http://fogid.net/o/in-doc")?
-                                                    .GetStr("http://fogid.net/o/from-date");
-                                        return dt ?? "";
-                                    }).ToArray();
+                                        var dt = r.GetDirect("http://fogid.net/o/in-doc")?.GetStr("http://fogid.net/o/from-date");
+                                        if (dt != null) return dt;
+                                        var target = r.GetDirect(dir_pred);
+                                        if (target != null) return target.GetText("http://fogid.net/o/name") ?? "";
+                                        return "";
+                                            }).ToArray();
                                     inv_items = query;
                                 }
-                                if (dir_pred != null && user != null)
+                                if (dir_pred != "" && user != null)
                                 {
                                     string tty =
                                         pred == "http://fogid.net/o/in-collection" ?
