@@ -213,122 +213,132 @@
                                         else if (pred == "http://fogid.net/o/inDocument") dir_pred = "http://fogid.net/o/partItem";
                                         if (pred == "http://fogid.net/o/inDocument")
                                         {  // Посортируем части
+                                            Rec[] query = inv_items
+                                            .OrderBy<Rec, string>(r => r.GetStr("http://fogid.net/o/pageNumbers") ?? "яя")
+                                            .ThenBy<Rec, string>(r =>
+                                            {
+                                                var target = r.GetDirect(dir_pred);
+                                                if (target != null) return target.GetText("http://fogid.net/o/name") ?? "";
+                                                return "";
+                                            })
+                                            .ToArray();
+                                            inv_items = query;                                        
+                                        }
+                                        else if (pred == "http://fogid.net/o/in-collection" || pred == "http://fogid.net/o/reflected")
+                                        {
                                             Rec[] query = inv_items.OrderBy<Rec, string>(r =>
                                             {
-                                                var pg = r.GetStr("http://fogid.net/o/pageNumbers");
-                                                if (pg != null) return pg;
+                                                var target = r.GetDirect(dir_pred);
+                                                var dt = target?.GetStr("http://fogid.net/o/from-date");
+                                                if (dt != null) return dt;
+                                                //if (target != null) return target.GetText("http://fogid.net/o/name") ?? "";
+                                                return "яя";
+                                            })
+                                            .ThenBy<Rec, string>(r =>
+                                            {
+                                                var target = r.GetDirect(dir_pred);
+                                                var dt = target?.GetText("http://fogid.net/o/name") ?? "";
+                                                if (dt != null) return dt;
+                                                return "";
+                                            })
+                                            .ToArray();
+                                            inv_items = query;
+                                        }
+
+                                        @*                                      else if (pred == "http://fogid.net/o/reflected")
+                                        {
+                                            Rec[] query = inv_items.OrderBy<Rec, string>(r =>
+                                            {
+                                                var dt = r.GetDirect("http://fogid.net/o/in-doc")?.GetStr("http://fogid.net/o/from-date");
+                                                if (dt != null) return dt;
                                                 var target = r.GetDirect(dir_pred);
                                                 if (target != null) return target.GetText("http://fogid.net/o/name") ?? "";
                                                 return "";
                                             }).ToArray();
-                                    inv_items = query;                                        
-                                }
-                                else if (pred == "http://fogid.net/o/in-collection")
-                                {
-                                    Rec[] query = inv_items.OrderBy<Rec, string>(r =>
-                                    {
-                                        var dt = r.GetDirect("http://fogid.net/o/collection-item")?.GetStr("http://fogid.net/o/from-date");
-                                        if (dt != null) return dt;
-                                        var target = r.GetDirect(dir_pred);
-                                        if (target != null) return target.GetText("http://fogid.net/o/name") ?? "";
-                                        return "";
-                                            }).ToArray();
-                                    inv_items = query;
-                                }
-                                else if (pred == "http://fogid.net/o/reflected")
-                                {
-                                    Rec[] query = inv_items.OrderBy<Rec, string>(r =>
-                                    {
-                                        var dt = r.GetDirect("http://fogid.net/o/in-doc")?.GetStr("http://fogid.net/o/from-date");
-                                        if (dt != null) return dt;
-                                        var target = r.GetDirect(dir_pred);
-                                        if (target != null) return target.GetText("http://fogid.net/o/name") ?? "";
-                                        return "";
-                                            }).ToArray();
-                                    inv_items = query;
-                                }
-                                if (dir_pred != "" && user != null)
-                                {
-                                    string tty =
-                                        pred == "http://fogid.net/o/in-collection" ?
-                                        "http://fogid.net/o/collection-member" :
-                                    (pred == "http://fogid.net/o/reflected" ?
-                                        "http://fogid.net/o/reflection" :
-                                    (pred == "http://fogid.net/o/inDocument" ?
-                                        "http://fogid.net/o/DocumentPart" : ("typeerr 4493"))); //TODO: Нужен корректный выход
+                                            inv_items = query;
+                                        } *@
+                                        if (dir_pred != "" && user != null)
+                                        {
+                                            string tty =
+                                                pred == "http://fogid.net/o/in-collection" ?
+                                                "http://fogid.net/o/collection-member" :
+                                            (pred == "http://fogid.net/o/reflected" ?
+                                                "http://fogid.net/o/reflection" :
+                                            (pred == "http://fogid.net/o/inDocument" ?
+                                                "http://fogid.net/o/DocumentPart" : ("typeerr 4493"))); //TODO: Нужен корректный выход
 
-                                    @if (buff_cnt > 0)
+                                            @if (buff_cnt > 0)
+                                            {
+                                                <div>
+                                                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                    <a href="javascript:void(0)" @onclick="@(e =>AddInverseRelations(tty, pred, dir_pred))">Добавить</a>
+                                                    <span> &nbsp; из буфера</span>
+                                                </div>
+                                            }
+                                        }
+                                        else
+                                        {
+                                        }
+                                        <SypBlazor.Components.Shakhmat entityId="@entityId"
+                                        dir_pred="@dir_pred" inv_items="@inv_items" user="@user" />
+                                    }
+                                    else if (true || iProp.Sources.Length > 0)
                                     {
-                                        <div>
-                                            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                                            <a href="javascript:void(0)" @onclick="@(e =>AddInverseRelations(tty, pred, dir_pred))">Добавить</a>
-                                            <span> &nbsp; из буфера</span>
-                                        </div>
+                                        bool issysobj = false;
+                                        var pre = iProp.Pred;
+                                        //var tty = iProp.Sources[0].Tp;
+                                        string tty = db.ontology.DomainsOfProp(pre).First();
+                                        if (user != null)
+                                        {
+                                            <div>
+                                                <a href="javascript:void(0)" @onclick="@(e =>NewInverseRelation(tty, pre))">нов.</a>
+                                            </div>
+                                        }
+                                        if (db.ontology.AncestorsAndSelf(tty).Contains("http://fogid.net/o/sys-obj"))
+                                        { issysobj = true; }
+                                        if (inv_items.Length > 0)
+                                        {
+                                            <SypBlazor.Components.DrawTable Trees="@(inv_items)" level="1" user="@user"
+                                            inverseProp="@(iProp.Pred)" focusId="@(entityId)"
+                                            th_noms="@th_noms"
+                                            onDelete="(id) => Delete((string)id)"
+                                            onOk="() => Build(entityId)"
+                                            onCancel="() => StateHasChanged()"
+                                            toextendrecord="@toextendrecord"
+                                            issysobj="@issysobj"></SypBlazor.Components.DrawTable>
+                                        }
                                     }
                                 }
                                 else
                                 {
+                                    if (user != null)
+                                    {
+                                        string pre = iProp.Pred;
+                                        string tty = db.ontology.DomainsOfProp(pre).First();
+                                        if (!db.ontology.AncestorsAndSelf(tty).Contains("http://fogid.net/o/sys-obj") &&
+                                            !( pred == "http://fogid.net/o/in-collection"
+                                            || pred == "http://fogid.net/o/reflected"
+                                            || pred == "http://fogid.net/o/inDocument"))
+                                        {
+                                            <div>
+                                                <a href="javascript:void(0)" @onclick="@(e =>NewInverseRelation(tty, pre))">нов.</a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div>
+                                                -
+                                            </div>
+                                        }
+                                    }
                                 }
-                                <SypBlazor.Components.Shakhmat entityId="@entityId"
-                                        dir_pred="@dir_pred" inv_items="@inv_items" user="@user" />
-                            }
-                            else if (true || iProp.Sources.Length > 0)
-                            {
-                                bool issysobj = false;
-                                var pre = iProp.Pred;
-                                //var tty = iProp.Sources[0].Tp;
-                                string tty = db.ontology.DomainsOfProp(pre).First();
-                                if (user != null)
-                                {
-                                    <div>
-                                        <a href="javascript:void(0)" @onclick="@(e =>NewInverseRelation(tty, pre))">нов.</a>
-                                        </div>
-                                }
-                                if (db.ontology.AncestorsAndSelf(tty).Contains("http://fogid.net/o/sys-obj"))
-                                { issysobj = true; }
-                                if (inv_items.Length > 0)
-                                {
-                                    <SypBlazor.Components.DrawTable Trees="@(inv_items)" level="1" user="@user"
-                                        inverseProp="@(iProp.Pred)" focusId="@(entityId)"
-                                        th_noms="@th_noms"
-                                        onDelete="(id) => Delete((string)id)"
-                                        onOk="() => Build(entityId)"
-                                        onCancel="() => StateHasChanged()"
-                                        toextendrecord="@toextendrecord"
-                                        issysobj="@issysobj"></SypBlazor.Components.DrawTable>
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (user != null)
-                            {
-                                string pre = iProp.Pred;
-                                string tty = db.ontology.DomainsOfProp(pre).First();
-                                if (!db.ontology.AncestorsAndSelf(tty).Contains("http://fogid.net/o/sys-obj") &&
-                                    !( pred == "http://fogid.net/o/in-collection"
-                                    || pred == "http://fogid.net/o/reflected"
-                                    || pred == "http://fogid.net/o/inDocument"))
-                                {
-                                    <div>
-                                        <a href="javascript:void(0)" @onclick="@(e =>NewInverseRelation(tty, pre))">нов.</a>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div>
-                                        -
-                                    </div>
-                                }
-                            }
-                        }
-                    </td>
-                </tr>
-            }
+                            </td>
+                        </tr>
+                    }
+                }
+            </table>
         }
-        </table>
-    }
-    @if (toextendrecord != null) toextendrecord = null; // Сомнительное решение, направленное на однократное срабатывание...
+        @if (toextendrecord != null) toextendrecord = null; // Сомнительное решение, направленное на однократное срабатывание...
     }
 }
 else // нет дерева
@@ -392,6 +402,7 @@ else // нет дерева
     // Мы будем создавать Rec-модель
     private Rec? tree = null;
     private string? prev = null, next = null, externalId = null;
+
     private void Build(string? id)
     {
         if (id == null) return;
@@ -441,54 +452,64 @@ else // нет дерева
             {
                 externalId = eid;
                 RRecord? externalRec = db.GetRRecord(externalId, true);
-                //var rxobj = new RYEngine(dba);
-                string[] docset = new string[0];
-                if (externalRec != null && externalRec.Tp == "http://fogid.net/o/document")
-                    docset = externalRec.Props
-                        .Where(p => p is RInverseLink && p.Prop == "http://fogid.net/o/inDocument").Cast<RInverseLink>()
-                        .Select(l =>
+                
+                if (externalRec != null)
+                {
+                    string tp = externalRec.Tp;
+
+                    @*                     Rec shab = Rec.GetUniShablon(tp, 2, null, db.ontology);
+                    Rec tre = Rec.Build(externalRec, shab, db.ontology, idd => db.GetRRecord(idd, false));*@
+
+                    string inv_prop = "";
+                    string inv_rec_class = "";
+                    string dir_prop = "";
+                    if (tp == "http://fogid.net/o/collection" || tp == "http://fogid.net/o/cassette")
+                    {
+                        inv_prop = "http://fogid.net/o/in-collection";
+                        inv_rec_class = "http://fogid.net/o/collection-member";
+                        dir_prop = "http://fogid.net/o/collection-item";
+                    }
+                    else if (db.ontology.DescendantsAndSelf("http://fogid.net/o/document").Contains(tp))
+                    {
+                        inv_prop = "http://fogid.net/o/inDocument";
+                        inv_rec_class = "http://fogid.net/o/DocumentPart";
+                        dir_prop = "http://fogid.net/o/partItem";
+                    }
+                    else if (externalRec.Props.Any(p => p.Prop == "http://fogid.net/o/reflected"))
+                    {
+                        inv_prop = "http://fogid.net/o/reflected";
+                        inv_rec_class = "http://fogid.net/o/reflection";
+                        dir_prop = "http://fogid.net/o/in-doc";
+                    }
+                    Rec sha = new Rec(null, tp,
+                        new Inv(inv_prop,
+                            new Rec(null, inv_rec_class, new Str("http://fogid.net/o/from-date"), 
+                                new Str("http://fogid.net/o/pageNumbers"),
+                                new Dir(dir_prop,
+                                    new Rec(null, null, new Tex("http://fogid.net/o/name"), new Str("http://fogid.net/o/from-date")))))
+                    );
+                    Rec invSet = Rec.Build(externalRec, sha, db.ontology, idd => db.GetRRecord(idd, false));
+
+                    var lasts = invSet.GetInverse(inv_prop)
+                        .Select(r => r.GetDirect(dir_prop))
+                        .Cast<Rec>()
+                        .OrderBy(r1 => r1.GetStr("http://fogid.net/o/from-date") ?? "яя")
+                        .ThenBy(r1 => r1.GetText("http://fogid.net/o/name"))
+                        .ToArray();
+
+                    prev = null;
+                    next = null;
+                    int index = 0;
+                    foreach (var r in lasts)
+                    {
+                        if (r.Id == id)
                         {
-                            //RRecord r = rxobj.GetRRecord(l.Source, false);
-                            RRecord? r = db.GetRRecord(l.Source, false);
-                            return new { r = r, pg = r?.GetField("http://fogid.net/o/pageNumbers") };
-                        })
-                        .OrderBy(rpg => rpg.pg)
-                        .Select(rpg => rpg.r?.GetDirectResource("http://fogid.net/o/partItem"))
-                        .Where(res => res != null)
-                        .Cast<string>()
-                        .ToArray();
-                // Другой вариант
-                else if (externalRec != null &&
-                    (externalRec.Tp == "http://fogid.net/o/collection" ||
-                     externalRec.Tp == "http://fogid.net/o/cassette"))
-                {
-                    docset = externalRec.Props
-                        .Where(p => p is RInverseLink && p.Prop == "http://fogid.net/o/in-collection")
-                        .Cast<RInverseLink>()
-                        .Select(ril => db.GetRRecord(ril.Source, false)?.GetDirectResource("http://fogid.net/o/collection-item"))
-                        .Cast<string>()
-                        .ToArray();
+                            if (index > 0) prev = lasts[index - 1].Id; 
+                            if (index < lasts.Length - 1) next = lasts[index + 1].Id;
+                        }
+                        index++;
+                    }
                 }
-                else if (externalRec != null && (db.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj").Contains(externalRec.Tp)))
-                {
-                    docset = externalRec.Props
-                            .Where(p => p is RInverseLink && p.Prop == "http://fogid.net/o/reflected")
-                            .Cast<RInverseLink>()
-                            .Select(ril => db.GetRRecord(ril.Source, false)?.GetDirectResource("http://fogid.net/o/in-doc"))
-                            .Cast<string>()
-                            .ToArray();
-                }
-                int ind = Array.IndexOf(docset, rrec.Id);
-                if (ind != -1 && ind - 1 >= 0)
-                {
-                    prev = docset[ind - 1];
-                }
-                else prev = null;
-                if (ind != -1 && ind + 1 < docset.Length)
-                {
-                    next = docset[ind + 1];
-                }
-                else next = null;
             }
         }
     }
