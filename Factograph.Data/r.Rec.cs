@@ -11,9 +11,11 @@ namespace Factograph.Data.r
     public class Rec
     {
         public string? Id { get; private set; }
-        public string Tp { get; private set; }
+        public string? Tp { get; private set; }
+        public string Label { get; set; } = string.Empty;
+        public string SortField { get; set; } = string.Empty;
         public Pro[] Props { get; internal set; }
-        public Rec(string? id, string tp, params Pro[] props)
+        public Rec(string? id, string? tp, params Pro[] props)
         {
             this.Id = id;
             this.Tp = tp;
@@ -23,7 +25,8 @@ namespace Factograph.Data.r
         public static Rec Build(RRecord? r, Rec? shablon, IOntology ontology, Func<string, RRecord?> getRecord)
         {
             if (r == null || shablon == null) return new Rec("noname", "notype");
-            Rec result = new(r.Id, r.Tp);
+            Rec result = new(r.Id, r.Tp) { Label = shablon.Label };
+
             // Следуем шаблону. Подсчитаем количество стрелок
             int[] nprops = Enumerable.Repeat<int>(0, shablon.Props.Length)
                 .ToArray();
@@ -67,10 +70,10 @@ namespace Factograph.Data.r
             {
                 //if (nprops[j] == 0) continue;
                 var p = shablon.Props[j];
-                if (p is Str) pros[j] = new Str(p.Pred, null);
-                else if (p is Tex) pros[j] = new Tex(p.Pred, new TextLan[nprops[j]]);
-                else if (p is Dir) pros[j] = new Dir(p.Pred, new Rec[nprops[j]]);
-                else if (p is Inv) pros[j] = new Inv(p.Pred, new Rec[nprops[j]]);
+                if (p is Str) pros[j] = new Str(p.Pred, null) { Label = p.Label };
+                else if (p is Tex) pros[j] = new Tex(p.Pred, new TextLan[nprops[j]]) { Label = p.Label };
+                else if (p is Dir) pros[j] = new Dir(p.Pred, new Rec[nprops[j]]) { Label = p.Label };
+                else if (p is Inv) pros[j] = new Inv(p.Pred, new Rec[nprops[j]]) { Label = p.Label };
                 else new Exception("928439");
             }
             // Сделаем массив индексов (можно было бы использовать nprops)
@@ -506,6 +509,7 @@ namespace Factograph.Data.r
     public abstract class Pro
     {
         public string Pred { get; internal set; } = "";
+        public string Label { get; set; } = string.Empty;
     }
     public class Tex : Pro
     {

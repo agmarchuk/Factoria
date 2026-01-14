@@ -1,5 +1,5 @@
-﻿@page "/"
-@page "/index/{entityId?}/{eid?}"
+﻿@* @page "/" *@
+@page "/index0/{entityId?}/{eid?}"
 @using System.Xml.Linq
 @using Factograph.Data
 @using Factograph.Data.r
@@ -18,8 +18,8 @@
 <div style="width:100%;display:flex;flex-direction:row;">
     <div style="width:100%;">
         <SypBlazor.Components.SearchPanel typs="@typs" user="@user"
-        onNewItem="stss => NewItem(((Tuple<string, string>)stss).Item1, ((Tuple<string, string>)stss).Item2)"
-        onSelected="id => OnSelected((string)id)"  />
+                                          onNewItem="stss => NewItem(((Tuple<string, string>)stss).Item1, ((Tuple<string, string>)stss).Item2)"
+                                          onSelected="id => OnSelected((string)id)" />
     </div>
 
     @if (rrec != null && rrec.Tp == "http://fogid.net/o/person" &&
@@ -33,7 +33,7 @@
 
 @* ========= Тестовая область ========= *@
 <div>
-    @if (user != null) 
+    @if (user != null)
     {
         if (buff_cnt > 0)
         {
@@ -56,7 +56,7 @@
         bool hasdocimage = false;
         var invProps = tree.Props.Where(p => p is Inv).Cast<Inv>().ToArray();
         <div>
-            <span style="color:green;">@(string.IsNullOrEmpty(tree.Label) ? db.ontology.LabelOfOnto(tree.Tp) : tree.Label)</span>
+            <span style="color:green;">@(db.ontology.LabelOfOnto(tree.Tp))</span>
             &nbsp;
             <span>@(tree.Id)</span>
         </div>
@@ -135,7 +135,7 @@
                 {   // Это FOG - он недоступен
                 }
                 else // Все типы документов кроме предыдущих
-                {   
+                {
                     string sr = "docs/GetDoc?u=" + uri;
                     // В конце uri должен быть экстеншн
                     if (ext != "")
@@ -177,13 +177,13 @@
             </div>
         }
 
-        <SypBlazor.Components.DrawTable Trees="@(new Rec[] { tree })" 
-        onDelete="(id) => Delete((string)id)"
-        onCancel="() => StateHasChanged()"
-        onOk="() => Build(entityId)"
-        th_noms="@th_noms"
-        user="@user" />
-        @if ( true || invProps.Length > 0) //TODO: надо разобраться почему нет пустых обратных списков свойств
+        <SypBlazor.Components.DrawTable Trees="@(new Rec[] { tree })"
+                                        onDelete="(id) => Delete((string)id)"
+                                        onCancel="() => StateHasChanged()"
+                                        onOk="() => Build(entityId)"
+                                        th_noms="@th_noms"
+                                        user="@user" />
+        @if (true || invProps.Length > 0) //TODO: надо разобраться почему нет пустых обратных списков свойств
         {
             var allowed = SypBlazor.Data.Theme.Allowed(th_noms);
             <table style="">
@@ -191,101 +191,26 @@
                 @foreach (var iProp in invProps)
                 {
                     string pred = iProp.Pred;
-                    if (!allowed.Contains(pred)) { continue; }            
+                    if (!allowed.Contains(pred)) { continue; }
                     Rec[] inv_items = iProp.Sources.Where(g => g != null)
-                        .ToArray();
-                    // Отсортируем в зависимости от предиката
-                    if (inv_items.Length > 0)
-                    {
-                        if (pred == "http://fogid.net/o/has-title")
-                        { // первичный ключ - поле начала
-                            inv_items = inv_items
-                                .OrderBy<Rec, string>(r => r.GetStr("http://fogid.net/o/from-date") ?? "яя")
-                                .ToArray();
-                        }
-                        else if (pred == "http://fogid.net/o/inDocument")
-                        { // первичный ключ - поле страниц, вторичный ключ - имя цели
-                            inv_items = inv_items
-                            .OrderBy<Rec, string>(r => r.GetStr("http://fogid.net/o/pageNumbers") ?? "яя")
-                            .ThenBy<Rec, string>(r =>
-                            {
-                                var target = r.GetDirect("http://fogid.net/o/partItem");
-                                if (target != null) return target.GetText("http://fogid.net/o/name") ?? "";
-                                return "";
-                            }).ToArray();
-                        }
-                        else if (pred == "http://fogid.net/o/in-collection")
-                        {
-                            inv_items = inv_items.OrderBy<Rec, string>(r =>
-                            {
-                                var target = r.GetDirect("http://fogid.net/o/collection-item");
-                                var dt = target?.GetStr("http://fogid.net/o/from-date");
-                                if (dt != null) return dt;
-                                //if (target != null) return target.GetText("http://fogid.net/o/name") ?? "";
-                                return "яя";
-                            })
-                            .ThenBy<Rec, string>(r =>
-                            {
-                                var target = r.GetDirect("http://fogid.net/o/collection-item");
-                                var dt = target?.GetText("http://fogid.net/o/name") ?? "";
-                                if (dt != null) return dt;
-                                return "";
-                            }).ToArray();
-                        }
-                        else if (pred == "http://fogid.net/o/reflected")
-                        {
-                            inv_items = inv_items.OrderBy<Rec, string>(r =>
-                            {
-                                var target = r.GetDirect("http://fogid.net/o/in-doc");
-                                var dt = target?.GetStr("http://fogid.net/o/from-date");
-                                if (dt != null) return dt;
-                                return "яя";
-                            })
-                            .ThenBy<Rec, string>(r =>
-                            {
-                                var target = r.GetDirect("http://fogid.net/o/in-doc");
-                                var dt = target?.GetText("http://fogid.net/o/name") ?? "";
-                                if (dt != null) return dt;
-                                return "";
-                            }).ToArray();
-                        }
-                        else if (pred == "http://fogid.net/o/")
-                        {
-
-                        }
-                    }
-                    // Конец сортировки
+                    .ToArray();
                     if (user != null || inv_items.Length > 0)
                     {
                         <tr valign="top">
                             <td>
-                                <span style="color:green;">@(string.IsNullOrEmpty(iProp.Label) ? db.ontology.InvLabelOfOnto(pred) : iProp.Label)</span>
-                                @if (pred == "http://fogid.net/o/in-collection"
-                         || pred == "http://fogid.net/o/reflected"
-                         || pred == "http://fogid.net/o/inDocument")
-                                {
-                                    if (useshakhmat)
-                                    {
-                                        <input type="checkbox" @onchange="tChanged" checked="false" />
-                                    }
-                                    else
-                                    {
-                                        <input type="checkbox" @onchange="tChanged" />
-                                    }
-                                }
+                                <span style="color:green;">@(db.ontology.InvLabelOfOnto(pred))</span>
                             </td>
                             <td style="">
                                 @if (inv_items.Length > 0 || user != null)
                                 {
-                                    if (useshakhmat && (pred == "http://fogid.net/o/in-collection" 
-                                        || pred == "http://fogid.net/o/reflected"
-                                        || pred == "http://fogid.net/o/inDocument")) // TODO: Можно было бы выделить функцию 
+                                    if (pred == "http://fogid.net/o/in-collection"
+                                    || pred == "http://fogid.net/o/reflected"
+                                    || pred == "http://fogid.net/o/inDocument") // TODO: Можно было бы выделить функцию
                                     {
                                         string dir_pred = "";
                                         if (pred == "http://fogid.net/o/in-collection") dir_pred = "http://fogid.net/o/collection-item";
                                         else if (pred == "http://fogid.net/o/reflected") dir_pred = "http://fogid.net/o/in-doc";
                                         else if (pred == "http://fogid.net/o/inDocument") dir_pred = "http://fogid.net/o/partItem";
-
                                         if (pred == "http://fogid.net/o/inDocument")
                                         {  // Посортируем части
                                             Rec[] query = inv_items
@@ -297,7 +222,7 @@
                                                 return "";
                                             })
                                             .ToArray();
-                                            inv_items = query;                                        
+                                            inv_items = query;
                                         }
                                         else if (pred == "http://fogid.net/o/in-collection" || pred == "http://fogid.net/o/reflected")
                                         {
@@ -320,15 +245,27 @@
                                             inv_items = query;
                                         }
 
+                                        @*                                      else if (pred == "http://fogid.net/o/reflected")
+                                        {
+                                            Rec[] query = inv_items.OrderBy<Rec, string>(r =>
+                                            {
+                                                var dt = r.GetDirect("http://fogid.net/o/in-doc")?.GetStr("http://fogid.net/o/from-date");
+                                                if (dt != null) return dt;
+                                                var target = r.GetDirect(dir_pred);
+                                                if (target != null) return target.GetText("http://fogid.net/o/name") ?? "";
+                                                return "";
+                                            }).ToArray();
+                                            inv_items = query;
+                                        } *@
                                         if (dir_pred != "" && user != null)
                                         {
                                             string tty =
-                                                pred == "http://fogid.net/o/in-collection" ?
-                                                "http://fogid.net/o/collection-member" :
+                                            pred == "http://fogid.net/o/in-collection" ?
+                                            "http://fogid.net/o/collection-member" :
                                             (pred == "http://fogid.net/o/reflected" ?
-                                                "http://fogid.net/o/reflection" :
+                                            "http://fogid.net/o/reflection" :
                                             (pred == "http://fogid.net/o/inDocument" ?
-                                                "http://fogid.net/o/DocumentPart" : ("typeerr 4493"))); //TODO: Нужен корректный выход
+                                            "http://fogid.net/o/DocumentPart" : ("typeerr 4493"))); //TODO: Нужен корректный выход
 
                                             @if (buff_cnt > 0)
                                             {
@@ -343,7 +280,7 @@
                                         {
                                         }
                                         <SypBlazor.Components.Shakhmat entityId="@entityId"
-                                        dir_pred="@dir_pred" inv_items="@inv_items" user="@user" />
+                                                                       dir_pred="@dir_pred" inv_items="@inv_items" user="@user" />
                                     }
                                     else if (true || iProp.Sources.Length > 0)
                                     {
@@ -362,13 +299,13 @@
                                         if (inv_items.Length > 0)
                                         {
                                             <SypBlazor.Components.DrawTable Trees="@(inv_items)" level="1" user="@user"
-                                            inverseProp="@(iProp.Pred)" focusId="@(entityId)"
-                                            th_noms="@th_noms"
-                                            onDelete="(id) => Delete((string)id)"
-                                            onOk="() => Build(entityId)"
-                                            onCancel="() => StateHasChanged()"
-                                            toextendrecord="@toextendrecord"
-                                            issysobj="@issysobj"></SypBlazor.Components.DrawTable>
+                                                                            inverseProp="@(iProp.Pred)" focusId="@(entityId)"
+                                                                            th_noms="@th_noms"
+                                                                            onDelete="(id) => Delete((string)id)"
+                                                                            onOk="() => Build(entityId)"
+                                                                            onCancel="() => StateHasChanged()"
+                                                                            toextendrecord="@toextendrecord"
+                                                                            issysobj="@issysobj"></SypBlazor.Components.DrawTable>
                                         }
                                     }
                                 }
@@ -379,9 +316,9 @@
                                         string pre = iProp.Pred;
                                         string tty = db.ontology.DomainsOfProp(pre).First();
                                         if (!db.ontology.AncestorsAndSelf(tty).Contains("http://fogid.net/o/sys-obj") &&
-                                            !( pred == "http://fogid.net/o/in-collection"
-                                            || pred == "http://fogid.net/o/reflected"
-                                            || pred == "http://fogid.net/o/inDocument"))
+                                        !(pred == "http://fogid.net/o/in-collection"
+                                        || pred == "http://fogid.net/o/reflected"
+                                        || pred == "http://fogid.net/o/inDocument"))
                                         {
                                             <div>
                                                 <a href="javascript:void(0)" @onclick="@(e =>NewInverseRelation(tty, pre))">нов.</a>
@@ -406,6 +343,19 @@
 }
 else // нет дерева
 {
+    @* <h3>Варианты входа</h3>
+    <ul>
+        <li><a href="index/start_page">Стартовая страница</a> с набором фондов. Далее двигаться по ссылкам</li>
+        <li>Набрать поисковый запрос в формате начало ФИО или начало названия, выбрать из вариантов, далее по ссылкам</li>
+        <li><a href="index/cassetterootcollection">Кассеты (первичные материалы)</a></li>
+        <li>Найти персону и посмотреть в режиме "семья" или в режиме "семейное дерево"</li>
+    </ul>
+    <h3>Варианты участия в проекте</h3>
+    <ul>
+        <li>Написать письмо модератору <a href="mailto:mag@iis.nsk.su">Марчуку Александру Гурьевичу</a>. Замечания и предложения приветствуются.</li>
+        <li>Прислать модератору документы и информацию, соответствующие теме архива куста семей и персон, близких Гурию Ивановичу и Ольге Николаевне Марчук</li>
+        <li>Пройти небольшое обучение и получить полномочия редактирования информации архива</li>
+    </ul> *@
 }
 <hr />
 @if (user != null)
@@ -421,19 +371,11 @@ else // нет дерева
     [Parameter] // Внешная запись
     public string? eid { get; set; }
 
-
-    private void tChanged()
-    {
-        useshakhmat = !useshakhmat;
-        //look = "changed " + t;
-    }
-
     private RRecord? rrec;
     private string[] typs = new string[0];
 
     private string? toextendrecord = null; // Я забыл для чего это...
 
-    private bool useshakhmat = true;
 
     // группа параметров состояния
     struct AppState
@@ -461,24 +403,6 @@ else // нет дерева
     private Rec? tree = null;
     private string? prev = null, next = null, externalId = null;
 
-    private Pro InvReflected(string label) =>    
-        new Inv("http://fogid.net/o/reflected",
-                        new Rec(null, "http://fogid.net/o/reflection",
-                            new Dir("http://fogid.net/o/in-doc",
-                                new Rec(null, null,
-                                    new Tex("http://fogid.net/o/name"),
-                                    new Str("http://fogid.net/o/from-date")))))
-            { Label = label };
-    private Pro InvIndoc(string label) =>
-        new Inv("http://fogid.net/o/in-doc",
-                        new Rec(null, "http://fogid.net/o/reflection",
-                            new Dir("http://fogid.net/o/reflected",
-                                new Rec(null, null,
-                                    new Tex("http://fogid.net/o/name"),
-                                    new Str("http://fogid.net/o/from-date")))))
-            { Label = label };
-
-
     private void Build(string? id)
     {
         if (id == null) return;
@@ -487,158 +411,7 @@ else // нет дерева
         if (rrec != null)
         {
             Rec shablon;
-            if (rrec.Tp == "http://fogid.net/o/person")
-            {
-                shablon = new Rec(null, rrec.Tp,
-                    new Tex("http://fogid.net/o/name") { Label = "ФИО" },
-                    new Str("http://fogid.net/o/from-date") { Label = "дата рожд." },
-                    new Str("http://fogid.net/o/to-date") { Label = "дата смерти" },
-                    new Str("http://fogid.net/o/sex") { Label = "пол" },
-                    new Tex("http://fogid.net/o/description") { Label = "описание" },
-                    new Inv("http://fogid.net/o/has-title",
-                        new Rec(null, "http://fogid.net/o/titled",
-                            new Tex("http://fogid.net/o/degree"),
-                            new Str("http://fogid.net/o/from-date") { Label="присуждение" }
-                            )) { Label = "Степень" },
-                    new Inv("http://fogid.net/o/participant",
-                        new Rec(null, "http://fogid.net/o/participation",
-                            new Dir("http://fogid.net/o/in-org",
-                                new Rec(null, "http://fogid.net/o/org-sys",
-                                    new Tex("http://fogid.net/o/name")))) {SortField="http://fogid.net/o/from-date"}) 
-                                    { Label = "Участник"},
-                    InvReflected("Отражен"),
-                    new Inv("http://fogid.net/o/author",
-                        new Rec(null, "http://fogid.net/o/authority",
-                            new Str("http://fogid.net/o/authority-specificator"),
-                            new Dir("http://fogid.net/o/adoc",
-                                new Rec(null, null,
-                                    new Str("http://fogid.net/o/from-date"),
-                                    new Tex("http://fogid.net/o/name"))))
-                            { SortField = "http://fogid.net/o/from-date" })
-                        { Label = "Автор/адресат документа" },
-                    new Inv("http://fogid.net/o/something",
-                        new Rec(null, "http://fogid.net/o/location",
-                            new Dir("http://fogid.net/o/location-place",
-                                new Rec(null, null,
-                                    new Tex("http://fogid.net/o/name")
-                                    )),
-                            new Str("http://fogid.net/o/from-date"),
-                            new Str("http://fogid.net/o/to-date"),
-                            new Tex("http://fogid.net/o/location-category"),
-                            new Str("http://fogid.net/o/location-classification"))
-                            { SortField = "http://fogid.net/o/from-date" })
-                        { Label = "Геоинформация" }
-
-
-                    )
-                { Label = "Персона" };
-            }
-            else if ( //rrec.Tp == "http://fogid.net/o/document"
-            db.ontology.DescendantsAndSelf("http://fogid.net/o/document").Contains(rrec.Tp))
-            {
-                string tp_name = "Документ";
-                if (rrec.Tp == "http://fogid.net/o/photo-doc") tp_name = "Фото-документ";
-                else if (rrec.Tp == "http://fogid.net/o/photo-doc") tp_name = "Видео-документ";
-                else if (rrec.Tp == "http://fogid.net/o/audio-doc") tp_name = "Аудио-документ";
-                shablon = new Rec(null, rrec.Tp,
-                    new Tex("http://fogid.net/o/name") { Label = "название документа" },
-                    new Str("http://fogid.net/o/from-date") { Label = "дата созд." },
-                    new Tex("http://fogid.net/o/description") { Label = "описание" },
-                    new Tex("http://fogid.net/o/doc-content") { Label = "текст документа" },
-                    new Str("http://fogid.net/o/uri") { Label = "" },
-                    new Inv("http://fogid.net/o/inDocument",
-                        new Rec(null, "http://fogid.net/o/DocumentPart",
-                            new Str("http://fogid.net/o/pageNumbers"),
-                            new Dir("http://fogid.net/o/partItem",
-                                new Rec(null, null,
-                                    new Tex("http://fogid.net/o/name"),
-                                    new Str("http://fogid.net/o/from-date"))))
-                            { SortField = "http://fogid.net/o/from-date" })
-                        { Label = "Разделы/страницы" },
-                    new Inv("http://fogid.net/o/archive-item",
-                        new Rec(null, "http://fogid.net/o/archive-member",
-                            new Dir("http://fogid.net/o/info-source",
-                                new Rec(null, null,
-                                    new Tex("http://fogid.net/o/name"))),
-                            new Str("http://fogid.net/o/from-date"))
-                            { SortField = "http://fogid.net/o/from-date" })
-                        { Label = "Источник информации" },
-                    InvIndoc("Отражены персонажи"),
-                    new Inv("http://fogid.net/o/adoc",
-                        new Rec(null, "http://fogid.net/o/authority",
-                            new Str("http://fogid.net/o/authority-specificator"),
-                            new Dir("http://fogid.net/o/author",
-                                new Rec(null, null,
-                                    new Str("http://fogid.net/o/from-date"),
-                                    new Tex("http://fogid.net/o/name"))))
-                            { SortField = "http://fogid.net/o/from-date" })
-                        { Label = "Авторы/адресаты" },
-                    new Inv("http://fogid.net/o/something",
-                        new Rec(null, "http://fogid.net/o/location",
-                            new Dir("http://fogid.net/o/location-place",
-                                new Rec(null, null,
-                                    new Tex("http://fogid.net/o/name")
-                                    )),
-                            new Str("http://fogid.net/o/from-date"),
-                            new Str("http://fogid.net/o/to-date"),
-                            new Tex("http://fogid.net/o/location-category"),
-                            new Str("http://fogid.net/o/location-classification"))
-                            { SortField = "http://fogid.net/o/from-date" })
-                        { Label = "Геоинформация" },
-                    new Inv("http://fogid.net/o/collection-item",
-                        new Rec(null, "http://fogid.net/o/collection-member",
-                            new Dir("http://fogid.net/o/in-collection",
-                                new Rec(null, null,
-                                    new Tex("http://fogid.net/o/name"))))
-                            { SortField = "http://fogid.net/o/from-date" })
-                        { Label = "Элемент коллекции" })
-                    { Label = tp_name };
-            }
-            else if (rrec.Tp == "http://fogid.net/o/org-sys")
-            {
-                shablon = new Rec(null, rrec.Tp,
-                    new Tex("http://fogid.net/o/name") { Label = "название" },
-                    new Str("http://fogid.net/o/from-date") { Label = "нач. дата" },
-                    new Str("http://fogid.net/o/to-date") { Label = "кон. дата" },
-                    new Tex("http://fogid.net/o/description") { Label = "описание" },
-                    new Str("http://fogid.net/o/org-category") { Label = "категория" },
-                    new Tex("http://fogid.net/o/org-classification") { Label = "классификатор" },
-                    new Inv("http://fogid.net/o/has-title",
-                        new Rec(null, "http://fogid.net/o/titled",
-                            new Tex("http://fogid.net/o/degree"),
-                            new Str("http://fogid.net/o/from-date") { Label = "присуждение" }
-                            ))
-                        { Label = "Степень" },
-                    new Inv("http://fogid.net/o/in-org",
-                        new Rec(null, "http://fogid.net/o/participation",
-                            new Str("http://fogid.net/o/from-date"),
-                            new Str("http://fogid.net/o/to-date"),
-                            new Str("http://fogid.net/o/role-classification"),
-                            new Tex("http://fogid.net/o/role"),
-                            new Dir("http://fogid.net/o/participant",
-                                new Rec(null, "http://fogid.net/o/org-sys",
-                                    new Tex("http://fogid.net/o/name"))))
-                            { SortField = "http://fogid.net/o/from-date" })
-                        { Label = "Участники" },
-                    InvReflected("Отражен"),
-                    new Inv("http://fogid.net/o/something",
-                        new Rec(null, "http://fogid.net/o/location",
-                            new Dir("http://fogid.net/o/location-place",
-                                new Rec(null, null,
-                                    new Tex("http://fogid.net/o/name")
-                                    )),
-                            new Str("http://fogid.net/o/from-date"),
-                            new Str("http://fogid.net/o/to-date"),
-                            new Tex("http://fogid.net/o/location-category"),
-                            new Str("http://fogid.net/o/location-classification"))
-                            { SortField = "http://fogid.net/o/from-date" })
-                        { Label = "Геоинформация" }
-
-
-                    )
-                    { Label = "Организация" };
-            }
-            else if (db.ontology.DescendantsAndSelf("http://fogid.net/o/collection").Contains(rrec.Tp))
+            if (false && db.ontology.DescendantsAndSelf("http://fogid.net/o/collection").Contains(rrec.Tp))
             {
                 shablon = new Rec(null, rrec.Tp,
                     new Tex("http://fogid.net/o/name"),
@@ -647,7 +420,6 @@ else // нет дерева
                             new Dir("http://fogid.net/o/collection-item",
                                 new Rec(null, null,
                                     new Tex("http://fogid.net/o/name"),
-                                    new Str("http://fogid.net/o/from-date"),
                                     new Str("http://fogid.net/o/uri"))
                                     ))),
                     new Inv("http://fogid.net/o/collection-item",
@@ -659,34 +431,15 @@ else // нет дерева
 
                     );
             }
-            else if (db.ontology.DescendantsAndSelf("http://fogid.net/o/geosys").Contains(rrec.Tp))
-            {
-                shablon = new Rec(null, rrec.Tp,
-                    new Tex("http://fogid.net/o/name"),
-                    new Str("http://fogid.net/o/geosys-category"),
-                    new Inv("http://fogid.net/o/location-place",
-                        new Rec(null, "http://fogid.net/o/location",
-                            new Dir("http://fogid.net/o/something",
-                                new Rec(null, null,
-                                    new Tex("http://fogid.net/o/name"),
-                                    new Str("http://fogid.net/o/uri"))
-                                    ),
-                            new Str("http://fogid.net/o/from-date"),
-                            new Str("http://fogid.net/o/to-date"),
-                            new Tex("http://fogid.net/o/location-category"),
-                            new Str("http://fogid.net/o/location-classification")))
-                    );
-            }
             else if (false && rrec.Tp == "http://fogid.net/o/photo-doc")
             {
                 shablon = new Rec(null, rrec.Tp,
-                    new Tex("http://fogid.net/o/name") { Label = "" },
-                    new Str("http://fogid.net/o/from-date") { Label = "" },
-                    new Tex("http://fogid.net/o/description") { Label = "" },
+                    new Tex("http://fogid.net/o/name"),
+                    new Str("http://fogid.net/o/from-date"),
+                    new Tex("http://fogid.net/o/description"),
                     new Str("http://fogid.net/o/uri"),
                     inv_parts["http://fogid.net/o/collection-item"]
-                    )
-                { Label = "Фотография" };
+                    );
             }
             else
             {
@@ -703,6 +456,9 @@ else // нет дерева
                 if (externalRec != null)
                 {
                     string tp = externalRec.Tp;
+
+                    @*                     Rec shab = Rec.GetUniShablon(tp, 2, null, db.ontology);
+                    Rec tre = Rec.Build(externalRec, shab, db.ontology, idd => db.GetRRecord(idd, false));*@
 
                     string inv_prop = "";
                     string inv_rec_class = "";
@@ -727,7 +483,7 @@ else // нет дерева
                     }
                     Rec sha = new Rec(null, tp,
                         new Inv(inv_prop,
-                            new Rec(null, inv_rec_class, new Str("http://fogid.net/o/from-date"), 
+                            new Rec(null, inv_rec_class, new Str("http://fogid.net/o/from-date"),
                                 new Str("http://fogid.net/o/pageNumbers"),
                                 new Dir(dir_prop,
                                     new Rec(null, null, new Tex("http://fogid.net/o/name"), new Str("http://fogid.net/o/from-date")))))
@@ -748,7 +504,7 @@ else // нет дерева
                     {
                         if (r.Id == id)
                         {
-                            if (index > 0) prev = lasts[index - 1].Id; 
+                            if (index > 0) prev = lasts[index - 1].Id;
                             if (index < lasts.Length - 1) next = lasts[index + 1].Id;
                         }
                         index++;
@@ -765,7 +521,7 @@ else // нет дерева
     {
         Func<string, XName> toXName = (string sname) =>
         {
-            int pos = sname.LastIndexOfAny(new char[] { '/', '#' } );
+            int pos = sname.LastIndexOfAny(new char[] { '/', '#' });
             return XName.Get(sname.Substring(pos + 1), sname.Substring(0, pos + 1));
         };
         if (rec != null && rec.Id != null && user != null)
@@ -792,14 +548,13 @@ else // нет дерева
                     else if (p is Dir)
                     {
                         Dir d = (Dir)p;
-                        return d.Resources.Select(r => new XElement(toXName(p.Pred), 
+                        return d.Resources.Select(r => new XElement(toXName(p.Pred),
                             new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", r.Id ?? "noId")));
                     }
                     else return new XElement[0];
                 }).Where(x => x != null),
                 null);
-            //db.PutItem(xrec);
-            db.UpdateItem(xrec);
+            db.PutItem(xrec);
         }
     }
 
@@ -814,7 +569,6 @@ else // нет дерева
         {
             //isConnected = true;
             await LoadStateAsync();
-
             StateHasChanged();
         }
     }
@@ -824,7 +578,7 @@ else // нет дерева
     private async Task LoadStateAsync()
     {
         th_noms = new int[] { 0 }; // дефолт - одна нулевая тема
-        try 
+        try
         {
             var result = await browserStorage.GetAsync<string>("setSbor"); // номера без 0
             if (result.Success && !string.IsNullOrEmpty(result.Value))
@@ -833,7 +587,6 @@ else // нет дерева
                     .Where(v => !string.IsNullOrEmpty(v)).Select(v => Int32.Parse(v)),
                     0).ToArray();
             }
-
         }
         catch (Exception) { }
     }
@@ -842,7 +595,7 @@ else // нет дерева
     {
         var st = await authStateProvider.GetAuthenticationStateAsync();
         user = st.User.Identity?.Name;
-        if (user != null) 
+        if (user != null)
         {
             buff_id = "buffer_" + user;
             var buff = db.GetRRecord(buff_id, true);
@@ -871,11 +624,6 @@ else // нет дерева
                 StateHasChanged();
             }
         }
-        if (configuration.GetSection("App:useshakhmat")?.Value == "false" &&
-            configuration.GetSection("App:start_page")?.Value != entityId
-            ) useshakhmat = false;
-        else useshakhmat = true;
-
     }
     //protected override async Task OnAfterRenderAsync(bool firstRender)
     //{
@@ -1055,7 +803,7 @@ else // нет дерева
                     new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", dir))
                 );
             // добавим страницу, если надо
-            if (tty == "http://fogid.net/o/DocumentPart") 
+            if (tty == "http://fogid.net/o/DocumentPart")
                 xitem.Add(new XElement("{http://fogid.net/o/}pageNumbers", "" + (pn_initial + ind)));
             XElement x = db.PutItem(xitem);
         }
