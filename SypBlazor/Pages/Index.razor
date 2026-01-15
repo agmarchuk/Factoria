@@ -543,6 +543,7 @@ else // нет дерева
                 shablon = new Rec(null, rrec.Tp,
                     new Tex("http://fogid.net/o/name") { Label = "название документа" },
                     new Str("http://fogid.net/o/from-date") { Label = "дата созд." },
+                    new Str("http://fogid.net/o/to-date") { Label = "дата оконч." },
                     new Tex("http://fogid.net/o/description") { Label = "описание" },
                     new Tex("http://fogid.net/o/doc-content") { Label = "текст документа" },
                     new Str("http://fogid.net/o/uri") { Label = "" },
@@ -1055,7 +1056,8 @@ else // нет дерева
                     new XAttribute("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource", dir))
                 );
             // добавим страницу, если надо
-            if (tty == "http://fogid.net/o/DocumentPart") 
+            //TODO: сейчас я блокирую добавление номеров страниц, но может быть вернусь к тому вопросу.
+            if (false && tty == "http://fogid.net/o/DocumentPart") 
                 xitem.Add(new XElement("{http://fogid.net/o/}pageNumbers", "" + (pn_initial + ind)));
             XElement x = db.PutItem(xitem);
         }
