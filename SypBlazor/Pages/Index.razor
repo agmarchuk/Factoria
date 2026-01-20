@@ -261,8 +261,8 @@
                             <td>
                                 <span style="color:green;">@(string.IsNullOrEmpty(iProp.Label) ? db.ontology.InvLabelOfOnto(pred) : iProp.Label)</span>
                                 @if (pred == "http://fogid.net/o/in-collection"
-                         || pred == "http://fogid.net/o/reflected"
-                         || pred == "http://fogid.net/o/inDocument")
+                      || pred == "http://fogid.net/o/reflected"
+                      || pred == "http://fogid.net/o/inDocument")
                                 {
                                     if (useshakhmat)
                                     {
@@ -478,6 +478,213 @@ else // нет дерева
                                     new Str("http://fogid.net/o/from-date")))))
             { Label = label };
 
+    private Rec CreateShablon(string tp)
+    {
+        Rec shablon;
+        if (tp == "http://fogid.net/o/person")
+        {
+            shablon = new Rec(null, tp,
+                new Tex("http://fogid.net/o/name") { Label = "ФИО" },
+                new Str("http://fogid.net/o/from-date") { Label = "дата рожд." },
+                new Str("http://fogid.net/o/to-date") { Label = "дата смерти" },
+                new Str("http://fogid.net/o/sex") { Label = "пол" },
+                new Tex("http://fogid.net/o/description") { Label = "описание" },
+                new Inv("http://fogid.net/o/has-title",
+                    new Rec(null, "http://fogid.net/o/titled",
+                        new Tex("http://fogid.net/o/degree"),
+                        new Str("http://fogid.net/o/from-date") { Label = "присуждение" }
+                        ))
+                    { Label = "Степень" },
+                new Inv("http://fogid.net/o/participant",
+                    new Rec(null, "http://fogid.net/o/participation",
+                        new Dir("http://fogid.net/o/in-org",
+                            new Rec(null, "http://fogid.net/o/org-sys",
+                                new Tex("http://fogid.net/o/name"))))
+                        { SortField = "http://fogid.net/o/from-date" })
+                    { Label = "Участник" },
+                InvReflected("Отражен"),
+                new Inv("http://fogid.net/o/author",
+                    new Rec(null, "http://fogid.net/o/authority",
+                        new Str("http://fogid.net/o/authority-specificator"),
+                        new Dir("http://fogid.net/o/adoc",
+                            new Rec(null, null,
+                                new Str("http://fogid.net/o/from-date"),
+                                new Tex("http://fogid.net/o/name"))))
+                        { SortField = "http://fogid.net/o/from-date" })
+                    { Label = "Автор/адресат документа" },
+                new Inv("http://fogid.net/o/something",
+                    new Rec(null, "http://fogid.net/o/location",
+                        new Dir("http://fogid.net/o/location-place",
+                            new Rec(null, null,
+                                new Tex("http://fogid.net/o/name")
+                                )),
+                        new Str("http://fogid.net/o/from-date"),
+                        new Str("http://fogid.net/o/to-date"),
+                        new Tex("http://fogid.net/o/location-category"),
+                        new Str("http://fogid.net/o/location-classification"))
+                        { SortField = "http://fogid.net/o/from-date" })
+                    { Label = "Геоинформация" }
+
+
+                )
+                { Label = "Персона" };
+        }
+        else if ( //tp == "http://fogid.net/o/document"
+        db.ontology.DescendantsAndSelf("http://fogid.net/o/document").Contains(tp))
+        {
+            string tp_name = "Документ";
+            if (tp == "http://fogid.net/o/photo-doc") tp_name = "Фото-документ";
+            else if (tp == "http://fogid.net/o/photo-doc") tp_name = "Видео-документ";
+            else if (tp == "http://fogid.net/o/audio-doc") tp_name = "Аудио-документ";
+            shablon = new Rec(null, tp,
+                new Tex("http://fogid.net/o/name") { Label = "название документа" },
+                new Str("http://fogid.net/o/from-date") { Label = "дата созд." },
+                new Str("http://fogid.net/o/to-date") { Label = "дата оконч." },
+                new Tex("http://fogid.net/o/description") { Label = "описание" },
+                new Tex("http://fogid.net/o/doc-content") { Label = "текст документа" },
+                new Str("http://fogid.net/o/uri") { Label = "" },
+                new Inv("http://fogid.net/o/inDocument",
+                    new Rec(null, "http://fogid.net/o/DocumentPart",
+                        new Str("http://fogid.net/o/pageNumbers"),
+                        new Dir("http://fogid.net/o/partItem",
+                            new Rec(null, null,
+                                new Tex("http://fogid.net/o/name"),
+                                new Str("http://fogid.net/o/from-date"))))
+                        { SortField = "http://fogid.net/o/from-date" })
+                    { Label = "Разделы/страницы" },
+                new Inv("http://fogid.net/o/archive-item",
+                    new Rec(null, "http://fogid.net/o/archive-member",
+                        new Dir("http://fogid.net/o/info-source",
+                            new Rec(null, null,
+                                new Tex("http://fogid.net/o/name"))),
+                        new Str("http://fogid.net/o/from-date"))
+                        { SortField = "http://fogid.net/o/from-date" })
+                    { Label = "Источник информации" },
+                InvIndoc("Отражены персонажи"),
+                new Inv("http://fogid.net/o/adoc",
+                    new Rec(null, "http://fogid.net/o/authority",
+                        new Str("http://fogid.net/o/authority-specificator"),
+                        new Dir("http://fogid.net/o/author",
+                            new Rec(null, null,
+                                new Str("http://fogid.net/o/from-date"),
+                                new Tex("http://fogid.net/o/name"))))
+                        { SortField = "http://fogid.net/o/from-date" })
+                    { Label = "Авторы/адресаты" },
+                new Inv("http://fogid.net/o/something",
+                    new Rec(null, "http://fogid.net/o/location",
+                        new Dir("http://fogid.net/o/location-place",
+                            new Rec(null, null,
+                                new Tex("http://fogid.net/o/name")
+                                )),
+                        new Str("http://fogid.net/o/from-date"),
+                        new Str("http://fogid.net/o/to-date"),
+                        new Tex("http://fogid.net/o/location-category"),
+                        new Str("http://fogid.net/o/location-classification"))
+                        { SortField = "http://fogid.net/o/from-date" })
+                    { Label = "Геоинформация" },
+                new Inv("http://fogid.net/o/partItem",
+                    new Rec(null, "http://fogid.net/o/DocumentPart",
+                        new Str("http://fogid.net/o/pageNumbers"),
+                        new Dir("http://fogid.net/o/inDocument",
+                            new Rec(null, null,
+                                new Tex("http://fogid.net/o/name"),
+                                new Str("http://fogid.net/o/from-date"))))
+                        { SortField = "http://fogid.net/o/from-date" })
+                    { Label = "Часть документа" },
+                new Inv("http://fogid.net/o/collection-item",
+                    new Rec(null, "http://fogid.net/o/collection-member",
+                        new Dir("http://fogid.net/o/in-collection",
+                            new Rec(null, null,
+                                new Tex("http://fogid.net/o/name"))))
+                        { SortField = "http://fogid.net/o/from-date" })
+                    { Label = "Элемент коллекции" })
+                { Label = tp_name };
+        }
+        else if (tp == "http://fogid.net/o/org-sys")
+        {
+            shablon = new Rec(null, tp,
+                new Tex("http://fogid.net/o/name") { Label = "название" },
+                new Str("http://fogid.net/o/from-date") { Label = "нач. дата" },
+                new Str("http://fogid.net/o/to-date") { Label = "кон. дата" },
+                new Tex("http://fogid.net/o/description") { Label = "описание" },
+                new Str("http://fogid.net/o/org-category") { Label = "категория" },
+                new Tex("http://fogid.net/o/org-classification") { Label = "классификатор" },
+                new Inv("http://fogid.net/o/has-title",
+                    new Rec(null, "http://fogid.net/o/titled",
+                        new Tex("http://fogid.net/o/degree"),
+                        new Str("http://fogid.net/o/from-date") { Label = "присуждение" }
+                        ))
+                    { Label = "Степень" },
+                new Inv("http://fogid.net/o/in-org",
+                    new Rec(null, "http://fogid.net/o/participation",
+                        new Str("http://fogid.net/o/from-date"),
+                        new Str("http://fogid.net/o/to-date"),
+                        new Str("http://fogid.net/o/role-classification"),
+                        new Tex("http://fogid.net/o/role"),
+                        new Dir("http://fogid.net/o/participant",
+                            new Rec(null, "http://fogid.net/o/org-sys",
+                                new Tex("http://fogid.net/o/name"))))
+                        { SortField = "http://fogid.net/o/from-date" })
+                    { Label = "Участники" },
+                InvReflected("Отражен"),
+                new Inv("http://fogid.net/o/something",
+                    new Rec(null, "http://fogid.net/o/location",
+                        new Dir("http://fogid.net/o/location-place",
+                            new Rec(null, null,
+                                new Tex("http://fogid.net/o/name")
+                                )),
+                        new Str("http://fogid.net/o/from-date"),
+                        new Str("http://fogid.net/o/to-date"),
+                        new Tex("http://fogid.net/o/location-category"),
+                        new Str("http://fogid.net/o/location-classification"))
+                        { SortField = "http://fogid.net/o/from-date" })
+                    { Label = "Геоинформация" }
+                )
+                { Label = "Организация" };
+        }
+        else if (db.ontology.DescendantsAndSelf("http://fogid.net/o/collection").Contains(tp))
+        {
+            shablon = new Rec(null, tp,
+                new Tex("http://fogid.net/o/name"),
+                new Inv("http://fogid.net/o/in-collection",
+                    new Rec(null, "http://fogid.net/o/collection-member",
+                        new Dir("http://fogid.net/o/collection-item",
+                            new Rec(null, null,
+                                new Tex("http://fogid.net/o/name"),
+                                new Str("http://fogid.net/o/from-date"),
+                                new Str("http://fogid.net/o/uri"))
+                                ))),
+                new Inv("http://fogid.net/o/collection-item",
+                    new Rec(null, "http://fogid.net/o/collection-member",
+                        new Dir("http://fogid.net/o/in-collection",
+                            new Rec(null, null,
+                                new Tex("http://fogid.net/o/name"))
+                                ))));
+        }
+        else if (db.ontology.DescendantsAndSelf("http://fogid.net/o/geosys").Contains(tp))
+        {
+            shablon = new Rec(null, tp,
+                new Tex("http://fogid.net/o/name"),
+                new Str("http://fogid.net/o/geosys-category"),
+                new Inv("http://fogid.net/o/location-place",
+                    new Rec(null, "http://fogid.net/o/location",
+                        new Dir("http://fogid.net/o/something",
+                            new Rec(null, null,
+                                new Tex("http://fogid.net/o/name"),
+                                new Str("http://fogid.net/o/uri"))
+                                ),
+                        new Str("http://fogid.net/o/from-date"),
+                        new Str("http://fogid.net/o/to-date"),
+                        new Tex("http://fogid.net/o/location-category"),
+                        new Str("http://fogid.net/o/location-classification")))
+                );
+        }
+        else
+        {
+            shablon = Rec.GetUniShablon(tp, 2, null, db.ontology);
+        }
+        return shablon;
+    }
 
     private void Build(string? id)
     {
@@ -486,213 +693,7 @@ else // нет дерева
         rrec = db.GetRRecord(id, true);
         if (rrec != null)
         {
-            Rec shablon;
-            if (rrec.Tp == "http://fogid.net/o/person")
-            {
-                shablon = new Rec(null, rrec.Tp,
-                    new Tex("http://fogid.net/o/name") { Label = "ФИО" },
-                    new Str("http://fogid.net/o/from-date") { Label = "дата рожд." },
-                    new Str("http://fogid.net/o/to-date") { Label = "дата смерти" },
-                    new Str("http://fogid.net/o/sex") { Label = "пол" },
-                    new Tex("http://fogid.net/o/description") { Label = "описание" },
-                    new Inv("http://fogid.net/o/has-title",
-                        new Rec(null, "http://fogid.net/o/titled",
-                            new Tex("http://fogid.net/o/degree"),
-                            new Str("http://fogid.net/o/from-date") { Label="присуждение" }
-                            )) { Label = "Степень" },
-                    new Inv("http://fogid.net/o/participant",
-                        new Rec(null, "http://fogid.net/o/participation",
-                            new Dir("http://fogid.net/o/in-org",
-                                new Rec(null, "http://fogid.net/o/org-sys",
-                                    new Tex("http://fogid.net/o/name")))) {SortField="http://fogid.net/o/from-date"}) 
-                                    { Label = "Участник"},
-                    InvReflected("Отражен"),
-                    new Inv("http://fogid.net/o/author",
-                        new Rec(null, "http://fogid.net/o/authority",
-                            new Str("http://fogid.net/o/authority-specificator"),
-                            new Dir("http://fogid.net/o/adoc",
-                                new Rec(null, null,
-                                    new Str("http://fogid.net/o/from-date"),
-                                    new Tex("http://fogid.net/o/name"))))
-                            { SortField = "http://fogid.net/o/from-date" })
-                        { Label = "Автор/адресат документа" },
-                    new Inv("http://fogid.net/o/something",
-                        new Rec(null, "http://fogid.net/o/location",
-                            new Dir("http://fogid.net/o/location-place",
-                                new Rec(null, null,
-                                    new Tex("http://fogid.net/o/name")
-                                    )),
-                            new Str("http://fogid.net/o/from-date"),
-                            new Str("http://fogid.net/o/to-date"),
-                            new Tex("http://fogid.net/o/location-category"),
-                            new Str("http://fogid.net/o/location-classification"))
-                            { SortField = "http://fogid.net/o/from-date" })
-                        { Label = "Геоинформация" }
-
-
-                    )
-                { Label = "Персона" };
-            }
-            else if ( //rrec.Tp == "http://fogid.net/o/document"
-            db.ontology.DescendantsAndSelf("http://fogid.net/o/document").Contains(rrec.Tp))
-            {
-                string tp_name = "Документ";
-                if (rrec.Tp == "http://fogid.net/o/photo-doc") tp_name = "Фото-документ";
-                else if (rrec.Tp == "http://fogid.net/o/photo-doc") tp_name = "Видео-документ";
-                else if (rrec.Tp == "http://fogid.net/o/audio-doc") tp_name = "Аудио-документ";
-                shablon = new Rec(null, rrec.Tp,
-                    new Tex("http://fogid.net/o/name") { Label = "название документа" },
-                    new Str("http://fogid.net/o/from-date") { Label = "дата созд." },
-                    new Str("http://fogid.net/o/to-date") { Label = "дата оконч." },
-                    new Tex("http://fogid.net/o/description") { Label = "описание" },
-                    new Tex("http://fogid.net/o/doc-content") { Label = "текст документа" },
-                    new Str("http://fogid.net/o/uri") { Label = "" },
-                    new Inv("http://fogid.net/o/inDocument",
-                        new Rec(null, "http://fogid.net/o/DocumentPart",
-                            new Str("http://fogid.net/o/pageNumbers"),
-                            new Dir("http://fogid.net/o/partItem",
-                                new Rec(null, null,
-                                    new Tex("http://fogid.net/o/name"),
-                                    new Str("http://fogid.net/o/from-date"))))
-                            { SortField = "http://fogid.net/o/from-date" })
-                        { Label = "Разделы/страницы" },
-                    new Inv("http://fogid.net/o/archive-item",
-                        new Rec(null, "http://fogid.net/o/archive-member",
-                            new Dir("http://fogid.net/o/info-source",
-                                new Rec(null, null,
-                                    new Tex("http://fogid.net/o/name"))),
-                            new Str("http://fogid.net/o/from-date"))
-                            { SortField = "http://fogid.net/o/from-date" })
-                        { Label = "Источник информации" },
-                    InvIndoc("Отражены персонажи"),
-                    new Inv("http://fogid.net/o/adoc",
-                        new Rec(null, "http://fogid.net/o/authority",
-                            new Str("http://fogid.net/o/authority-specificator"),
-                            new Dir("http://fogid.net/o/author",
-                                new Rec(null, null,
-                                    new Str("http://fogid.net/o/from-date"),
-                                    new Tex("http://fogid.net/o/name"))))
-                            { SortField = "http://fogid.net/o/from-date" })
-                        { Label = "Авторы/адресаты" },
-                    new Inv("http://fogid.net/o/something",
-                        new Rec(null, "http://fogid.net/o/location",
-                            new Dir("http://fogid.net/o/location-place",
-                                new Rec(null, null,
-                                    new Tex("http://fogid.net/o/name")
-                                    )),
-                            new Str("http://fogid.net/o/from-date"),
-                            new Str("http://fogid.net/o/to-date"),
-                            new Tex("http://fogid.net/o/location-category"),
-                            new Str("http://fogid.net/o/location-classification"))
-                            { SortField = "http://fogid.net/o/from-date" })
-                        { Label = "Геоинформация" },
-                    new Inv("http://fogid.net/o/collection-item",
-                        new Rec(null, "http://fogid.net/o/collection-member",
-                            new Dir("http://fogid.net/o/in-collection",
-                                new Rec(null, null,
-                                    new Tex("http://fogid.net/o/name"))))
-                            { SortField = "http://fogid.net/o/from-date" })
-                        { Label = "Элемент коллекции" })
-                    { Label = tp_name };
-            }
-            else if (rrec.Tp == "http://fogid.net/o/org-sys")
-            {
-                shablon = new Rec(null, rrec.Tp,
-                    new Tex("http://fogid.net/o/name") { Label = "название" },
-                    new Str("http://fogid.net/o/from-date") { Label = "нач. дата" },
-                    new Str("http://fogid.net/o/to-date") { Label = "кон. дата" },
-                    new Tex("http://fogid.net/o/description") { Label = "описание" },
-                    new Str("http://fogid.net/o/org-category") { Label = "категория" },
-                    new Tex("http://fogid.net/o/org-classification") { Label = "классификатор" },
-                    new Inv("http://fogid.net/o/has-title",
-                        new Rec(null, "http://fogid.net/o/titled",
-                            new Tex("http://fogid.net/o/degree"),
-                            new Str("http://fogid.net/o/from-date") { Label = "присуждение" }
-                            ))
-                        { Label = "Степень" },
-                    new Inv("http://fogid.net/o/in-org",
-                        new Rec(null, "http://fogid.net/o/participation",
-                            new Str("http://fogid.net/o/from-date"),
-                            new Str("http://fogid.net/o/to-date"),
-                            new Str("http://fogid.net/o/role-classification"),
-                            new Tex("http://fogid.net/o/role"),
-                            new Dir("http://fogid.net/o/participant",
-                                new Rec(null, "http://fogid.net/o/org-sys",
-                                    new Tex("http://fogid.net/o/name"))))
-                            { SortField = "http://fogid.net/o/from-date" })
-                        { Label = "Участники" },
-                    InvReflected("Отражен"),
-                    new Inv("http://fogid.net/o/something",
-                        new Rec(null, "http://fogid.net/o/location",
-                            new Dir("http://fogid.net/o/location-place",
-                                new Rec(null, null,
-                                    new Tex("http://fogid.net/o/name")
-                                    )),
-                            new Str("http://fogid.net/o/from-date"),
-                            new Str("http://fogid.net/o/to-date"),
-                            new Tex("http://fogid.net/o/location-category"),
-                            new Str("http://fogid.net/o/location-classification"))
-                            { SortField = "http://fogid.net/o/from-date" })
-                        { Label = "Геоинформация" }
-
-
-                    )
-                    { Label = "Организация" };
-            }
-            else if (db.ontology.DescendantsAndSelf("http://fogid.net/o/collection").Contains(rrec.Tp))
-            {
-                shablon = new Rec(null, rrec.Tp,
-                    new Tex("http://fogid.net/o/name"),
-                    new Inv("http://fogid.net/o/in-collection",
-                        new Rec(null, "http://fogid.net/o/collection-member",
-                            new Dir("http://fogid.net/o/collection-item",
-                                new Rec(null, null,
-                                    new Tex("http://fogid.net/o/name"),
-                                    new Str("http://fogid.net/o/from-date"),
-                                    new Str("http://fogid.net/o/uri"))
-                                    ))),
-                    new Inv("http://fogid.net/o/collection-item",
-                        new Rec(null, "http://fogid.net/o/collection-member",
-                            new Dir("http://fogid.net/o/in-collection",
-                                new Rec(null, null,
-                                    new Tex("http://fogid.net/o/name"))
-                                    )))
-
-                    );
-            }
-            else if (db.ontology.DescendantsAndSelf("http://fogid.net/o/geosys").Contains(rrec.Tp))
-            {
-                shablon = new Rec(null, rrec.Tp,
-                    new Tex("http://fogid.net/o/name"),
-                    new Str("http://fogid.net/o/geosys-category"),
-                    new Inv("http://fogid.net/o/location-place",
-                        new Rec(null, "http://fogid.net/o/location",
-                            new Dir("http://fogid.net/o/something",
-                                new Rec(null, null,
-                                    new Tex("http://fogid.net/o/name"),
-                                    new Str("http://fogid.net/o/uri"))
-                                    ),
-                            new Str("http://fogid.net/o/from-date"),
-                            new Str("http://fogid.net/o/to-date"),
-                            new Tex("http://fogid.net/o/location-category"),
-                            new Str("http://fogid.net/o/location-classification")))
-                    );
-            }
-            else if (false && rrec.Tp == "http://fogid.net/o/photo-doc")
-            {
-                shablon = new Rec(null, rrec.Tp,
-                    new Tex("http://fogid.net/o/name") { Label = "" },
-                    new Str("http://fogid.net/o/from-date") { Label = "" },
-                    new Tex("http://fogid.net/o/description") { Label = "" },
-                    new Str("http://fogid.net/o/uri"),
-                    inv_parts["http://fogid.net/o/collection-item"]
-                    )
-                { Label = "Фотография" };
-            }
-            else
-            {
-                shablon = Rec.GetUniShablon(rrec.Tp, 2, null, db.ontology);
-            }
+            Rec shablon = CreateShablon(rrec.Tp);
             tree = Rec.Build(rrec, shablon, db.ontology, idd => db.GetRRecord(idd, false));
 
             // ======== Вычисление полоски ==========
