@@ -194,75 +194,19 @@
                     if (!allowed.Contains(pred)) { continue; }            
                     Rec[] inv_items = iProp.Sources.Where(g => g != null)
                         .ToArray();
-                    // Отсортируем в зависимости от предиката
-                    if (inv_items.Length > 0)
-                    {
-                        if (pred == "http://fogid.net/o/has-title")
-                        { // первичный ключ - поле начала
-                            inv_items = inv_items
-                                .OrderBy<Rec, string>(r => r.GetStr("http://fogid.net/o/from-date") ?? "яя")
-                                .ToArray();
-                        }
-                        else if (pred == "http://fogid.net/o/inDocument")
-                        { // первичный ключ - поле страниц, вторичный ключ - имя цели
-                            inv_items = inv_items
-                            .OrderBy<Rec, string>(r => r.GetStr("http://fogid.net/o/pageNumbers") ?? "яя")
-                            .ThenBy<Rec, string>(r =>
-                            {
-                                var target = r.GetDirect("http://fogid.net/o/partItem");
-                                if (target != null) return target.GetText("http://fogid.net/o/name") ?? "";
-                                return "";
-                            }).ToArray();
-                        }
-                        else if (pred == "http://fogid.net/o/in-collection")
-                        {
-                            inv_items = inv_items.OrderBy<Rec, string>(r =>
-                            {
-                                var target = r.GetDirect("http://fogid.net/o/collection-item");
-                                var dt = target?.GetStr("http://fogid.net/o/from-date");
-                                if (dt != null) return dt;
-                                //if (target != null) return target.GetText("http://fogid.net/o/name") ?? "";
-                                return "яя";
-                            })
-                            .ThenBy<Rec, string>(r =>
-                            {
-                                var target = r.GetDirect("http://fogid.net/o/collection-item");
-                                var dt = target?.GetText("http://fogid.net/o/name") ?? "";
-                                if (dt != null) return dt;
-                                return "";
-                            }).ToArray();
-                        }
-                        else if (pred == "http://fogid.net/o/reflected")
-                        {
-                            inv_items = inv_items.OrderBy<Rec, string>(r =>
-                            {
-                                var target = r.GetDirect("http://fogid.net/o/in-doc");
-                                var dt = target?.GetStr("http://fogid.net/o/from-date");
-                                if (dt != null) return dt;
-                                return "яя";
-                            })
-                            .ThenBy<Rec, string>(r =>
-                            {
-                                var target = r.GetDirect("http://fogid.net/o/in-doc");
-                                var dt = target?.GetText("http://fogid.net/o/name") ?? "";
-                                if (dt != null) return dt;
-                                return "";
-                            }).ToArray();
-                        }
-                        else if (pred == "http://fogid.net/o/")
-                        {
 
-                        }
-                    }
+                    // Отсортируем в зависимости от предиката
+                    inv_items = SortInvRels(inv_items, pred);
                     // Конец сортировки
+
                     if (user != null || inv_items.Length > 0)
                     {
                         <tr valign="top">
                             <td>
                                 <span style="color:green;">@(string.IsNullOrEmpty(iProp.Label) ? db.ontology.InvLabelOfOnto(pred) : iProp.Label)</span>
                                 @if (pred == "http://fogid.net/o/in-collection"
-                      || pred == "http://fogid.net/o/reflected"
-                      || pred == "http://fogid.net/o/inDocument")
+                 || pred == "http://fogid.net/o/reflected"
+                 || pred == "http://fogid.net/o/inDocument")
                                 {
                                     if (useshakhmat)
                                     {
@@ -286,7 +230,7 @@
                                         else if (pred == "http://fogid.net/o/reflected") dir_pred = "http://fogid.net/o/in-doc";
                                         else if (pred == "http://fogid.net/o/inDocument") dir_pred = "http://fogid.net/o/partItem";
 
-                                        if (pred == "http://fogid.net/o/inDocument")
+                                        @*                                         if (pred == "http://fogid.net/o/inDocument")
                                         {  // Посортируем части
                                             Rec[] query = inv_items
                                             .OrderBy<Rec, string>(r => r.GetStr("http://fogid.net/o/pageNumbers") ?? "яя")
@@ -319,7 +263,8 @@
                                             .ToArray();
                                             inv_items = query;
                                         }
-
+ *@
+                                        //inv_items = SortInvRels(inv_items, pred);
                                         if (dir_pred != "" && user != null)
                                         {
                                             string tty =
@@ -736,28 +681,98 @@ else // нет дерева
                     );
                     Rec invSet = Rec.Build(externalRec, sha, db.ontology, idd => db.GetRRecord(idd, false));
 
-                    var lasts = invSet.GetInverse(inv_prop)
+                    // Сортировка!
+                    Rec?[] targets = SortInvRels(invSet.GetInverse(inv_prop), inv_prop)
+                        .Select(r => r.GetDirect(dir_prop))
+                        .ToArray();
+                    @*                     lasts = invSet.GetInverse(inv_prop)
                         .Select(r => r.GetDirect(dir_prop))
                         .Cast<Rec>()
                         .OrderBy(r1 => r1.GetStr("http://fogid.net/o/from-date") ?? "яя")
                         .ThenBy(r1 => r1.GetText("http://fogid.net/o/name"))
-                        .ToArray();
+                        .ToArray();*@
+                    // конец сортировки
 
                     prev = null;
                     next = null;
                     int index = 0;
-                    foreach (var r in lasts)
+                    foreach (var r in targets)
                     {
-                        if (r.Id == id)
+                        if (r?.Id == id)
                         {
-                            if (index > 0) prev = lasts[index - 1].Id; 
-                            if (index < lasts.Length - 1) next = lasts[index + 1].Id;
+                            if (index > 0) prev = targets[index - 1]?.Id; 
+                            if (index < targets.Length - 1) next = targets[index + 1]?.Id;
                         }
                         index++;
                     }
                 }
             }
         }
+    }
+
+    private Rec[] SortInvRels(Rec[] inv_items, string pred)
+    {
+        Rec[] inv_items_res = inv_items;
+        if (inv_items.Length > 0)
+        {
+            if (pred == "http://fogid.net/o/has-title")
+            { // первичный ключ - поле начала
+                inv_items_res = inv_items
+                    .OrderBy<Rec, string>(r => r.GetStr("http://fogid.net/o/from-date") ?? "яя")
+                    .ToArray();
+            }
+            else if (pred == "http://fogid.net/o/inDocument")
+            { // первичный ключ - поле страниц, вторичный ключ - имя цели
+                inv_items_res = inv_items
+                .OrderBy<Rec, string>(r => r.GetStr("http://fogid.net/o/pageNumbers") ?? "яя")
+                .ThenBy<Rec, string>(r =>
+                {
+                    var target = r.GetDirect("http://fogid.net/o/partItem");
+                    if (target != null) return target.GetText("http://fogid.net/o/name") ?? "";
+                    return "";
+                }).ToArray();
+            }
+            else if (pred == "http://fogid.net/o/in-collection")
+            {
+                inv_items_res = inv_items.OrderBy<Rec, string>(r =>
+                {
+                    var target = r.GetDirect("http://fogid.net/o/collection-item");
+                    var dt = target?.GetStr("http://fogid.net/o/from-date");
+                    if (dt != null) return dt;
+                    //if (target != null) return target.GetText("http://fogid.net/o/name") ?? "";
+                    return "яя";
+                })
+                .ThenBy<Rec, string>(r =>
+                {
+                    var target = r.GetDirect("http://fogid.net/o/collection-item");
+                    var dt = target?.GetText("http://fogid.net/o/name") ?? "";
+                    if (dt != null) return dt;
+                    return "";
+                }).ToArray();
+            }
+            else if (pred == "http://fogid.net/o/reflected")
+            {
+                inv_items_res = inv_items.OrderBy<Rec, string>(r =>
+                {
+                    var target = r.GetDirect("http://fogid.net/o/in-doc");
+                    var dt = target?.GetStr("http://fogid.net/o/from-date");
+                    if (dt != null) return dt;
+                    return "яя";
+                })
+                .ThenBy<Rec, string>(r =>
+                {
+                    var target = r.GetDirect("http://fogid.net/o/in-doc");
+                    var dt = target?.GetText("http://fogid.net/o/name") ?? "";
+                    if (dt != null) return dt;
+                    return "";
+                }).ToArray();
+            }
+            else if (pred == "http://fogid.net/o/")
+            {
+
+            }
+        }
+        return inv_items_res;
     }
 
     private string? user = null;
