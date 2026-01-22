@@ -147,8 +147,9 @@
     <range rdf:resource="http://fogid.net/o/text"/>
   </DatatypeProperty>
 
+  <!-- 2026-01-22 заменил в разделе SubClassOf ресурс с sys-obj на collection -->
   <Class rdf:about="http://fogid.net/o/archive">
-    <SubClassOf rdf:resource="http://fogid.net/o/sys-obj"/>
+    <SubClassOf rdf:resource="http://fogid.net/o/collection"/>
     <label xml:lang="ru">Архив</label>
     <label xml:lang="en">Archive</label>
   </Class>
