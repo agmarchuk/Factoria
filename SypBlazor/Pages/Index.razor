@@ -62,7 +62,7 @@
         </div>
 
         // ========    Это вставка полоски пред. след. к документу =========
-        @if (externalId != null)
+        @if (externalId != null && (prev != null || next != null))
         {
             string pr = "index/" + prev + "/" + externalId;
             string d = "index/" + externalId;
@@ -654,7 +654,7 @@ else // нет дерева
                     string inv_prop = "";
                     string inv_rec_class = "";
                     string dir_prop = "";
-                    if (tp == "http://fogid.net/o/collection" || tp == "http://fogid.net/o/cassette")
+                    if (db.ontology.DescendantsAndSelf("http://fogid.net/o/collection").Contains(tp))
                     {
                         inv_prop = "http://fogid.net/o/in-collection";
                         inv_rec_class = "http://fogid.net/o/collection-member";

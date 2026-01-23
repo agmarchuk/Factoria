@@ -76,8 +76,8 @@
                 { // Обычный ряд значений
                     //string idd = tree.Id;
                     @foreach (var p in tree.Props.Where(p => (p is Str || p is Tex || p is Dir)
-                  //TODO: && allowedPredicates.Contains(p.Pred)
-                  ).ToArray())
+                 //TODO: && allowedPredicates.Contains(p.Pred)
+                 ).ToArray())
                     {
                         string pred = p.Pred;
                         if (pred == "http://fogid.net/o/uri") { continue; }
@@ -126,8 +126,12 @@
                                 {
                                     if (r == null)
                                     { // Видимо висящая ссылка
-                                        <span>[нет ссылки]</span>                                
-                                    }  
+                                        <span>[нет ссылки]</span>
+                                    } 
+                                    else if (r.Id == "noname")
+                                    {
+                                        <span>отсутствует</span>
+                                    }
                                     else
                                     {
                                         string path = contro + r.Id + "/" + focusId;
