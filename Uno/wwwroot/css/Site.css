@@ -38,3 +38,15 @@
     background-color:lightyellow;
     margin: 4px 4px 4px 4px;
 }
+
+.grid {
+    border: 1px solid green;
+}
+table {
+    border-collapse: collapse;
+    margin-top:4px;
+}
+th {
+    font-size:smaller;
+    color:green;
+}

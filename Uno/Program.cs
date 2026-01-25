@@ -16,21 +16,174 @@ Factograph.Data.IFDataService db = new Factograph.Data.FDataService();
 
 
 
-app.MapGet("~/", () => Results.Redirect("/view")); //"/view/syp2001-p-marchuk_a"));
+app.MapGet("~/", () => 
+    //Results.Redirect("/view")); //"/view/syp2001-p-marchuk_a"));
+    Results.Redirect("/view/syp2001-p-marchuk_a"));
 app.MapGet("~/room216", () => { db.Reload(); Results.Redirect("/view"); }); //"/view/syp2001-p-marchuk_a"));
 
-// Вход view - основной в сервисе. Может присутствовать основной параметр id - идентификатор сущности. Также могут быть параметры:
-// ss (search string) - поисковый образ; tp - тип результата поиска, IsBullOrEmpty(tp) - все типы; bw (by words) - поиск "по словам";
-// idd - идентификатор "верхнего" уровня, напр. идентификатор "охватывающей" коллекции.
-//ViewController viewCont = new ViewController(db);
-VController vCont = new VController(null, db);
 app.MapGet("~/view/{id?}", (HttpRequest request, string? id) =>
 {
-    //string sresult = viewCont.SborkaPage(request, id);
-    vCont.OnGet(request);
-    string sresult = vCont.portrait;
-    return Results.Content(sresult, "text/html");
+    // Соберем страницу из поиска и портрета
+    string page = $@"<!DOCTYPE html>
+<html><head> <meta charset='utf-8'> <link rel='stylesheet' type='text/css' href='/css/Site.css' > </link> </head>
+    <body>
+        {SearchPanel(request)}
+        {BuildPortrait(id, null, 2)}
+    </body>
+</html>";
+    return Results.Content(page, "text/html");
 });
+
+string SearchPanel(HttpRequest request)
+{
+    string? ss = request.Query["ss"];
+    string? w = request.Query["w"];
+    string chcked = w == "on" ? "checked" : ""; 
+    string html = $@"
+<div>
+  <form method='get' action=''>
+    <input type='text' name='ss' value='{ss}'>
+    <input type='checkbox' name='w' {chcked}>
+  </form>
+</div>";
+    if (ss != null)
+    {
+        var rres = db.SearchRRecords(ss, w == "on");
+        string searchresults = "";
+        foreach (var r in rres)
+        {
+            string tip = db.ontology.LabelOfOnto(r.Tp);
+            string id = r.Id;
+            string name = r.GetName();
+            searchresults += $@"
+<div>
+  {tip} <a href='/view/{id}'>{name}</a>
+</div>
+";
+        }
+        html += searchresults;
+    }
+    return html;
+}
+string BuildPortrait(string id, string? forbidden, int level)
+{
+    // Получим RRec
+    var rr = db.GetRRecord(id, true);
+    // Сформируем прямые свойства
+    var fieldsanddirects = rr?.Props
+        .Where(fd => fd is RField || (fd is RLink && fd.Prop != forbidden))
+        .ToArray();
+    StringBuilder sb = new StringBuilder();
+    if (fieldsanddirects != null)
+    {
+        sb = new StringBuilder("<table>");
+        sb.Append("<tr>");
+        foreach (var fd in fieldsanddirects)
+        {
+            string header = db.ontology.LabelOfOnto(fd.Prop) ?? fd.Prop;
+            sb.Append($"<th class='grid'>{header}</th>");
+        }
+        sb.Append("</tr>");
+        sb.Append("<tr>");
+        foreach (var fd in fieldsanddirects)
+        {
+            string cell = "";
+            if (fd is RField) { cell = ((RField)fd).Value; }
+            else 
+            {
+                var lnk = (RLink)fd;
+                if (lnk != null) 
+                {
+                    var rec = db.GetRRecord(lnk.Resource, false);
+                    if (rec != null)
+                    {
+                        string idd = rec.Id;
+                        string nam = rec.GetName();
+                        cell = $"<a href='/view/{idd}'>{nam}</a>";
+                    }
+                }
+            }
+            sb.Append($"<td class='grid'>{cell}</td>");
+        }
+        sb.Append("</tr>");
+        sb.Append("</table>");
+    }
+    if (level > 0)
+    {
+        var inverse = rr?.Props.Where(fd => fd is RInverseLink).Cast<RInverseLink>().ToArray();
+        if (inverse != null)
+        {
+            sb.Append("<table>");
+            foreach (var pair in inverse.GroupBy(d => d.Prop).Select(pa => (pa.Key, pa)))
+            {
+                string leftheader = db.ontology.InvLabelOfOnto(pair.Key) ?? pair.Key;
+                string pred = pair.Key;
+                sb.Append($"<tr><th style='vertical-align: top;'>{leftheader}</th>");
+                // У данной группы найдем количество обратных ссылок
+                int nlnks = pair.pa.Count();
+                // Создаем множество записей, ссылающихся на данную по данному отношению pred
+                RRecord[] inv_recs = pair.pa
+                    .Select(ilnk => db.GetRRecord(ilnk.Source, false))
+                    .Where(r => r != null).Cast<RRecord>()
+                    .ToArray();
+                // У данной группы найдем множество использованных предикатов (имен свойств)
+                // будем учитывать только поля и прямые ссылки, но без pred (forbidden)
+                string[] predicates = inv_recs.SelectMany(r => r.Props
+                    .Where(p => p is RField || (p is RLink && p.Prop != pred)))
+                    .Select(p => p.Prop)
+                    .Distinct()
+                    .ToArray();
+
+                // Строим таблицу
+                sb.Append("<td><table>");
+                // Рядок заголовков
+                sb.Append("<tr>");
+                foreach (var p in predicates)
+                {
+                    string nm = db.ontology.LabelOfOnto(p) ?? p;
+                    sb.Append($"<th class='grid'>{nm}</th>");
+                }                
+                sb.Append("</tr>");
+                // Делаем словарь для "раскидывания" значений по позициям рядка
+                var dic = predicates.Select((s, i) => new { s, i })
+                    .ToDictionary(si => si.s, si => si.i);
+                // Цикл по записям
+                foreach (var r in inv_recs)
+                {
+                    // Создадим массив
+                    string[] cells = Enumerable.Repeat<string>("", predicates.Length).ToArray();
+                    // Заполним массив значениями полей и ссылок записи r
+                    foreach (RProperty pr in r.Props
+                        .Where(p => p is RField || (p is RLink && p.Prop != pred)))
+                    {
+                        int ind = dic[pr.Prop];
+                        if (pr is RField)
+                        {
+                            RField f = (RField)pr;
+                            cells[ind] = f.Value;
+                        } else if (pr is RLink)
+                        {
+                            RLink rl = (RLink)pr;
+                            var target = db.GetRRecord(rl.Resource, false);
+                            cells[ind] = $"<a href='{target?.Id}'>{target?.GetName()}</a>";
+                        }
+                    }
+                    sb.Append("<tr>");
+                    sb.Append(cells.Select(cell => $"<td class='grid'>{cell}</td>")
+                        .Aggregate((sum, s) => sum + s));
+                    sb.Append("</tr>");
+                }
+                sb.Append("</table></td>");
+                //sb.Append($"<td>{pair.pa.Count()} {predicates.Length}</td>");
+                sb.Append("</tr>");
+            }
+            sb.Append("</table>");
+        }
+    }
+
+    string html = sb.ToString();
+    return html;
+}
 
 app.MapGet("~/photo", (HttpRequest request) =>
 {
