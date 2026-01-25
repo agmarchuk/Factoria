@@ -23,12 +23,45 @@ app.MapGet("~/room216", () => { db.Reload(); Results.Redirect("/view"); }); //"/
 
 app.MapGet("~/view/{id?}", (HttpRequest request, string? id) =>
 {
+    var rr = db.GetRRecord(id, true);
+    string portr = "";
+    if (rr != null)
+    {
+        portr = " id=" + rr.Id + " tp=" + rr.Tp + "\n" +
+            rr.Props.Select(p =>
+            {
+                string pred = p.Prop;
+                if (p is RField)
+                {
+                    var f = (RField)p;
+                    return $"f^({pred}, {f.Value})\n";
+                }
+                else if (p is RLink)
+                {
+                    var dir = (RLink)p;
+                    return $"d^({pred}, {dir.Resource})\n";
+                }
+                else if (p is RLink)
+                {
+                    var inv = (RInverseLink)p;
+                    return $"i^({pred}, {inv.Source})\n";
+                }
+                else
+                {
+                    return "\n";
+                }
+            }).Aggregate((sum, s) => sum + s);
+    }
     // Соберем страницу из поиска и портрета
     string page = $@"<!DOCTYPE html>
 <html><head> <meta charset='utf-8'> <link rel='stylesheet' type='text/css' href='/css/Site.css' > </link> </head>
     <body>
         {SearchPanel(request)}
         {BuildPortrait(id, null, 2)}
+<hr/>
+<pre>
+{portr}
+</pre>
     </body>
 </html>";
     return Results.Content(page, "text/html");
