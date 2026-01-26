@@ -439,14 +439,14 @@ else // нет дерева
                         new Tex("http://fogid.net/o/degree"),
                         new Str("http://fogid.net/o/from-date") { Label = "присуждение" }
                         ))
-                    { Label = "Степень" },
+                    { Label = "Титул" },
                 new Inv("http://fogid.net/o/participant",
                     new Rec(null, "http://fogid.net/o/participation",
                         new Dir("http://fogid.net/o/in-org",
                             new Rec(null, "http://fogid.net/o/org-sys",
                                 new Tex("http://fogid.net/o/name"))))
                         { SortField = "http://fogid.net/o/from-date" })
-                    { Label = "Участник" },
+                    { Label = "Место работы" },
                 InvReflected("Отражен"),
                 new Inv("http://fogid.net/o/author",
                     new Rec(null, "http://fogid.net/o/authority",
@@ -456,7 +456,7 @@ else // нет дерева
                                 new Str("http://fogid.net/o/from-date"),
                                 new Tex("http://fogid.net/o/name"))))
                         { SortField = "http://fogid.net/o/from-date" })
-                    { Label = "Автор/адресат документа" },
+                    { Label = "Является автором/адресатом документов" },
                 new Inv("http://fogid.net/o/something",
                     new Rec(null, "http://fogid.net/o/location",
                         new Dir("http://fogid.net/o/location-place",
@@ -469,8 +469,6 @@ else // нет дерева
                         new Str("http://fogid.net/o/location-classification"))
                         { SortField = "http://fogid.net/o/from-date" })
                     { Label = "Геоинформация" }
-
-
                 )
                 { Label = "Персона" };
         }
@@ -504,8 +502,8 @@ else // нет дерева
                                 new Tex("http://fogid.net/o/name"))),
                         new Str("http://fogid.net/o/from-date"))
                         { SortField = "http://fogid.net/o/from-date" })
-                    { Label = "Источник информации" },
-                InvIndoc("Отражены персонажи"),
+                    { Label = "Источник поступления" },
+                InvIndoc("Отраженные персонажи"),
                 new Inv("http://fogid.net/o/adoc",
                     new Rec(null, "http://fogid.net/o/authority",
                         new Str("http://fogid.net/o/authority-specificator"),
@@ -514,7 +512,7 @@ else // нет дерева
                                 new Str("http://fogid.net/o/from-date"),
                                 new Tex("http://fogid.net/o/name"))))
                         { SortField = "http://fogid.net/o/from-date" })
-                    { Label = "Авторы/адресаты" },
+                    { Label = "Авторы/адресаты документа" },
                 new Inv("http://fogid.net/o/something",
                     new Rec(null, "http://fogid.net/o/location",
                         new Dir("http://fogid.net/o/location-place",
@@ -542,7 +540,7 @@ else // нет дерева
                             new Rec(null, null,
                                 new Tex("http://fogid.net/o/name"))))
                         { SortField = "http://fogid.net/o/from-date" })
-                    { Label = "Элемент коллекции" })
+                    { Label = "Документ входит в коллекции" })
                 { Label = tp_name };
         }
         else if (tp == "http://fogid.net/o/org-sys")
@@ -559,7 +557,7 @@ else // нет дерева
                         new Tex("http://fogid.net/o/degree"),
                         new Str("http://fogid.net/o/from-date") { Label = "присуждение" }
                         ))
-                    { Label = "Степень" },
+                    { Label = "Титул" },
                 new Inv("http://fogid.net/o/in-org",
                     new Rec(null, "http://fogid.net/o/participation",
                         new Str("http://fogid.net/o/from-date"),
