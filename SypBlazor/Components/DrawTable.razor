@@ -3,7 +3,7 @@
 @using Factograph.Data
 @using Factograph.Data.r
 @inject Factograph.Data.IFDataService db
-@inject IJSRuntime js
+@inject IJSRuntime JS
 
 @{
     int ncolumns = 0;
@@ -76,8 +76,8 @@
                 { // Обычный ряд значений
                     //string idd = tree.Id;
                     @foreach (var p in tree.Props.Where(p => (p is Str || p is Tex || p is Dir)
-                 //TODO: && allowedPredicates.Contains(p.Pred)
-                 ).ToArray())
+                //TODO: && allowedPredicates.Contains(p.Pred)
+                ).ToArray())
                     {
                         string pred = p.Pred;
                         if (pred == "http://fogid.net/o/uri") { continue; }
@@ -216,15 +216,18 @@
     }
     private async Task DelItemClick(string? id)
     {
-        //TODO: а может так "крестик" проверять?
-        RRecord? rec = db.GetRRecord(id, true);
-        if (rec != null && rec.Props.All(p => p is not RInverseLink))
+        bool confirmed = await JS.InvokeAsync<bool>("confirm", "Вы уверены, что хотите удалить?");
+        if (confirmed)
         {
-            await onDelete.InvokeAsync(id);
-        }
-        else
-        {
-            await js.InvokeVoidAsync("alert", "Can't delete record");
+            RRecord? rec = db.GetRRecord(id, true);
+            if (rec != null && rec.Props.All(p => p is not RInverseLink))
+            {
+                await onDelete.InvokeAsync(id);
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", "Can't delete record");
+            }
         }
     }
 
