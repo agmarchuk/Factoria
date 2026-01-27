@@ -3,6 +3,7 @@ using Factograph.Data.r;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
+using System.Reflection.Emit;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Linq;
@@ -21,36 +22,92 @@ app.MapGet("~/", () =>
     Results.Redirect("/view/syp2001-p-marchuk_a"));
 app.MapGet("~/room216", () => { db.Reload(); Results.Redirect("/view"); }); //"/view/syp2001-p-marchuk_a"));
 
+// Функция получения html-блока записи параметры rrec, forbidden, level. Результат - строка
+Func<RRecord, string?, int, string> RRecToHtml = (rrec, forbidden, level) => "";
+RRecToHtml = (rrec, forbidden, level) =>
+{
+    var properties = rrec.Props.Select(p =>
+    {
+        int m = 80 - level * 20;
+        string pred = p.Prop;
+        string inner = "";
+        if (p is RField)
+        {
+            var f = (RField)p;
+            inner = $"f^({pred} {f.Value})";
+        }
+        else if (level > 0 && p is RLink && pred != forbidden)
+        {
+            var dir = (RLink)p;
+            string idd = dir.Resource;
+            var rresource = db.GetRRecord(idd, false);
+            if (rresource == null)
+            {
+                inner = $"d^({pred}, {dir.Resource})";
+            }
+            else
+            {
+                inner = $"d^({pred} {RRecToHtml(rresource, null, level + 1)}";
+            }
+                
+        }
+        else if (level > 0 && p is RInverseLink)
+        {
+            var inv = (RInverseLink)p;
+            string idd = inv.Source;
+            var rsource = db.GetRRecord(idd, false);
+            if (rsource == null)
+            {
+                inner = $"i^({pred} {inv.Source})";
+            }
+            else
+            {
+                inner = $"i({pred} {RRecToHtml(rsource, pred, level + 1)}";
+            }
+        }
+        return $"<div style='margin-left:{m}'>" + inner + "</div>";
+    })
+    .Aggregate((sum, s) => sum + s);
+
+    return @$"
+<div style='margin-left:{80 - level * 20}px;'>
+r(id: {rrec.Id} tp: {rrec.Tp}
+  {properties ?? ""}
+</div>
+";
+}; 
+
 app.MapGet("~/view/{id?}", (HttpRequest request, string? id) =>
 {
     var rr = db.GetRRecord(id, true);
     string portr = "";
     if (rr != null)
     {
-        portr = " id=" + rr.Id + " tp=" + rr.Tp + "\n" +
-            rr.Props.Select(p =>
-            {
-                string pred = p.Prop;
-                if (p is RField)
-                {
-                    var f = (RField)p;
-                    return $"f^({pred}, {f.Value})\n";
-                }
-                else if (p is RLink)
-                {
-                    var dir = (RLink)p;
-                    return $"d^({pred}, {dir.Resource})\n";
-                }
-                else if (p is RLink)
-                {
-                    var inv = (RInverseLink)p;
-                    return $"i^({pred}, {inv.Source})\n";
-                }
-                else
-                {
-                    return "\n";
-                }
-            }).Aggregate((sum, s) => sum + s);
+        portr = RRecToHtml(rr, null, 2);
+        //portr = " id=" + rr.Id + " tp=" + rr.Tp + "\n" +
+        //    rr.Props.Select(p =>
+        //    {
+        //        string pred = p.Prop;
+        //        if (p is RField)
+        //        {
+        //            var f = (RField)p;
+        //            return $"f^({pred}, {f.Value})\n";
+        //        }
+        //        else if (p is RLink)
+        //        {
+        //            var dir = (RLink)p;
+        //            return $"d^({pred}, {dir.Resource})\n";
+        //        }
+        //        else if (p is RInverseLink)
+        //        {
+        //            var inv = (RInverseLink)p;
+        //            return $"i^({pred}, {inv.Source})\n";
+        //        }
+        //        else
+        //        {
+        //            return "\n";
+        //        }
+        //    }).Aggregate((sum, s) => sum + s);
     }
     // Соберем страницу из поиска и портрета
     string page = $@"<!DOCTYPE html>
@@ -59,9 +116,9 @@ app.MapGet("~/view/{id?}", (HttpRequest request, string? id) =>
         {SearchPanel(request)}
         {BuildPortrait(id, null, 2)}
 <hr/>
-<pre>
+
 {portr}
-</pre>
+
     </body>
 </html>";
     return Results.Content(page, "text/html");
