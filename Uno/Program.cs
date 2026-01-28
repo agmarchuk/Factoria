@@ -23,6 +23,67 @@ app.MapGet("~/", () =>
 app.MapGet("~/room216", () => { db.Reload(); Results.Redirect("/view"); }); //"/view/syp2001-p-marchuk_a"));
 
 // Функция получения html-блока записи параметры rrec, forbidden, level. Результат - строка
+Func<RRecord, string?, int, string> RRecToHtml2 = (rrec, forbidden, level) => "";
+// Функция получения блока из RProp
+Func<RProperty, string?, int, string> RPropertyToHtml = (prop, forbidden, level) => "";
+RPropertyToHtml = (p, forbidden, level) =>
+{
+    string color = "";
+    string cell = "";
+    if (p is RField)
+    {
+        RField f = (RField)p;
+        cell = f.Value + (string.IsNullOrEmpty(f.Lang) ? "" : "~" + f.Lang);
+    }
+    else if (p is RLink)
+    {
+        RLink rl = (RLink)p;
+        color = "darkcyan";
+        string idd = rl.Resource;
+        RRecord? r = null;
+        if (!string.IsNullOrEmpty(idd) && (r = db.GetRRecord(idd, false)) != null)
+        {
+            cell = $@"<a href='{r.Id}'>{r.GetName()}</a>";
+        }
+        else
+        {
+            cell = "";
+        }
+    }
+    else if (p is RInverseLink)
+    {
+        RInverseLink ril = (RInverseLink)p;
+        color = "green";
+        string idd = ril.Source;
+        RRecord? r = null;
+        if (!string.IsNullOrEmpty(idd) && (r = db.GetRRecord(idd, false)) != null)
+        {
+            cell = RRecToHtml2(r, p.Prop, level - 1);
+        }
+        else
+        {
+            cell = "";
+        }
+    }
+    return $@"<tr>
+<td class='grid' style='color:{color};'>{db.ontology.LabelOfOnto(p.Prop) ?? p.Prop}</td>
+<td class='grid'>{cell}</td>
+</tr>
+";
+};
+RRecToHtml2 = (rrec, forbidden, level) =>
+{
+    string res = $@"<table>
+<tr><td colspan='2' class='grid'> {db.ontology.LabelOfOnto(rrec.Tp) ?? rrec.Tp} {rrec.Id} </td></tr>" +
+rrec.Props
+    .Where(p => p.Prop != forbidden)
+    .Select(p => RPropertyToHtml(p, forbidden, level)).Aggregate((sum, s) =>  sum + s)
++ "</table>";
+    return res;
+};
+
+
+// Функция получения html-блока записи параметры rrec, forbidden, level. Результат - строка
 Func<RRecord, string?, int, string> RRecToHtml = (rrec, forbidden, level) => "";
 RRecToHtml = (rrec, forbidden, level) =>
 {
@@ -83,40 +144,17 @@ app.MapGet("~/view/{id?}", (HttpRequest request, string? id) =>
     string portr = "";
     if (rr != null)
     {
-        portr = RRecToHtml(rr, null, 2);
-        //portr = " id=" + rr.Id + " tp=" + rr.Tp + "\n" +
-        //    rr.Props.Select(p =>
-        //    {
-        //        string pred = p.Prop;
-        //        if (p is RField)
-        //        {
-        //            var f = (RField)p;
-        //            return $"f^({pred}, {f.Value})\n";
-        //        }
-        //        else if (p is RLink)
-        //        {
-        //            var dir = (RLink)p;
-        //            return $"d^({pred}, {dir.Resource})\n";
-        //        }
-        //        else if (p is RInverseLink)
-        //        {
-        //            var inv = (RInverseLink)p;
-        //            return $"i^({pred}, {inv.Source})\n";
-        //        }
-        //        else
-        //        {
-        //            return "\n";
-        //        }
-        //    }).Aggregate((sum, s) => sum + s);
+        portr = RRecToHtml2(rr, null, 2);
     }
+
     // Соберем страницу из поиска и портрета
     string page = $@"<!DOCTYPE html>
 <html><head> <meta charset='utf-8'> <link rel='stylesheet' type='text/css' href='/css/Site.css' > </link> </head>
     <body>
         {SearchPanel(request)}
         {BuildPortrait(id, null, 2)}
-<hr/>
 
+<hr/>
 {portr}
 
     </body>
