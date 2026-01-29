@@ -30,19 +30,23 @@ namespace OpenA.Pages
 
         public void OnGet(string id, string idd)
         {
-            //id = this.Request.Query["id"].FirstOrDefault();
-            ss = this.Request.Query["ss"].FirstOrDefault();
-            tp = this.Request.Query["tp"].FirstOrDefault();
-            string? sbw = this.Request.Query["bw"].FirstOrDefault();
-            bywords = sbw != null ? true : false;
-            //idd = this.Request.Query["idd"].FirstOrDefault();
+            // Здесь идет запуск построения портрета
         }
         public void OnPost()
         {
+            // Здесь запрашивается поиск по имеющимся параметрам
             ss = this.Request.Form["ss"].FirstOrDefault();
-            tp = this.Request.Form["tp"].FirstOrDefault();
+            string? sv = this.Request.Form["sv"].FirstOrDefault();
+            if (string.IsNullOrEmpty(sv)) tp = null;
+            else tp = "http://fogid.net/o/" + sv;
+            
             string? sbw = this.Request.Form["bw"].FirstOrDefault();
             bywords = sbw != null ? true : false;
+
+            if (!string.IsNullOrEmpty(ss))
+            {
+                var qwery = db.SearchRRecords(ss, bywords);
+            }
         }
     }
 }

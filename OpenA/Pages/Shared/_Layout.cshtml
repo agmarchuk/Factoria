@@ -1,10 +1,12 @@
 ﻿@{
 	string sv = "";
 	string? ss = "";
+	string? bw = "false"; 
 	if (this.Model.Request.Method == "POST")
 	{
 		ss = this.Model.Request.Form["ss"];
 		sv = this.Model.Request.Form["sv"];
+		bw = this.Model.Request.Form["bw"];
 	}
 	//string[] variants = {"person", "org-sys", "collection", "document", "city", "country"};
 	//string[] s = variants.Select(v => v == sv ? "selected" : "").ToArray();
@@ -16,8 +18,8 @@
 <head>
 	<meta charset="utf-8" />
 	<title>Открытый архив СО</title>
-	<link rel="stylesheet" type="text/css" href="/css/moo.css" />
-	<link rel="shortcut icon" href="/css/favicon.ico" type="image/x-icon">
+	<link rel="stylesheet" type="text/css" href="~/css/moo.css" />
+	<link rel="shortcut icon" href="~/css/favicon.ico" type="image/x-icon">
 </head>
 <body>
 	<div id="site"><div class="pd">
@@ -31,9 +33,9 @@
 				-->
 				<tr>
 					<td class="block-top">
-						<a href="Default.cshtml"><img src="/img/logo.png" class="logo" alt="Открытый архив СО РАН" /></a>
+						<a href="~/Index"><img src="~/img/logo.png" class="logo" alt="Открытый архив СО РАН" /></a>
 						<div class="main-menu">
-							<a href="Default.cshtml" class="menu-item nov">Фонды</a>
+							<a href="" class="menu-item nov">Фонды</a>
 							<span class="menu-sep">|</span>
 							<!--
 							<a href="" class="menu-item nov">Персоны</a>
@@ -59,7 +61,6 @@
 					<td class="block-content">
 						<div id="wrap">
 							<div class="fk-ie">
-
 								<form method="post" action="~/Index/">
 									<div class="bsearch-1">
 										<div class="bsearch-2">
@@ -70,11 +71,22 @@
 															<div class="search-form">
 																<input name="ss" type="text" placeholder="поиск" title="введите текст для поиска" value="@ss" />
 															</div>
-
 														</td>
-														<td class="s-input-2">
+														<td class="s-input-1" style="width:50px;vertical-align:central;">
+															<div class="search-form" style="width:20px; height:16px;vertical-align:central;">
+																@if (bw == "on")
+																{
+																	<input name="bw" type="checkbox" checked style="width:20px; height:16px;vertical-align:central;" />
+																}
+																else
+																{
+																	<input name="bw" type="checkbox" style="width:20px; height:16px;vertical-align:central;" />
+																}
+															</div>
+														</td>
+														<td class="s-input-2" style="">
 															<div class="search-form">
-																<select name="sv">
+																<select name="sv" style="width:100%;">
 																	<option value=""></option>
 																	@if (sv == "person") { <option selected value="person">Персоны</option> }
 																	else { <option value="person">Персоны</option> }
@@ -97,7 +109,7 @@
 										</td>
 										<td class="s-input-o">
 											<a href="" class="small white">Расширенный<br /><img 
-											src="/img/search-ext-btn.png" class="ext-btn" alt="" />поиск<img src="/img/p.gif" class="ext-btn" alt="" /></a>
+											src="~/img/search-ext-btn.png" class="ext-btn" alt="" />поиск<img src="~/img/p.gif" class="ext-btn" alt="" /></a>
 										
 										</td>
 										</tr>
@@ -118,7 +130,7 @@
 					</div>
 				</td>
 
-				<td class="sep-content"><img src="/img/p.gif" width="40" height="1" alt="" /></td>
+				<td class="sep-content"><img src="~/img/p.gif" width="40" height="1" alt="" /></td>
 				<td class="block-right">
 @RenderSection("rightpanel", false)
 				</td>
@@ -130,13 +142,13 @@
 				<td class="block-content">
 					<div class="line-bottom"> </div>
 
-					<a href="#"><img src="/img/up_arrow.png" border="0" align="left" /></a>
+					<a href="#"><img src="~/img/up_arrow.png" border="0" align="left" /></a>
 				
 
 				        <div class="copyright">
 						&copy; 2013-2014 Институт Систем Информатики <br />
 						им. А.П. Ершова СО РАН<br />
-						<a href="mailto:oda@iis.nsk.su?subject=Open Digital Archive"><img src="/img/ico-mail.gif" class="ico-mail" alt="Написать письмо" />Написать письмо</a>
+						<a href="mailto:oda@iis.nsk.su?subject=Open Digital Archive"><img src="~/img/ico-mail.gif" class="ico-mail" alt="Написать письмо" />Написать письмо</a>
 				        </div>
 
 					<div class="main-menu">
