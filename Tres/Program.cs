@@ -46,7 +46,7 @@ var app = builder.Build();
 app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
-// не сумел следующим воспользоваться...
+
 app.MapControllerRoute(name: "default",
          pattern: "{controller=Home}/{action=Index}/{id?}");
 
