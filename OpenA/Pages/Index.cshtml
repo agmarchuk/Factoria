@@ -1,14 +1,46 @@
 ﻿@page "/index/{id?}/{idd?}"
+@using Factograph.Data
+
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
     IndexModel m = Model;
+    Factograph.Data.RRecord[] rrs = m.searchresults;
+
 }
 
-<div class="text-center">
-    id = @(m.id) 
-    idd = @m.idd
-    ss = @m.ss
-    sv = @m.tp
+<div class="text-center"> проверки
+    id = @(m.id), 
+    idd = @m.idd,
+    ss = @m.ss,
+    sv = @m.tp,
 </div>
-http://mag.iis.nsk.su/OpenA/Index/Default.cshtml
+
+@* Строим разные композиции в зависимости от входных данных *@
+@if (rrs.Length > 0)
+{
+    <p class="grad">
+        <a href="Default.cshtml" class="nov"><img src="img/ico-home.gif" class="ico-home" alt="" />Открытый архив</a>
+        &raquo;
+        Результаты поиска
+    </p>
+    <ul class="links">
+        @foreach (RRecord rr in rrs)
+        {
+            string nm = rr.GetName();
+            string dt = rr.GetDates();
+            string? descr = rr.GetField("http://fogid.net/o/description");
+            <li>
+                <a href='/index/@(rr.Id)' ).Value'>@nm</a>
+                @if (!string.IsNullOrEmpty(dt))
+                {
+                    <span>(@dt)</span>
+                }
+                @descr
+            </li>
+        }
+    </ul>
+
+}
+
+<div>Всего: @rrs.Count()</div>
