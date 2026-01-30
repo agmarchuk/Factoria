@@ -6,7 +6,7 @@
         {
             if (usl) return iftrue; return iffalse; 
         }
-        public static string Page(string? id, string? ss, string bw, string? sv ) => $@"<!DOCTYPE html>
+        public static string Page(string? ss, string? bw, string? sv, string body) => $@"<!DOCTYPE html>
 <html>
 <head>
     <meta charset='utf-8' />
@@ -27,7 +27,7 @@
                 -->
                 <tr>
                     <td class='block-top'>
-                        <a href='/Index'><img src='/img/logo.png' class='logo' alt='Открытый архив СО РАН' /></a>
+                        <a href='/home'><img src='/img/logo.png' class='logo' alt='Открытый архив СО РАН' /></a>
                         <div class='main-menu'>
                             <a href='' class='menu-item nov'>Фонды</a>
                             <span class='menu-sep'>|</span>
@@ -55,7 +55,7 @@
                     <td class='block-content'>
                         <div id='wrap'>
                             <div class='fk-ie'>
-                                <form method='post' action='/Index/'>
+                                <form method='post' action='/'>
                                     <div class='bsearch-1'>
                                         <div class='bsearch-2'>
                                             <div class='bsearch-3'>
@@ -68,10 +68,10 @@
                                                         </td>
                                                         <td class='s-input-1' style='width:50px;vertical-align:central;'>
                                                             <div class='search-form' style='width:20px; height:16px;vertical-align:central;'>
-" +                                                                
-(bw == "on" ? "<input name='bw' type='checkbox' checked style='width:20px; height:16px;vertical-align:central;' />" :
-              "<input name='bw' type='checkbox' style='width:20px; height:16px;vertical-align:central;' />" +
-                                                            $@"</div>
+                                                                
+{IF(bw == "on", "<input name='bw' type='checkbox' checked style='width:20px; height:16px;vertical-align:central;' />",
+              "<input name='bw' type='checkbox' style='width:20px; height:16px;vertical-align:central;' />")} 
+                                                            </div>
                                                         </td>
                                                         <td class='s-input-2' style=''>
                                                             <div class='search-form'>
@@ -104,7 +104,7 @@
                                     </div>
                                 </form>
                                 <br clear='all' />
-                                ==========RenderBody()
+                                ========== {body} ==========
                                 <br clear='all' />
 
 
@@ -150,6 +150,6 @@
         </div>
     </div>
 </body>
-</html>");
+</html>";
     }
 }
