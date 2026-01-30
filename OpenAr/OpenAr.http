@@ -1,0 +1,6 @@
+@OpenAr_HostAddress = http://localhost:5257
+
+GET {{OpenAr_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
