@@ -6,13 +6,15 @@
         {
             if (usl) return iftrue; return iffalse; 
         }
+        public static string appname = "";
         public static string Page(string? ss, string? bw, string? sv, string body) => $@"<!DOCTYPE html>
 <html>
 <head>
     <meta charset='utf-8' />
     <title>Открытый архив СО</title>
-    <link rel='stylesheet' type='text/css' href='/css/moo.css' />
-    <link rel='shortcut icon' href='/css/favicon.ico' type='image/x-icon'>
+    <base href='/OpenAr/' />
+    <link rel='stylesheet' type='text/css' href='css/moo.css' />
+    <link rel='shortcut icon' href='css/favicon.ico' type='image/x-icon'>
 </head>
 <body>
     <div id='site'>
@@ -27,7 +29,7 @@
                 -->
                 <tr>
                     <td class='block-top'>
-                        <a href='/home'><img src='/img/logo.png' class='logo' alt='Открытый архив СО РАН' /></a>
+                        <a href='home'><img src='img/logo.png' class='logo' alt='Открытый архив СО РАН' /></a>
                         <div class='main-menu'>
                             <a href='' class='menu-item nov'>Фонды</a>
                             <span class='menu-sep'>|</span>
@@ -55,7 +57,7 @@
                     <td class='block-content'>
                         <div id='wrap'>
                             <div class='fk-ie'>
-                                <form method='post' action='/'>
+                                <form method='post' action='post/'>
                                     <div class='bsearch-1'>
                                         <div class='bsearch-2'>
                                             <div class='bsearch-3'>
@@ -92,7 +94,7 @@
                                                         </td>
                                                         <td class='s-input-o'>
                                                             <a href='' class='small white'>
-                                                                Расширенный<br /><img src='/img/search-ext-btn.png' class='ext-btn' alt='' />поиск<img src='/img/p.gif' class='ext-btn' alt='' />
+                                                                Расширенный<br /><img src='img/search-ext-btn.png' class='ext-btn' alt='' />поиск<img src='img/p.gif' class='ext-btn' alt='' />
                                                             </a>
 
                                                         </td>
@@ -114,7 +116,7 @@
                         </div>
                     </td>
 
-                    <td class='sep-content'><img src='/img/p.gif' width='40' height='1' alt='' /></td>
+                    <td class='sep-content'><img src='img/p.gif' width='40' height='1' alt='' /></td>
                     <td class='block-right'>
                         ==========RenderSection('rightpanel', false)
                     </td>
@@ -126,13 +128,13 @@
                     <td class='block-content'>
                         <div class='line-bottom'> </div>
 
-                        <a href='#'><img src='/img/up_arrow.png' border='0' align='left' /></a>
+                        <a href='#'><img src='img/up_arrow.png' border='0' align='left' /></a>
 
 
                         <div class='copyright'>
                             &copy; 2013-2014 Институт Систем Информатики <br />
                             им. А.П. Ершова СО РАН<br />
-                            <a href='mailto:oda@iis.nsk.su?subject=Open Digital Archive'><img src='/img/ico-mail.gif' class='ico-mail' alt='Написать письмо' />Написать письмо</a>
+                            <a href='mailto:oda@iis.nsk.su?subject=Open Digital Archive'><img src='img/ico-mail.gif' class='ico-mail' alt='Написать письмо' />Написать письмо</a>
                         </div>
 
                         <div class='main-menu'>
@@ -149,6 +151,7 @@
             </table>
         </div>
     </div>
+<script src=""/_framework/aspnetcore-browser-refresh.js""></script>
 </body>
 </html>";
     }
