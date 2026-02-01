@@ -6,7 +6,6 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-//app.UseAuthorization();
 app.MapStaticAssets();
 
 Factograph.Data.IFDataService db = new Factograph.Data.FDataService();
@@ -15,10 +14,10 @@ Factograph.Data.IFDataService db = new Factograph.Data.FDataService();
 // А есть еще специально вычисляемые страницы, входы: /spec_name. Html-результат страницы формируется как
 // единый html-шаблон в который вставляеются вычисленные значения. Буду накапливать функции в классе Handlers.
 
-app.MapGet("~/", () => Results.Redirect("/home")); 
-app.MapGet("~/home/{id?}/{idd?}", (string? id, string? idd) => Results.Content(
+app.MapGet("/", () => Results.Redirect("/home")); 
+app.MapGet("/home/{id?}/{idd?}", (string? id, string? idd) => Results.Content(
     OpenAr.Handlers.Page("", "", "", "Get body"), "text/html", System.Text.Encoding.UTF8));
-app.MapPost("~/", async context =>
+app.MapPost("/", async context =>
 {
     string? ss = context.Request.Form["ss"];
     string? bw = context.Request.Form["bw"];
