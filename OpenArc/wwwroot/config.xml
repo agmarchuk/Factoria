@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+
+  <database connectionstring="rr:C:\Home\FactographDatabases\rr-test\"/>
+
+  <LoadCassette write="true">C:\Home\FactographProjects\Cassette_20211014</LoadCassette>
+  <LoadCassette>C:\Home\FactographProjects\Marchuk_cassettes\marchuk_cass_new\gi_arch_ran</LoadCassette>
+
+</config>

@@ -1,4 +1,8 @@
-﻿namespace OpenAr
+﻿using Factograph.Data;
+using System.Reflection;
+using System.Xml.Linq;
+
+namespace OpenAr
 {
     public class Handlers
     {
@@ -6,13 +10,12 @@
         {
             if (usl) return iftrue; return iffalse; 
         }
-        public static string appname = "";
         public static string Page(string? ss, string? bw, string? sv, string body) => $@"<!DOCTYPE html>
 <html>
 <head>
     <meta charset='utf-8' />
     <title>Открытый архив СО</title>
-    <base href='/OpenAr/' />
+    <base href='/' /> '/OpenAr/'
     <link rel='stylesheet' type='text/css' href='css/moo.css' />
     <link rel='shortcut icon' href='css/favicon.ico' type='image/x-icon'>
 </head>
@@ -20,27 +23,12 @@
     <div id='site'>
         <div class='pd'>
             <table cellpadding='0' cellspacing='0' border='0' width='100%'>
-                <!--
-                <tr>
-                <td class='header'>
-                &laquo;Открытый архив СО&nbsp;РАН как электронная система накопления, представления и&nbsp;хранения научного наследия&raquo; М-48
-                </td>
-                </tr>
-                -->
                 <tr>
                     <td class='block-top'>
                         <a href='home'><img src='img/logo.png' class='logo' alt='Открытый архив СО РАН' /></a>
                         <div class='main-menu'>
                             <a href='' class='menu-item nov'>Фонды</a>
                             <span class='menu-sep'>|</span>
-                            <!--
-                            <a href='' class='menu-item nov'>Персоны</a>
-                            <span class='menu-sep'>|</span>
-                            <a href='' class='menu-item nov'>Организации</a>
-                            <span class='menu-sep'>|</span>
-                            <a href='' class='menu-item nov'>Полезные ссылки</a>
-                            <span class='menu-sep'>|</span>
-                            -->
                             <a href='About.cshtml' class='menu-item nov'>О проекте</a>
                             <span class='menu-sep'>|</span>
                             <a href='Participants.cshtml' class='menu-item nov'>Участники</a>
@@ -80,14 +68,13 @@
                                                                 <select name='sv' style='width:100%;'>
                                                                     <option value=''></option>
 {IF(sv == "person", "<option selected value='person'>Персоны</option>", "<option value='person'>Персоны</option>")}
-{IF(sv == "org-sys", "<option selected value='org-sys'>Персоны</option>", "<option value='org-sys'>Организации</option>")}
+{IF(sv == "org-sys", "<option selected value='org-sys'>Организации</option>", "<option value='org-sys'>Организации</option>")}
 {IF(sv == "collection", "<option selected value='collection'>Коллекции</option>", "<option value='collection'>Коллекции</option>")}
 {IF(sv == "document", "<option selected value='document'>Документы</option>", "<option value='document'>Документы</option>")}
 {IF(sv == "city", "<option selected value='city'>Города</option>", "<option value='city'>Города</option>")}
 {IF(sv == "country", "<option selected value='country'>Страны</option>", "<option value='country'>Страны</option>")}
                                                                 </select>
                                                             </div>
-
                                                         </td>
                                                         <td>
                                                             <input type='submit' value='&nbsp; &nbsp;&nbsp;  найти' class='search-go' />
@@ -96,11 +83,9 @@
                                                             <a href='' class='small white'>
                                                                 Расширенный<br /><img src='img/search-ext-btn.png' class='ext-btn' alt='' />поиск<img src='img/p.gif' class='ext-btn' alt='' />
                                                             </a>
-
                                                         </td>
                                                     </tr>
                                                 </table>
-
                                             </div>
                                         </div>
                                     </div>
@@ -151,8 +136,36 @@
             </table>
         </div>
     </div>
-<script src=""/_framework/aspnetcore-browser-refresh.js""></script>
+<script src='/_framework/aspnetcore-browser-refresh.js'></script>
 </body>
 </html>";
+
+        public static string SearchResults(IEnumerable<RRecord> rresults)
+        {
+            string list = @"<ul>"
+                + rresults
+                    .Select(r =>
+                    {
+                        string nm = r.GetName("http://fogid.net/o/name");
+                        string d = r.GetDates();
+                        string dt = string.IsNullOrEmpty(d) ? string.Empty : "(" + d + ")";
+                        string? descr = r.GetField("http://fogid.net/o/description");
+                        return @$"<li>
+            <a href='home/{r.Id}'>{nm}</a>
+            {dt}
+            {descr}
+        </li>";
+                    }).Aggregate((sum, s) => sum + s)
+                + "</ul>\n";
+            return $@"
+<p class='grad'>
+	<a href='Default.cshtml' class='nov'><img src='img/ico-home.gif' class='ico-home' alt='' />Открытый архив</a>
+	&raquo;
+	Результаты поиска
+</p>
+{list}
+<div>Всего: {rresults.Count()}</div>";
+        }
+
     }
 }
