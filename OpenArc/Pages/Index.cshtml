@@ -1,9 +1,15 @@
-﻿@page
+﻿@page "{id?}/{idd?}"
+@using Factograph.Data
+@using Factograph.Data.r
 @model IndexModel
+
 @{
-    ViewData["Title"] = "Home page";
+    Rec? tree = Model.tree;
 }
 
-<div class="text-center">
-
-</div>
+@if (tree != null)
+{
+    <div class="text-center">
+        Это Index tree
+    </div>
+}

@@ -442,6 +442,10 @@ else // нет дерева
                     { Label = "Титул" },
                 new Inv("http://fogid.net/o/participant",
                     new Rec(null, "http://fogid.net/o/participation",
+                        new Str("http://fogid.net/o/from-date"),
+                        new Str("http://fogid.net/o/to-date"),
+                        new Str("http://fogid.net/o/role-classification"),
+                        new Tex("http://fogid.net/o/role") { Label = "должность" },
                         new Dir("http://fogid.net/o/in-org",
                             new Rec(null, "http://fogid.net/o/org-sys",
                                 new Tex("http://fogid.net/o/name"))))

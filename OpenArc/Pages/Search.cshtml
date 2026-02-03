@@ -1,0 +1,45 @@
+﻿@page 
+@using Factograph.Data
+
+@inject Factograph.Data.IFDataService db
+
+@{
+    string ss = Request.Query["ss"].ToString();
+    string tv = Request.Query["tv"].ToString();
+    string bw = Request.Query["bw"].ToString();
+
+    RRecord[] recs = new RRecord[0];
+
+    if (!string.IsNullOrEmpty(ss))
+    {
+        var qu = db.SearchRRecords(ss, bw == "on");
+        recs = qu.ToArray();
+    }
+}
+
+@if (recs.Length > 0)
+{
+<div>
+    <p class="grad">
+        <a href="Default.cshtml" class="nov"><img src="img/ico-home.gif" class="ico-home" alt="" />Открытый архив</a>
+        &raquo;
+        Результаты поиска
+    </p>
+    <ul class="links">
+        @foreach (RRecord rr in recs)
+        {
+            string nm = rr.GetName();
+            string dt = rr.GetDates();
+            string? descr = rr.GetField("http://fogid.net/o/description");
+            <li>
+                <a href='/index/@(rr.Id)' ).Value'>@nm</a>
+                @if (!string.IsNullOrEmpty(dt))
+                {
+                    <span>(@dt)</span>
+                }
+                @descr
+            </li>
+        }
+    </ul>
+</div>
+}

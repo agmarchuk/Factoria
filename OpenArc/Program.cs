@@ -1,6 +1,7 @@
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddSingleton<Factograph.Data.IFDataService, Factograph.Data.FDataService>();
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
@@ -14,13 +15,12 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseRouting();
-
-app.UseAuthorization();
+// app.UseAuthorization();
 
 app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
+app.MapGet("/", () => Results.Redirect("/index"));
 
 app.Run();

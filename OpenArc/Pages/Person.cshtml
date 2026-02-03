@@ -1,0 +1,24 @@
+﻿@page
+@using Factograph.Data
+@using Factograph.Data.r
+@model OpenArc.Pages.IndexModel
+
+@{
+	Rec? tree = Model.tree;
+	string? name = tree?.GetText("http://fogid.net/o/name");
+}
+
+@if (tree != null) 
+{
+	<p class="grad">
+		<a href="Default.cshtml" class="nov"><img src="img/ico-home.gif" class="ico-home" alt="" />Открытый архив</a>
+		&raquo;
+		Персоны
+		&raquo;
+		@name
+	</p>
+
+
+}
+
+
