@@ -20,10 +20,10 @@ namespace OpenArc.Pages
             this.db = db;
         }
 
-        public void OnGet(string? id, string idd)
+        public void OnGet(string? id, string? eid)
         {
-            if (id == null) id = funds_id;
-            RRecord? rr = db.GetRRecord(id, false);
+            if (id == null) id = "Cassette_20211014_tester_637763849054494762_1034"; //id = funds_id;
+            RRecord? rr = db.GetRRecord(id, true);
             if (rr == null) return;
             string tp = rr.Tp;
             var shablon = Rec.GetUniShablon(tp, 2, null, db.ontology);

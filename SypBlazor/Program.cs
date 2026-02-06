@@ -37,8 +37,10 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.MapBlazorHub();
+app.MapRazorPages();
 app.MapFallbackToPage("/_Host");
 app.MapControllerRoute(name: "default",
          pattern: "{controller=Home}/{action=Index}/{id?}");
-         
+app.MapGet("/", () => Results.Redirect("~/index/Cassette_20211014_tester_637763849054494762_1019"));         
+
 app.Run();

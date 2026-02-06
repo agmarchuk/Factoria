@@ -15,6 +15,7 @@ namespace Factograph.Data.r
         public string Label { get; set; } = string.Empty;
         public string SortField { get; set; } = string.Empty;
         public Pro[] Props { get; internal set; }
+        private IOntology ontology1;
         public Rec(string? id, string? tp, params Pro[] props)
         {
             this.Id = id;
@@ -25,7 +26,7 @@ namespace Factograph.Data.r
         public static Rec Build(RRecord? r, Rec? shablon, IOntology ontology, Func<string, RRecord?> getRecord)
         {
             if (r == null || shablon == null) return new Rec("noname", "notype");
-            Rec result = new(r.Id, r.Tp) { Label = shablon.Label };
+            Rec result = new(r.Id, r.Tp) { Label = shablon.Label, ontology1 = ontology };
 
             // Следуем шаблону. Подсчитаем количество стрелок
             int[] nprops = Enumerable.Repeat<int>(0, shablon.Props.Length)
@@ -349,6 +350,14 @@ namespace Factograph.Data.r
             Str str = (Str)group;
             return str.Value;
         }
+        public string? SayStr(string pred)
+        {
+            string? raw = GetStr(pred);
+            if (raw == null) return null;
+            string? ev = ontology1.EnumValue(pred, raw, "ru");
+            return ev ?? raw;
+        }
+
         public string? GetText(string pred)
         {
             var group = Props.FirstOrDefault(p => p.Pred == pred);

@@ -205,8 +205,8 @@
                             <td>
                                 <span style="color:green;">@(string.IsNullOrEmpty(iProp.Label) ? db.ontology.InvLabelOfOnto(pred) : iProp.Label)</span>
                                 @if (pred == "http://fogid.net/o/in-collection"
-                 || pred == "http://fogid.net/o/reflected"
-                 || pred == "http://fogid.net/o/inDocument")
+                || pred == "http://fogid.net/o/reflected"
+                || pred == "http://fogid.net/o/inDocument")
                                 {
                                     if (useshakhmat)
                                     {
@@ -422,6 +422,20 @@ else // нет дерева
                                     new Tex("http://fogid.net/o/name"),
                                     new Str("http://fogid.net/o/from-date")))))
             { Label = label };
+    private Pro InvSomething(string label = "геоинформация") =>
+        new Inv("http://fogid.net/o/something",
+            new Rec(null, "http://fogid.net/o/location",
+                new Dir("http://fogid.net/o/location-place",
+                    new Rec(null, null,
+                        new Tex("http://fogid.net/o/name")
+                        )),
+                new Str("http://fogid.net/o/from-date"),
+                new Str("http://fogid.net/o/to-date"),
+                new Tex("http://fogid.net/o/location-category"),
+                new Str("http://fogid.net/o/location-classification"))
+                { SortField = "http://fogid.net/o/from-date" })
+            { Label = label };
+
 
     private Rec CreateShablon(string tp)
     {
@@ -475,6 +489,7 @@ else // нет дерева
                     { Label = "Геоинформация" }
                 )
                 { Label = "Персона" };
+            //shablon = Rec.GetUniShablon(tp, 2, null, db.ontology); // Тестирующая вставка
         }
         else if ( //tp == "http://fogid.net/o/document"
         db.ontology.DescendantsAndSelf("http://fogid.net/o/document").Contains(tp))
@@ -554,8 +569,8 @@ else // нет дерева
                 new Str("http://fogid.net/o/from-date") { Label = "нач. дата" },
                 new Str("http://fogid.net/o/to-date") { Label = "кон. дата" },
                 new Tex("http://fogid.net/o/description") { Label = "описание" },
-                new Str("http://fogid.net/o/org-category") { Label = "категория" },
-                new Tex("http://fogid.net/o/org-classification") { Label = "классификатор" },
+                new Tex("http://fogid.net/o/org-category") { Label = "категория" },
+                new Str("http://fogid.net/o/org-classification") { Label = "классификатор" },
                 new Inv("http://fogid.net/o/has-title",
                     new Rec(null, "http://fogid.net/o/titled",
                         new Tex("http://fogid.net/o/degree"),
@@ -574,18 +589,7 @@ else // нет дерева
                         { SortField = "http://fogid.net/o/from-date" })
                     { Label = "Участники" },
                 InvReflected("Отражен"),
-                new Inv("http://fogid.net/o/something",
-                    new Rec(null, "http://fogid.net/o/location",
-                        new Dir("http://fogid.net/o/location-place",
-                            new Rec(null, null,
-                                new Tex("http://fogid.net/o/name")
-                                )),
-                        new Str("http://fogid.net/o/from-date"),
-                        new Str("http://fogid.net/o/to-date"),
-                        new Tex("http://fogid.net/o/location-category"),
-                        new Str("http://fogid.net/o/location-classification"))
-                        { SortField = "http://fogid.net/o/from-date" })
-                    { Label = "Геоинформация" }
+                InvSomething()
                 )
                 { Label = "Организация" };
         }
