@@ -3,7 +3,7 @@
 
   <database connectionstring="rr:C:\Home\FactographDatabases\rr-test\"/>
 
-  <LoadCassette write="true">C:\Home\FactographProjects\Cassette_20211014</LoadCassette>
-  <LoadCassette>C:\Home\FactographProjects\Marchuk_cassettes\marchuk_cass_new\gi_arch_ran</LoadCassette>
+  <LoadCassette write="true">C:\Home\FactographProjects\syp_cassettes\SypCassete</LoadCassette>
+  <LoadCassette write="true">C:\Home\FactographProjects\syp_cassettes\SypUsers</LoadCassette>
 
 </config>

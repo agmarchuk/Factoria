@@ -1,46 +1,361 @@
-﻿@page "/index/{id?}/{idd?}"
+﻿@page
 @using Factograph.Data
-
+@using Factograph.Data.r
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
     IndexModel m = Model;
-    Factograph.Data.RRecord[] rrs = m.searchresults;
-
 }
 
-<div class="text-center"> проверки
-    id = @(m.id), 
-    idd = @m.idd,
-    ss = @m.ss,
-    sv = @m.tp,
-</div>
-
-@* Строим разные композиции в зависимости от входных данных *@
-@if (rrs.Length > 0)
+@if(m.search_results.Length > 0)
 {
-    <p class="grad">
-        <a href="Default.cshtml" class="nov"><img src="img/ico-home.gif" class="ico-home" alt="" />Открытый архив</a>
-        &raquo;
-        Результаты поиска
-    </p>
-    <ul class="links">
-        @foreach (RRecord rr in rrs)
-        {
-            string nm = rr.GetName();
-            string dt = rr.GetDates();
-            string? descr = rr.GetField("http://fogid.net/o/description");
-            <li>
-                <a href='/index/@(rr.Id)' ).Value'>@nm</a>
-                @if (!string.IsNullOrEmpty(dt))
+    <div>
+        <p class="grad">
+            <a href="/" class="nov"><img src="img/ico-home.gif" class="ico-home" alt="" />Открытый архив</a>
+            &raquo;
+            Результаты поиска
+        </p>
+        <ul class="links">
+            @foreach (RRecord rr in m.search_results)
+            {
+                string nm = rr.GetName();
+                string dt = rr.GetDates();
+                string? descr = rr.GetField("http://fogid.net/o/description");
+                <li>
+                    <a href='?id=@(rr.Id)' ).Value'>@nm</a>
+                    @if (!string.IsNullOrEmpty(dt))
+                    {
+                        <span>(@dt)</span>
+                    }
+                    @descr
+                </li>
+            }
+        </ul>
+    </div>
+} else
+{
+    Rec? tree = @Model.tree;
+
+    string? name = tree?.GetText("http://fogid.net/o/name");
+    string? dates = tree?.GetDates();
+    string? description = tree?.GetText("http://fogi.net/o/description");
+
+    if (tree == null)
+    {
+        <div class="text-center">
+            Это пустой портрет
+        </div>
+    }
+    else if (tree.Tp == "http://fogid.net/o/person")
+    {
+        <p class="grad">
+            <a href="" class="nov"><img src="img/ico-home.gif" class="ico-home" alt="" />Открытый архив</a>
+            &raquo;
+            Персоны
+            &raquo;
+            @name
+        </p>
+        <div class="heading1">
+            <h1>
+                @name
+                @dates
+            </h1>
+        </div>
+        <p>
+            @tree.GetText("http://fogid.net/o/description")
+        </p>
+        <table cellpadding="0" cellspacing="0" border="0" width="100%" class="info-person">
+            @{
+                // ===== Подготовка списков отношений ====
+                var titles = tree.GetInverse("http://fogid.net/o/has-title");
+                var works = tree.GetInverse("http://fogid.net/o/participant").Where(re =>
                 {
-                    <span>(@dt)</span>
+                    var org = re.GetDirect("http://fogid.net/o/in-org");
+                    string? org_classification = org?.GetStr("http://fogid.net/o/org-classification");
+                    return string.IsNullOrEmpty(org_classification) || org_classification == "organization";
+                });
+                var notworks = tree.GetInverse("http://fogid.net/o/participant").Where(re =>
+                {
+                    var org = re.GetDirect("http://fogid.net/o/in-org");
+                    string? org_classification = org?.GetStr("http://fogid.net/o/org-classification");
+                    return !string.IsNullOrEmpty(org_classification) && org_classification != "organization";
+                });
+                // Проживание
+                var livings = tree.GetInverse("http://fogid.net/o/something");
+
+                // Авторство
+                var auth = tree.GetInverse("http://fogid.net/o/author");
+
+                // Документы, отражающие
+                var refl_docs = tree.GetInverse("http://fogid.net/o/reflected");
+
+                if (titles.Count() > 0)
+                {
+                    <tr valign="top">
+                        <td width="25%" class="line-name">Титул:</td>
+                        <td width="75%" class="line-info">
+                            @foreach (var tit in titles.OrderBy(t => t.GetDates()))
+                            {
+                                string dts = tit.GetDates();
+                                <span>@tit.GetText("http://fogid.net/o/degree")</span>
+                                if (!string.IsNullOrEmpty(dts))
+                                {
+                                    <span>(@dts)</span>
+                                }
+                                <br />
+                            }
+                        </td>
+                    </tr>
                 }
-                @descr
-            </li>
+                @if (works.Count() > 0)
+                {
+                    <tr valign="top">
+                        <td width="25%" class="line-name">Место работы:</td>
+                        <td width="75%" class="line-info">
+                            @foreach (var work in works.OrderBy(w => w.GetStr("http://fogid.net/o/from-date")))
+                            {
+                                var org = work.GetDirect("http://fogid.net/o/in-org");
+                                string? nm = org?.GetText("http://fogid.net/o/name");
+                                string? dt = work?.GetDates();
+                                if (org != null)
+                                {
+                                    <a href='?id=@org.Id'>@nm</a>
+                                    if (!string.IsNullOrEmpty(dt))
+                                    {
+                                        <span>(@dt)</span>
+                                    }
+                                    <br />
+                                }
+                            }
+                        </td>
+                    </tr>
+                }
+                @if (notworks.Count() > 0)
+                {
+                    <tr valign="top">
+                        <td width="25%" class="line-name">Участие в мероприятиях:</td>
+                        <td width="75%" class="line-info">
+                            @foreach (var part in notworks.OrderBy(w => w.GetStr("http://fogid.net/o/from-date")))
+                            {
+                                var org = part.GetDirect("http://fogid.net/o/in-org");
+                                string? nm = org?.GetText("http://fogid.net/o/name");
+                                string? dt = part?.GetDates();
+                                if (org != null)
+                                {
+                                    <a href='?id=@org.Id'>@nm</a>
+                                    if (!string.IsNullOrEmpty(dt))
+                                    {
+                                        <span>(@dt)</span>
+                                    }
+                                    <br />
+                                }
+                            }
+                        </td>
+                    </tr>
+                }
+                @if (@livings.Count() > 0)
+                {
+                    <tr valign="top">
+                        <td width="25%" class="line-name">Геоинформация:</td>
+                        <td width="75%" class="line-info">
+                            @foreach (var live in livings)
+                            {
+                                var geo = live.GetDirect("http://fogid.net/o/location-place");
+                                string? nm = geo?.GetText("http://fogid.net/o/name");
+                                string? dt = live?.GetDates();
+                                string? lc = live?.SayStr("http://fogid.net/o/location-classification");
+                                if (geo != null)
+                                {
+                                    <a href='?id=@geo.Id'>@nm</a>
+                                    <span>@lc</span>
+                                    if (!string.IsNullOrEmpty(dt))
+                                    {
+                                        <span>(@dt)</span>
+                                    }
+                                    <br />
+                                }
+
+                            }
+                        </td>
+                    </tr>
+                }
+
+            }
+        </table>
+        <br />
+        <br />
+        @if (auth.Count() > 0)
+        {
+            <div class="heading3">
+                <h3>Является автором/получателем документов</h3>
+            </div>
+
+            <table cellpadding="0" cellspacing="0" border="0" width="100%" class="info-docs">
+                <tr>
+                    <th width="15%"><a href="sort">Дата</a></th>
+                    <th width="65%" class="th-document-name"><a href="sort">Название документа<img src="img/ico-sort-down.gif" alt="" /></a></th>
+                    <th width="20%"><a href="sort">автор/получатель</a></th>
+                </tr>
+                @foreach (var aut in auth.OrderBy(au => au.GetDirect("http://fogid.net/o/adoc")?.GetStr("http://fogid.net/o/from-date")))
+                {
+                    var doc = aut.GetDirect("http://fogid.net/o/adoc");
+                    if (doc == null) continue;
+                    string dt = doc.GetDates();
+                    string? nm = doc.GetText("http://fogid.net/o/name");
+                    string? ds = doc.GetText("http://fogid.net/o/description");
+                    var auth_spec = aut.SayStr("http://fogid.net/o/authority-specificator");
+                    //string au_s = auth_spec == "author" ? "автор" :
+                    //(auth_spec == "recipient" ? "получатель" : auth_spec);
+                    <tr valign="top">
+                        <td width="15%">@dt</td>
+                        <td width="65%">
+                            <a href='?id=@doc.Id'>@nm</a><br />
+                            <span class="small">@ds</span>
+                        </td>
+                        <td width="20%">
+                            @auth_spec
+                        </td>
+                    </tr>
+                }
+            </table>
         }
-    </ul>
+        @if (refl_docs.Count() > 0)
+        {
+            <br />
+            <div class="heading3">
+                <h3>Отражен в документах</h3>
+            </div>
 
+            <table cellpadding="0" cellspacing="0" border="0" width="100%" class="info-docs">
+                <tr>
+                    <th width="20%"><a href="sort">Дата</a></th>
+                    <th width="80%" class="th-document-name"><a href="sort">Название документа<img src="img/ico-sort-down.gif" alt="" /></a></th>
+                </tr>
+                @foreach (var doc in refl_docs
+                    .Select(r => r.GetDirect("http://fogid.net/o/in-doc"))
+                    .OrderBy(r => r?.GetStr("http://fogid.net/o/from-date")))
+                {
+                    string dt = doc.GetDates();
+                    string? nm = doc.GetText("http://fogid.net/o/name");
+                    string? ds = doc.GetText("http://fogid.net/o/description");
+
+                    <tr valign="top">
+                        <td width="20%">@dt</td>
+                        <td width="80%">
+                            <a href='?id=@doc.Id'>@nm</a><br />
+                            <span class="small">@ds</span>
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
+
+    }
+    else if (tree.Tp == "http://fogid.net/o/document")
+    {
+        <p class="grad">
+            <a href="" class="nov"><img src="img/ico-home.gif" class="ico-home" alt="" />Открытый архив</a>
+            &raquo;
+            Документы
+            &raquo;
+            @name
+        </p>
+        <div class="heading1"> <h1>@name</h1> </div>
+
+        <table cellpadding="0" cellspacing="0" border="0" width="100%" class="info-document">
+            @if (!string.IsNullOrEmpty(dates))
+            {
+                <tr valign="top">
+                    <td width="25%" class="line-name">Дата:</td>
+                    <td width="75%" class="line-info">@dates</td>
+                </tr>
+            }
+            @if (!string.IsNullOrEmpty(description))
+            {
+                <tr valign="top">
+                    <td width="25%" class="line-name">Описание документа:</td>
+                    <td width="75%" class="line-info">@description</td>
+                </tr>
+            }
+            @{
+                // Части документа
+                var parts = tree.GetInverse("http://fogid.net/o/inDocument")
+                .Select(dp => new
+                {
+                    docpart = dp.GetDirect("http://fogid.net/o/partItem"),
+                    page = dp.GetStr("http://fogid.net/o/pageNumbers")
+                })
+                .OrderBy(pair => pair.page)
+                .ThenBy(pair => pair.docpart?.GetText("http://fogid.net/o/name"))
+                .Select(pair => pair.docpart);
+
+                @if (parts.Count() > 0)
+                {
+                    <tr>
+                        <td class="doc-show-small">&nbsp;</td>
+                        <td class="doc-show-small">
+                            @foreach (var doc in parts)
+                            {
+                                string? nm = doc?.GetText("http://fogid.net/o/name");
+                                string? uri = doc?.GetStr("http://fogid.net/o/uri");
+
+                                <div class="show-small">
+                                    <a href="?id=@doc?.Id"><img src="photo?uri=@uri&s=small" border="0" vspace="10" hspace="10" alt="" /></a>
+                                    <br />
+                                    @nm
+                                </div>
+                            }
+
+                        </td>
+                    </tr>
+                }
+
+            }
+        </table>
+    }
+    else if (tree.Tp == "http://fogid.net/o/photo-doc")
+    {
+        <p class="grad">
+            <a href="" class="nov"><img src="img/ico-home.gif" class="ico-home" alt="" />Открытый архив</a>
+            &raquo;
+            Фото
+            &raquo;
+            @name
+        </p>
+
+        @*     <div class="heading1">
+        <h1>@name (лист @(part_ind + 1) из @parts.Length)</h1>
+    </div>
+
+    <div>
+        <a href="Portrait.cshtml?id=@id">К документу</a>
+        |
+        @if (part_ind > 0)
+        {
+            string idd = parts[part_ind - 1].Attribute("id").Value;
+            <a href="DocumentImage.cshtml?id=@id&eid=@idd">пред.</a>
+        }
+        else
+        {
+            <span>пред.</span>
+        }
+        |
+        @if (part_ind < parts.Length - 1)
+        {
+            string idd = parts[part_ind + 1].Attribute("id").Value;
+            <a href="DocumentImage.cshtml?id=@id&eid=@idd">след.</a>
+        }
+        else
+        {
+            <span>след.</span>
+        }
+    </div>
+ *@
+        <br />
+
+    }
+    else
+    {
+        <div>Это запись типа @tree.Tp</div>
+    }
 }
-
-<div>Всего: @rrs.Count()</div>
