@@ -233,6 +233,7 @@
                 </tr>
                 @foreach (var doc in refl_docs
                     .Select(r => r.GetDirect("http://fogid.net/o/in-doc"))
+                    .Where(d => d != null)
                     .OrderBy(r => r?.GetStr("http://fogid.net/o/from-date")))
                 {
                     string dt = doc.GetDates();
