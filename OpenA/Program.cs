@@ -24,4 +24,38 @@ app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
 
+// Перезагрузка
+app.MapGet("/room216", (Factograph.Data.IFDataService db) =>
+{
+    db.Reload();
+    return Results.Redirect("/index");
+});
+
+// Выдача мультимедиа документов
+app.MapGet("/photo", (HttpRequest request, Factograph.Data.IFDataService db) =>
+{
+    string? uri = request.Query["uri"].FirstOrDefault();
+    if (uri == null) return Results.Empty;
+    string? sz = request.Query["s"].FirstOrDefault();
+    string s = sz ?? "normal";
+    string path = db.GetFilePath(uri, s);
+    if (string.IsNullOrEmpty(path) || !System.IO.File.Exists(path + ".jpg"))
+    {
+        return Results.Empty;
+    }
+    return Results.File(path + ".jpg", "image/jpeg");
+});
+app.MapGet("/video", (HttpRequest request, Factograph.Data.IFDataService db) =>
+{
+    string? uri = request.Query["uri"].FirstOrDefault();
+    if (uri == null) return Results.Empty;
+    string? path = db.GetFilePath(uri, "medium");
+    if (string.IsNullOrEmpty(path) || !System.IO.File.Exists(path + ".mp4"))
+    {
+        return Results.Empty;
+    }
+    return Results.File(path + ".mp4", "video/mp4");
+});
+
+
 app.Run();
