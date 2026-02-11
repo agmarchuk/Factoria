@@ -30,7 +30,8 @@
 @if (!string.IsNullOrEmpty(searchstring))
 {
     if (stype == null && typs.Length > 0 && !string.IsNullOrEmpty(typs[0])) { stype = typs[0]; }
-    foreach (var rec in db.SearchRRecords(searchstring, bywords))
+    var sresults = db.SearchRRecords(searchstring, bywords).ToArray();
+    foreach (var rec in sresults)
     {
         string tp = rec.Tp;
         if (stype != null && stype != tp) { continue; }

@@ -7,9 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="appsettings.Development.json" />
+    <Content Remove="appsettings.json" />
     <Content Remove="Components\MatBox.razor" />
     <Content Remove="Components\Shakhmatka.razor" />
     <Content Remove="Components\Shakhmatka_edit.razor" />
+    <Content Remove="wwwroot\config.xml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,14 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Factograph.Data\Factograph.Data.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
   </ItemGroup>
 
 </Project>

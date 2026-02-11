@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <users>
-	<user>
-		<name>tester</name>
-		<password>ttt</password>
+  <user>
+    <name>tester</name>
+    <password>ttt</password>
     <role>User</role>
-	</user>
+  </user>
   <user>
     <name>mag</name>
     <password>mmm</password>

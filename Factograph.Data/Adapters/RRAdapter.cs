@@ -258,14 +258,25 @@ namespace Factograph.Data.Adapters
 
         public IEnumerable<object> SearchName(string searchstring)
         {
+            //if (searchstring == "п")
+            //{
+            //    var gal = records.GetAllByLike(0, searchstring)
+            //    .Select(r => ConvertNaming(r))
+            //    .Where(r => r != null)
+            //    .Distinct<object>(rSame)
+            //    .ToArray();
+            //}
             var qu1 = records.GetAllByLike(0, searchstring)
                 .Select(r => ConvertNaming(r))
+                .Where(r => r != null)
                 .Distinct<object>(rSame);
             return qu1;
         }
         // Используется для решения отношения naming
-        private object ConvertNaming(object oo)
+        private object ConvertNaming(object ob)
         {
+            object oo = ob;
+
             string tp = (string)((object[])oo)[1];
             if (tp == "http://fogid.net/o/naming")
             {
