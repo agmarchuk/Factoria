@@ -21,9 +21,15 @@
         // В это месте, для хендлера onNewItem есть еще дополнительная информация вида:
         // d.Pred - имя предиката прямой ссылки для данной записи. Отработать onSelected
         // можно и нужно после появления идентификатора нового айтема. Заталкиваю его в параметры
-        var typps = db.ontology.RangesOfProp(d.Pred)
+        string[]? typps = db.ontology.RangesOfProp(d.Pred)
             .SelectMany(t => db.ontology.DescendantsAndSelf(t))
+            .Where(tt => tt != "http://fogid.net/o/sys-obj")
             .Distinct().ToArray();
+        if (db.precalculated != null && ((object[])db.precalculated) != null && ((object[])db.precalculated).Length > 1)
+        {
+            Dictionary<string, string[]> target = (Dictionary<string, string[]>)((object[])db.precalculated)[1];
+            if (target != null && target.ContainsKey(d.Pred)) typps = target[d.Pred];
+        }
         <td colspan="2" style="background-color: antiquewhite; width:100%;">
             <SypBlazor.Components.SearchPanel typs="@typps" user="@user"
             onNewItem="stss => NewItemClick((Tuple<string, string>)stss, d.Pred)"

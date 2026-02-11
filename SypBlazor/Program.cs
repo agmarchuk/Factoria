@@ -41,6 +41,22 @@ app.MapRazorPages();
 app.MapFallbackToPage("/_Host");
 app.MapControllerRoute(name: "default",
          pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapGet("/", () => Results.Redirect("~/index/Cassette_20211014_tester_637763849054494762_1019"));         
+app.MapGet("/", (Factograph.Data.IFDataService db) =>
+{
+    if (db.precalculated == null) // Предвычисления
+    {
+        db.precalculated = new object[2];
+        Dictionary<string, string[]> targets = new Dictionary<string, string[]>();
+        targets.Add("http://fogid.net/o/info-source", new string[] { "http://fogid.net/o/person", "http://fogid.net/o/org-sys" });
+        targets.Add("http://fogid.net/o/author", new string[] { "http://fogid.net/o/person", "http://fogid.net/o/org-sys" });
+        targets.Add("http://fogid.net/o/location-place", new string[] { "http://fogid.net/o/city", "http://fogid.net/o/country", "http://fogid.net/o/region", "http://fogid.net/o/geosys-special" });
+
+        ((object[])db.precalculated)[1] = targets;
+    }
+    return Results.Redirect("~/index/Cassette_20211014_tester_637763849054494762_1019");
+});
+
+// ====== Предвычисления =======
+//var db = app.Services.GetService(typeof(DataService));
 
 app.Run();

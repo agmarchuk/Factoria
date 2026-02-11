@@ -876,7 +876,8 @@ else // нет дерева
             }
         }
 
-        if (typs.Length == 0) typs = db.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj").ToArray();
+        if (typs.Length == 0) typs = Enumerable.Repeat("", 1).Concat(
+            db.ontology.DescendantsAndSelf("http://fogid.net/o/sys-obj")).ToArray();
 
         if (entityId == null)
         {

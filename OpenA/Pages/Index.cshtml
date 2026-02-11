@@ -232,9 +232,9 @@
                     <th width="80%" class="th-document-name"><a href="sort">Название документа<img src="img/ico-sort-down.gif" alt="" /></a></th>
                 </tr>
                 @foreach (var doc in refl_docs
-                    .Select(r => r.GetDirect("http://fogid.net/o/in-doc"))
-                    .Where(d => d != null)
-                    .OrderBy(r => r?.GetStr("http://fogid.net/o/from-date")))
+                  .Select(r => r.GetDirect("http://fogid.net/o/in-doc"))
+                  .Where(d => d != null)
+                  .OrderBy(r => r?.GetStr("http://fogid.net/o/from-date")))
                 {
                     string dt = doc.GetDates();
                     string? nm = doc.GetText("http://fogid.net/o/name");
@@ -297,11 +297,14 @@
                         <td class="doc-show-small">
                             @foreach (var doc in parts)
                             {
+                                if (doc == null) { continue; }
                                 string? nm = doc?.GetText("http://fogid.net/o/name");
                                 string? uri = doc?.GetStr("http://fogid.net/o/uri");
-
+                                string src = doc.Tp == "http://fogid.net/o/photo-doc" ? $"photo?uri={uri}&s=small" :
+                                (doc.Tp == "http://fogid.net/o/photo-doc" ? "" :
+                                "img/icon-folder-big.png");
                                 <div class="show-small">
-                                    <a href="?id=@doc?.Id"><img src="photo?uri=@uri&s=small" border="0" vspace="10" hspace="10" alt="" /></a>
+                                    <a href="?id=@doc?.Id"><img src="@src" border="0" vspace="10" hspace="10" alt="" /></a>
                                     <br />
                                     @nm
                                 </div>
