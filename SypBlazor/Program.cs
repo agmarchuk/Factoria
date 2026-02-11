@@ -53,7 +53,7 @@ app.MapGet("/", (Factograph.Data.IFDataService db) =>
 
         ((object[])db.precalculated)[1] = targets;
     }
-    return Results.Redirect("~/index/Cassette_20211014_tester_637763849054494762_1019");
+    return Results.Redirect("~/index");
 });
 
 // ====== Предвычисления =======
