@@ -13,15 +13,13 @@ bin
 
 obj
 .vs
-#/FTTree/wwwroot/config.xml
-#/Factoria/wwwroot/config.xml
-#/Family/wwwroot/config.xml
-logfile_put.txt
-/SypBlazor/wwwroot/config.xml
-#/SypBlazor/wwwroot/logfile_put.txt
-#/ConsoleTest/wwwroot/config.xml
+
 /SypBlazor/appsettings.json
+/SypBlazor/wwwroot/logfile_put.txt
+/SypBlazor/wwwroot/config.xml
+/SypBlazor/wwwroot/Users.xml
+
+
 /Tres/wwwroot/config.xml
 /Uno/wwwroot/config.xml
 /OpenA/wwwroot/config.xml
-/SypBlazor/wwwroot/Users.xml
