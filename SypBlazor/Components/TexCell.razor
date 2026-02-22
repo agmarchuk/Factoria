@@ -31,8 +31,16 @@
         </select>
     </td>
     <td style="width:100%;">
-        <input type="text" @bind-value="@(((Tex)property).Values[langIndex].Text)"
-               hidden="@(string.IsNullOrEmpty(currentLanguage))" style="width:100%;" />
+        @if (t.Pred == "http://fogid.net/o/description" || t.Pred == "http://fogid.net/o/doc-content")
+        {
+            <textarea @bind="@(((Tex)property).Values[langIndex].Text)"
+                      hidden="@(string.IsNullOrEmpty(currentLanguage))" style="width:100%;" />
+        }
+        else
+        {
+            <input type="text" @bind-value="@(((Tex)property).Values[langIndex].Text)"
+                   hidden="@(string.IsNullOrEmpty(currentLanguage))" style="width:100%;" />
+        }
     </td>
 }
 
