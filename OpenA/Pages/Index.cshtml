@@ -232,9 +232,9 @@
                     <th width="80%" class="th-document-name"><a href="sort">Название документа<img src="img/ico-sort-down.gif" alt="" /></a></th>
                 </tr>
                 @foreach (var doc in refl_docs
-                  .Select(r => r.GetDirect("http://fogid.net/o/in-doc"))
-                  .Where(d => d != null)
-                  .OrderBy(r => r?.GetStr("http://fogid.net/o/from-date")))
+    .Select(r => r.GetDirect("http://fogid.net/o/in-doc"))
+    .Where(d => d != null)
+    .OrderBy(r => r?.GetStr("http://fogid.net/o/from-date")))
                 {
                     string dt = doc.GetDates();
                     string? nm = doc.GetText("http://fogid.net/o/name");
@@ -254,6 +254,8 @@
     }
     else if (tree.Tp == "http://fogid.net/o/document")
     {
+        string? uri = tree.GetStr("http://fogid.net/o/uri");
+
         <p class="grad">
             <a href="" class="nov"><img src="img/ico-home.gif" class="ico-home" alt="" />Открытый архив</a>
             &raquo;
@@ -263,6 +265,10 @@
         </p>
         <div class="heading1"> <h1>@name</h1> </div>
 
+        @if (uri != null)
+        {
+            <div><a href="doc?u=@uri">документ</a></div>
+        }
         <table cellpadding="0" cellspacing="0" border="0" width="100%" class="info-document">
             @if (!string.IsNullOrEmpty(dates))
             {
@@ -299,10 +305,13 @@
                             {
                                 if (doc == null) { continue; }
                                 string? nm = doc?.GetText("http://fogid.net/o/name");
-                                string? uri = doc?.GetStr("http://fogid.net/o/uri");
-                                string src = doc.Tp == "http://fogid.net/o/photo-doc" ? $"photo?uri={uri}&s=small" :
-                                (doc.Tp == "http://fogid.net/o/photo-doc" ? "" :
-                                "img/icon-folder-big.png");
+                                string? uri_doc = doc?.GetStr("http://fogid.net/o/uri");
+                                string src = doc.Tp == "http://fogid.net/o/photo-doc" ? $"photo?u={uri_doc}&s=small" :
+                                (doc.Tp == "http://fogid.net/o/video-doc" ? $"video?u={uri_doc}" :
+                                (doc.Tp == "http://fogid.net/o/audio-doc" ? $"audio?u={uri_doc}" :
+                                (doc.Tp == "http://fogid.net/o/document" && uri_doc != null ? $"doc?u={uri_doc}" :
+                                "img/icon-folder-big.png")));
+
                                 <div class="show-small">
                                     <a href="?id=@doc?.Id"><img src="@src" border="0" vspace="10" hspace="10" alt="" /></a>
                                     <br />
@@ -313,12 +322,45 @@
                         </td>
                     </tr>
                 }
-
             }
         </table>
     }
     else if (tree.Tp == "http://fogid.net/o/photo-doc")
     {
+        string? id = m.id;
+        // Части документа
+        Rec? part = tree.GetInverse("http://fogid.net/o/partItem") // Набор разных частей цепочек к документам, обычно одна часть
+            .FirstOrDefault(); // Выбираем одну произвольную
+        Rec? maindoc = part?.GetDirect("http://fogid.net/o/inDocument");
+        RRecord? mrrec = maindoc == null ? null : m.db.GetRRecord(maindoc.Id, true);
+        int part_ind = -1;
+        RRecord[] parts = new RRecord[0];
+        if (mrrec != null)
+        {
+            // Найдем все части документа и отсортируем их по номерам страниц
+            parts = mrrec.Props
+                .Where(r => r is RInverseLink && r.Prop == "http://fogid.net/o/inDocument")
+                .Cast<RInverseLink>()
+                .Select(ril => 
+                    {
+                        RRecord? rrec = m.db.GetRRecord(ril.Source, false);
+                        string? pg = rrec?.GetField("http://fogid.net/o/pageNumbers");
+                        return new { rrec, pg };
+                    })
+                .OrderBy(pair => pair.pg)
+                .Select(pair => pair.rrec)
+                .Where(r => r != null)
+                .Cast<RRecord>()
+                .ToArray();
+            // Теперь найдем "свою" часть и ее индекс
+            part_ind = parts.Select((r, i) => new { r, i })
+                .First(pa => pa.r.Id == part?.Id)
+                .i;
+        }
+
+        // uri
+        string? uri = tree.GetStr("http://fogid.net/o/uri");
+
         <p class="grad">
             <a href="" class="nov"><img src="img/ico-home.gif" class="ico-home" alt="" />Открытый архив</a>
             &raquo;
@@ -326,36 +368,44 @@
             &raquo;
             @name
         </p>
+        <div class="heading1">
+            <h1>@name <span style="font-size:smaller;">(лист @(part_ind + 1) из @parts.Length)</span></h1>
+        </div>
 
-        @*     <div class="heading1">
-        <h1>@name (лист @(part_ind + 1) из @parts.Length)</h1>
-    </div>
+        @if (parts != null && parts.Length > 0)
+        {
+            <div>
+                @if (part_ind != -1 && parts != null)
+                {
+                    <a href="?id=@maindoc?.Id">К документу</a>
+                    <span> | </span>
+                }
+                @if (part_ind > 0)
+                {
+                    string? idd = parts?[part_ind - 1].GetDirect("http://fogid.net/o/partItem")?.Id;
+                    <a href="?id=@idd">пред.</a>
+                }
+                else
+                {
+                    <span>пред.</span>
+                }
+                <span> | </span>
+                @if (part_ind < parts?.Length - 1)
+                {
+                    string? idd = parts?[part_ind + 1].GetDirect("http://fogid.net/o/partItem")?.Id;
+                    <a href="?id=@idd">след.</a>
+                }
+                else
+                {
+                    <span>след.</span>
+                }
+            </div>
+        }
 
-    <div>
-        <a href="Portrait.cshtml?id=@id">К документу</a>
-        |
-        @if (part_ind > 0)
-        {
-            string idd = parts[part_ind - 1].Attribute("id").Value;
-            <a href="DocumentImage.cshtml?id=@id&eid=@idd">пред.</a>
-        }
-        else
-        {
-            <span>пред.</span>
-        }
-        |
-        @if (part_ind < parts.Length - 1)
-        {
-            string idd = parts[part_ind + 1].Attribute("id").Value;
-            <a href="DocumentImage.cshtml?id=@id&eid=@idd">след.</a>
-        }
-        else
-        {
-            <span>след.</span>
-        }
-    </div>
- *@
+        
         <br />
+
+        <div><img src="photo?s=normal&u=@uri" border="0" /></div>
 
     }
     else

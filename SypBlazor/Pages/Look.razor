@@ -1,0 +1,26 @@
+﻿@page "/look/{entityId?}/{eid?}"
+
+@using Factograph.Data
+@using Factograph.Data.r
+
+@inject Factograph.Data.IFDataService db
+
+<h1>Посмотреть</h1>
+
+@if (entityId != null)
+{
+    RRecord? rr = db.GetRRecord(entityId, true);
+    if (rr != null)
+    {
+        <div>
+            @((MarkupString)rr.BuildPortrait(null, 2))
+        </div>
+    }
+}
+
+@code {
+    [Parameter] // Фокусная запись
+    public string? entityId { get; set; }
+    [Parameter] // Внешная запись
+    public string? eid { get; set; }
+}

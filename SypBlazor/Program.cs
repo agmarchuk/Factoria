@@ -56,7 +56,13 @@ app.MapGet("/", (Factograph.Data.IFDataService db) =>
     return Results.Redirect("~/index");
 });
 
-// ====== Предвычисления =======
-//var db = app.Services.GetService(typeof(DataService));
+//// ====== отладочный вход =======
+//app.MapGet("/look/{id}", (Factograph.Data.IFDataService db, string id) =>
+//{
+//    var rr = db.GetRRecord(id, true);
+//    string html = "<h1>Привет</h1>";
+//    if (rr != null) html = rr.BuildPortrait(null, 2);
+//    return Results.Text(html, "text/html", System.Text.Encoding.UTF8);
+//});
 
 app.Run();

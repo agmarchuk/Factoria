@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -34,7 +36,7 @@ app.MapGet("~/room216", (Factograph.Data.IFDataService db) =>
 // Выдача мультимедиа документов
 app.MapGet("~/photo", (HttpRequest request, Factograph.Data.IFDataService db) =>
 {
-    string? uri = request.Query["uri"].FirstOrDefault();
+    string? uri = request.Query["u"].FirstOrDefault();
     if (uri == null) return Results.Empty;
     string? sz = request.Query["s"].FirstOrDefault();
     string s = sz ?? "normal";
@@ -47,7 +49,7 @@ app.MapGet("~/photo", (HttpRequest request, Factograph.Data.IFDataService db) =>
 });
 app.MapGet("~/video", (HttpRequest request, Factograph.Data.IFDataService db) =>
 {
-    string? uri = request.Query["uri"].FirstOrDefault();
+    string? uri = request.Query["u"].FirstOrDefault();
     if (uri == null) return Results.Empty;
     string? path = db.GetFilePath(uri, "medium");
     if (string.IsNullOrEmpty(path) || !System.IO.File.Exists(path + ".mp4"))
@@ -56,6 +58,27 @@ app.MapGet("~/video", (HttpRequest request, Factograph.Data.IFDataService db) =>
     }
     return Results.File(path + ".mp4", "video/mp4");
 });
-
+app.MapGet("~/audio", (HttpRequest request, Factograph.Data.IFDataService db) =>
+{
+    string? uri = request.Query["u"].FirstOrDefault();
+    if (uri == null) return Results.Empty;
+    string? path = db.GetOriginalPath(uri);
+    if (string.IsNullOrEmpty(path) || !System.IO.File.Exists(path + ".mp3"))
+    {
+        return Results.Empty;
+    }
+    return Results.File(path + ".mp3", "video/mp3");
+});
+app.MapGet("~/doc", (HttpRequest request, Factograph.Data.IFDataService db) =>
+{
+    string? uri = request.Query["u"].FirstOrDefault();
+    if (uri == null) return Results.Empty;
+    string? path = db.GetOriginalPath(uri);
+    if (string.IsNullOrEmpty(path)) return Results.NotFound();
+    int pos = path.LastIndexOf(".");
+    int pos1 = path.LastIndexOfAny(new char[] { '/', '\\' });
+    string filename = path.Substring(pos1 + 1);
+    return Results.File(path, "application/" + path.Substring(pos + 1));
+});
 
 app.Run();

@@ -205,8 +205,8 @@
                             <td>
                                 <span style="color:green;">@(string.IsNullOrEmpty(iProp.Label) ? db.ontology.InvLabelOfOnto(pred) : iProp.Label)</span>
                                 @if (pred == "http://fogid.net/o/in-collection"
-                || pred == "http://fogid.net/o/reflected"
-                || pred == "http://fogid.net/o/inDocument")
+              || pred == "http://fogid.net/o/reflected"
+              || pred == "http://fogid.net/o/inDocument")
                                 {
                                     if (useshakhmat)
                                     {
@@ -357,7 +357,8 @@ else // нет дерева
 {
     <div>user=@(user)</div>
 }
-<div>@(look)</div>
+
+
 @* <div>@(((FDataService)db).GetLook())</div> *@
 
 @code {
@@ -435,7 +436,16 @@ else // нет дерева
                 new Str("http://fogid.net/o/location-classification"))
                 { SortField = "http://fogid.net/o/from-date" })
             { Label = label };
-
+    private Pro InvAuthor(string label = "Является автором/адресатом документов") =>
+        new Inv("http://fogid.net/o/author",
+                        new Rec(null, "http://fogid.net/o/authority",
+                            new Str("http://fogid.net/o/authority-specificator"),
+                            new Dir("http://fogid.net/o/adoc",
+                                new Rec(null, null,
+                                    new Str("http://fogid.net/o/from-date"),
+                                    new Tex("http://fogid.net/o/name"))))
+                            { SortField = "http://fogid.net/o/from-date" })
+            { Label = label };
 
     private Rec CreateShablon(string tp)
     {
@@ -466,15 +476,7 @@ else // нет дерева
                         { SortField = "http://fogid.net/o/from-date" })
                     { Label = "Место работы" },
                 InvReflected("Отражен"),
-                new Inv("http://fogid.net/o/author",
-                    new Rec(null, "http://fogid.net/o/authority",
-                        new Str("http://fogid.net/o/authority-specificator"),
-                        new Dir("http://fogid.net/o/adoc",
-                            new Rec(null, null,
-                                new Str("http://fogid.net/o/from-date"),
-                                new Tex("http://fogid.net/o/name"))))
-                        { SortField = "http://fogid.net/o/from-date" })
-                    { Label = "Является автором/адресатом документов" },
+                InvAuthor(),
                 new Inv("http://fogid.net/o/something",
                     new Rec(null, "http://fogid.net/o/location",
                         new Dir("http://fogid.net/o/location-place",
@@ -555,6 +557,7 @@ else // нет дерева
                     { Label = "Часть документа" },
                 new Inv("http://fogid.net/o/collection-item",
                     new Rec(null, "http://fogid.net/o/collection-member",
+                        new Str("http://fogid.net/o/pageNumbers") { Label = "инв. номер" }, // номер в коллекции
                         new Dir("http://fogid.net/o/in-collection",
                             new Rec(null, null,
                                 new Tex("http://fogid.net/o/name"))))
@@ -589,7 +592,8 @@ else // нет дерева
                         { SortField = "http://fogid.net/o/from-date" })
                     { Label = "Участники" },
                 InvReflected("Отражен"),
-                InvSomething()
+                InvSomething(),
+                InvAuthor()
                 )
                 { Label = "Организация" };
         }
@@ -597,8 +601,10 @@ else // нет дерева
         {
             shablon = new Rec(null, tp,
                 new Tex("http://fogid.net/o/name"),
+                new Tex("http://fogid.net/o/description"),
                 new Inv("http://fogid.net/o/in-collection",
                     new Rec(null, "http://fogid.net/o/collection-member",
+                        new Str("http://fogid.net/o/pageNumbers") { Label = "инв. номер" }, // номер в коллекции                        
                         new Dir("http://fogid.net/o/collection-item",
                             new Rec(null, null,
                                 new Tex("http://fogid.net/o/name"),

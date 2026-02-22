@@ -2,10 +2,11 @@
 using Factograph.Data.r;
 namespace Factograph.Models
 {
-    class Precalc
+    public class Precalc
     {
         public string[]? typs = null;
-        public Dictionary<string, Rec>? treeShablons = null; 
+        public Dictionary<string, Rec>? treeShablons = null;
+        public Func<string, string>? debugPortrait = null;
         
     }
     public class IndexModel
@@ -19,6 +20,8 @@ namespace Factograph.Models
         public Dictionary<string, Rec>? shablons { get; set; }
         public Rec? shablon { get; set; }
         public Rec? tree { get; set; }
+        public string lookhtml { get; set; }
+
         private Factograph.Data.IFDataService db;
         public IndexModel(Factograph.Data.IFDataService db) 
         {
@@ -32,9 +35,16 @@ namespace Factograph.Models
                 ((Precalc)db.precalculated).treeShablons = ((Precalc)db.precalculated).typs?
                     .Select(t => BuildShablon(t, 2, null, db.ontology))
                     .ToDictionary(r => r.Tp, r => r);
+                ((Precalc)db.precalculated).debugPortrait = (string id) =>
+                {
+                    RRecord? rr = db.GetRRecord(id, true);
+                    if (rr == null) return "";
+                    return rr.BuildPortrait(null, 2);
+                };
             }
             typs = ((Precalc)db.precalculated).typs;
             shablons = ((Precalc)db.precalculated).treeShablons;
+            lookhtml = (db.precalculated == null || id == null) ? "" : ((Precalc)db.precalculated).debugPortrait(id);
         }
         // Генерация универсального шаблона
         public Rec BuildShablon(string ty, int level, string? forbidden, IOntology ontology)

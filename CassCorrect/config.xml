@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <config>
-  <database connectionstring="rr:D:\Home\FactographDatabases\rr-test\"/>
+  <database connectionstring="rr:D:\Home\FactographDatabases\rr-dummy\"/>
+  <LoadCassette>C:\Home\FactographProjects\multimedia</LoadCassette>
   <!--
-  <LoadCassette>D:\Home\FactographProjects\syp_cassettes\Syp2025video</LoadCassette>
   <LoadCassette>E:\FactographProjects\syp_cassettes\Syp_2012_mag</LoadCassette>
   <LoadCassette>E:\FactographProjects\syp_cassettes\Syp2016video</LoadCassette>
   <LoadCassette>E:\FactographProjects\syp_cassettes\Syp2016video2</LoadCassette>

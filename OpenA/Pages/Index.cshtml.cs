@@ -12,7 +12,7 @@ public class IndexModel : PageModel
     string? bw { get; set; } = null;
     
     public string? id { get; private set; } = null;
-    string? eid { get; set; } = null;
+    public string? eid { get; set; } = null;
     public Rec? tree { get; set; } = null;
 
     private readonly ILogger<IndexModel> _logger;
@@ -24,6 +24,8 @@ public class IndexModel : PageModel
     {
         _logger = logger;
         this.db = db;
+        // «десь будут производитьс€ предвычислени€
+        //if (this.db.percalculated == null) this.db.precalculated = что-то вычисленное;
     }
 
     // ћодели дл€ передачи в View
@@ -44,6 +46,7 @@ public class IndexModel : PageModel
         {
             this.id = Request.Query["id"].ToString();
             this.eid = Request.Query["eid"].ToString();
+            if (string.IsNullOrEmpty(this.id)) { this.id = "Cassette_20211014_tester_637763849054494762_1034"; }
             RRecord? rr = db.GetRRecord(id, true);
             if (rr == null) return;
             string tp = rr.Tp;

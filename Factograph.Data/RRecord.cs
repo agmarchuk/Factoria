@@ -75,6 +75,136 @@ namespace Factograph.Data
             string dt = GetField("http://fogid.net/o/to-date");
             return (df == null ? "" : df) + (string.IsNullOrEmpty(dt) ? "" : "-" + dt);
         }
+
+        public string BuildPortrait(string? forbidden, int level)
+        {
+            // Получим RRec
+            // var rr = db.GetRRecord(id, true);
+            var rr = this;
+            // Сформируем прямые свойства
+            var fieldsanddirects = rr?.Props
+                .Where(fd => fd is RField || (fd is RLink && fd.Prop != forbidden))
+                .ToArray();
+            StringBuilder sb = new StringBuilder();
+            if (fieldsanddirects != null)
+            {
+                sb = new StringBuilder("<table>");
+                sb.Append("<tr>");
+                foreach (var fd in fieldsanddirects)
+                {
+                    string header = db.ontology.LabelOfOnto(fd.Prop) ?? fd.Prop;
+                    sb.Append($"<th class='bor'>{header}</th>");
+                }
+                sb.Append("</tr>");
+                sb.Append("<tr>");
+                foreach (var fd in fieldsanddirects)
+                {
+                    string cell = "";
+                    if (fd is RField) { cell = ((RField)fd).Value; }
+                    else
+                    {
+                        var lnk = (RLink)fd;
+                        if (lnk != null)
+                        {
+                            var rec = db.GetRRecord(lnk.Resource, false);
+                            if (rec != null)
+                            {
+                                string idd = rec.Id;
+                                string nam = rec.GetName();
+                                cell = $"<a href='look/{idd}'>{nam}</a>";
+                            }
+                        }
+                    }
+                    sb.Append($"<td class='bor'>{cell}</td>");
+                }
+                sb.Append("</tr>");
+                sb.Append("</table>");
+            }
+            if (level > 0)
+            {
+                var inverse = rr?.Props.Where(fd => fd is RInverseLink).Cast<RInverseLink>().ToArray();
+                if (inverse != null)
+                {
+                    sb.Append("<table>");
+                    foreach (var pair in inverse.GroupBy(d => d.Prop).Select(pa => (pa.Key, pa)))
+                    {
+                        string leftheader = db.ontology.InvLabelOfOnto(pair.Key) ?? pair.Key;
+                        string pred = pair.Key;
+                        sb.Append($"<tr><th style='vertical-align: top;'>{leftheader}</th>");
+                        // У данной группы найдем количество обратных ссылок
+                        int nlnks = pair.pa.Count();
+                        // Создаем множество записей, ссылающихся на данную по данному отношению pred
+                        RRecord[] inv_recs = pair.pa
+                            .Select(ilnk => db.GetRRecord(ilnk.Source, false))
+                            .Where(r => r != null).Cast<RRecord>()
+                            .ToArray();
+                        // У данной группы найдем множество использованных предикатов (имен свойств)
+                        // будем учитывать только поля и прямые ссылки, но без pred (forbidden)
+                        string[] predicates = inv_recs.SelectMany(r => r.Props
+                            .Where(p => p is RField || (p is RLink && p.Prop != pred)))
+                            .Select(p => p.Prop)
+                            .Distinct()
+                            .ToArray();
+
+                        // Строим таблицу
+                        sb.Append("<td><table>");
+                        // Рядок заголовков
+                        sb.Append("<tr>");
+                        foreach (var p in predicates)
+                        {
+                            string nm = db.ontology.LabelOfOnto(p) ?? p;
+                            sb.Append($"<th class='bor'>{nm}</th>");
+                        }
+                        sb.Append("</tr>");
+                        // Делаем словарь для "раскидывания" значений по позициям рядка
+                        var dic = predicates.Select((s, i) => new { s, i })
+                            .ToDictionary(si => si.s, si => si.i);
+                        // Цикл по записям
+                        foreach (var r in inv_recs)
+                        {
+                            // Создадим массив
+                            string[] cells = Enumerable.Repeat<string>("", predicates.Length).ToArray();
+                            // Заполним массив значениями полей и ссылок записи r
+                            foreach (RProperty pr in r.Props
+                                .Where(p => p is RField || (p is RLink && p.Prop != pred)))
+                            {
+                                int ind = dic[pr.Prop];
+                                if (pr is RField)
+                                {
+                                    RField f = (RField)pr;
+                                    cells[ind] = f.Value;
+                                }
+                                else if (pr is RLink)
+                                {
+                                    RLink rl = (RLink)pr;
+                                    var target = db.GetRRecord(rl.Resource, false);
+                                    if (target != null)
+                                    {
+                                        cells[ind] = $"<a href='look/{target?.Id}'>{target?.GetName()}</a>";
+                                    }
+                                    else
+                                    {
+                                        cells[ind] = $"<a>[висит {rl.Resource}]</a>";
+                                    }
+                                }
+                            }
+                            sb.Append("<tr>");
+                            if (cells.Length > 0) sb.Append(cells.Select(cell => $"<td class='bor'>{cell}</td>")
+                                .Aggregate((sum, s) => sum + s));
+                            sb.Append("</tr>");
+                        }
+                        sb.Append("</table></td>");
+                        //sb.Append($"<td>{pair.pa.Count()} {predicates.Length}</td>");
+                        sb.Append("</tr>");
+                    }
+                    sb.Append("</table>");
+                }
+            }
+
+            string html = sb.ToString();
+            return html;
+        }
+
     }
     public abstract class RProperty
     {

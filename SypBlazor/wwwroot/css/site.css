@@ -116,3 +116,17 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+th.grid {
+    border: 1px solid green;
+}
+
+/*table {
+    border-collapse: collapse;
+    margin-top: 4px;
+}
+
+th {
+    font-size: smaller;
+    color: green;
+}*/
