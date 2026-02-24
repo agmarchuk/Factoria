@@ -252,8 +252,42 @@
         }
 
     }
-    else if (tree.Tp == "http://fogid.net/o/document")
+    else if (m.db.ontology.DescendantsAndSelf("http://fogid.net/o/document").Contains(tree.Tp))
     {
+        string? id = m.id;
+
+        // Части документа
+        Rec? uppart = tree.GetInverse("http://fogid.net/o/partItem") // Набор разных частей цепочек к документам, обычно одна часть
+            .FirstOrDefault(); // Выбираем одну произвольную
+        Rec? updoc = uppart?.GetDirect("http://fogid.net/o/inDocument");
+        RRecord? mrrec = updoc == null ? null : m.db.GetRRecord(updoc.Id, true);
+        int part_ind = -1;
+        RRecord[] upparts = new RRecord[0];
+        if (mrrec != null)
+        {
+            // Найдем все части документа и отсортируем их по номерам страниц
+            upparts = mrrec.Props
+                .Where(r => r is RInverseLink && r.Prop == "http://fogid.net/o/inDocument")
+                .Cast<RInverseLink>()
+                .Select(ril =>
+                    {
+                        RRecord? rrec = m.db.GetRRecord(ril.Source, false);
+                        string pg = rrec?.GetField("http://fogid.net/o/pageNumbers") ?? "";
+                        RRecord? doc = rrec?.GetDirect("http://fogid.net/o/partItem");
+                        return new { rrec, pg, doc };
+                    })
+                .OrderBy(triple => triple.pg)
+                .ThenBy(triple => triple.doc?.GetName() ?? "")
+                .Select(triple => triple.doc)
+                .Where(d => d != null)
+                .Cast<RRecord>()
+                .ToArray();
+            // Теперь найдем "свою" часть и ее индекс
+            part_ind = upparts.Select((d, i) => new { d, i })
+                .First(pa => pa.d.Id == id)
+                .i;
+        }
+
         string? uri = tree.GetStr("http://fogid.net/o/uri");
 
         <p class="grad">
@@ -264,10 +298,55 @@
             @name
         </p>
         <div class="heading1"> <h1>@name</h1> </div>
+        @if (upparts != null && upparts.Length > 0)
+        {
+            <div>
+                @if (part_ind != -1 && upparts != null)
+                {
+                    <a href="?id=@updoc?.Id">К документу</a>
+                    <span> | </span>
+                }
+                @if (part_ind > 0)
+                {
+                    string? idd = upparts?[part_ind - 1].Id;   //.GetDirect("http://fogid.net/o/partItem")?.Id;
+                    <a href="?id=@idd">пред.</a>
+                }
+                else
+                {
+                    <span>пред.</span>
+                }
+                <span> | </span>
+                @if (part_ind < upparts?.Length - 1)
+                {
+                    string? idd = upparts?[part_ind + 1].Id; //.GetDirect("http://fogid.net/o/partItem")?.Id;
+                    <a href="?id=@idd">след.</a>
+                }
+                else
+                {
+                    <span>след.</span>
+                }
+            </div>
+        }
+
 
         @if (uri != null)
         {
-            <div><a href="doc?u=@uri">документ</a></div>
+            if (tree.Tp == "http://fogid.net/o/photo-doc")
+            {
+                <img src="photo?s=normal&u=@(uri)" />
+            } 
+            else if (tree.Tp == "http://fogid.net/o/video-doc")
+            {
+                <video src="video?u=@(uri)" controls="controls" autoplay="autoplay" />
+            }
+            else if (tree.Tp == "http://fogid.net/o/audio-doc")
+            {
+                <audio src="audio?u=@(uri)" />
+            }
+            else if (tree.Tp == "http://fogid.net/o/document")
+            {
+                <embed src="doc?u=@(uri)" width="1024" height="800" />
+            }
         }
         <table cellpadding="0" cellspacing="0" border="0" width="100%" class="info-document">
             @if (!string.IsNullOrEmpty(dates))
@@ -306,11 +385,14 @@
                                 if (doc == null) { continue; }
                                 string? nm = doc?.GetText("http://fogid.net/o/name");
                                 string? uri_doc = doc?.GetStr("http://fogid.net/o/uri");
+
                                 string src = doc.Tp == "http://fogid.net/o/photo-doc" ? $"photo?u={uri_doc}&s=small" :
-                                (doc.Tp == "http://fogid.net/o/video-doc" ? $"video?u={uri_doc}" :
-                                (doc.Tp == "http://fogid.net/o/audio-doc" ? $"audio?u={uri_doc}" :
-                                (doc.Tp == "http://fogid.net/o/document" && uri_doc != null ? $"doc?u={uri_doc}" :
-                                "img/icon-folder-big.png")));
+                                (doc.Tp == "http://fogid.net/o/video-doc" ? "img/video_m.jpg" :
+                                (doc.Tp == "http://fogid.net/o/audio-doc" ? "img/audio_m.jpg" :
+                                (doc.Tp == "http://fogid.net/o/document" && uri_doc != null ? "img/PDF_m.jpg" :
+                                (doc.Tp == "http://fogid.net/o/document" && uri_doc == null ? "img/document_m.jpg" :
+                                (doc.Tp == "http://fogid.net/o/collection" ? "img/collection_m.jpg" :
+                                "img/error.jpg")))));
 
                                 <div class="show-small">
                                     <a href="?id=@doc?.Id"><img src="@src" border="0" vspace="10" hspace="10" alt="" /></a>
@@ -325,87 +407,150 @@
             }
         </table>
     }
-    else if (tree.Tp == "http://fogid.net/o/photo-doc")
+    else if (m.db.ontology.DescendantsAndSelf("http://fogid.net/o/collection").Contains(tree.Tp))
     {
+        // Предвычисления
         string? id = m.id;
-        // Части документа
-        Rec? part = tree.GetInverse("http://fogid.net/o/partItem") // Набор разных частей цепочек к документам, обычно одна часть
-            .FirstOrDefault(); // Выбираем одну произвольную
-        Rec? maindoc = part?.GetDirect("http://fogid.net/o/inDocument");
-        RRecord? mrrec = maindoc == null ? null : m.db.GetRRecord(maindoc.Id, true);
-        int part_ind = -1;
-        RRecord[] parts = new RRecord[0];
-        if (mrrec != null)
+
+        // элементы коллекции
+        Rec[] elements = tree.GetInverse("http://fogid.net/o/in-collection")
+        .Select(dp => new
         {
-            // Найдем все части документа и отсортируем их по номерам страниц
-            parts = mrrec.Props
-                .Where(r => r is RInverseLink && r.Prop == "http://fogid.net/o/inDocument")
-                .Cast<RInverseLink>()
-                .Select(ril => 
-                    {
-                        RRecord? rrec = m.db.GetRRecord(ril.Source, false);
-                        string? pg = rrec?.GetField("http://fogid.net/o/pageNumbers");
-                        return new { rrec, pg };
-                    })
-                .OrderBy(pair => pair.pg)
-                .Select(pair => pair.rrec)
-                .Where(r => r != null)
-                .Cast<RRecord>()
-                .ToArray();
-            // Теперь найдем "свою" часть и ее индекс
-            part_ind = parts.Select((r, i) => new { r, i })
-                .First(pa => pa.r.Id == part?.Id)
-                .i;
-        }
+            docpart = dp.GetDirect("http://fogid.net/o/collection-item"),
+            page = dp.GetStr("http://fogid.net/o/pageNumbers")
+        })
+        .OrderBy(pair => pair.page)
+        .ThenBy(pair => pair.docpart?.GetText("http://fogid.net/o/name"))
+        .Select(pair => pair.docpart)
+        .Where(d => d != null)
+        .Cast<Rec>()
+        .ToArray();
 
-        // uri
-        string? uri = tree.GetStr("http://fogid.net/o/uri");
+        var documents = elements.Where(el => m.db.ontology.DescendantsAndSelf("http://fogid.net/o/document").Contains(el.Tp));
+        var subcollections = elements.Where(el => m.db.ontology.DescendantsAndSelf("http://fogid.net/o/collection").Contains(el.Tp));
 
+        // Это пролог
         <p class="grad">
             <a href="" class="nov"><img src="img/ico-home.gif" class="ico-home" alt="" />Открытый архив</a>
             &raquo;
-            Фото
+            Коллекции
             &raquo;
             @name
         </p>
-        <div class="heading1">
-            <h1>@name <span style="font-size:smaller;">(лист @(part_ind + 1) из @parts.Length)</span></h1>
-        </div>
+        <div class="heading1"> <h1>@name</h1> </div>
+        <p>@description</p>
 
-        @if (parts != null && parts.Length > 0)
-        {
-            <div>
-                @if (part_ind != -1 && parts != null)
-                {
-                    <a href="?id=@maindoc?.Id">К документу</a>
-                    <span> | </span>
-                }
-                @if (part_ind > 0)
-                {
-                    string? idd = parts?[part_ind - 1].GetDirect("http://fogid.net/o/partItem")?.Id;
-                    <a href="?id=@idd">пред.</a>
-                }
-                else
-                {
-                    <span>пред.</span>
-                }
-                <span> | </span>
-                @if (part_ind < parts?.Length - 1)
-                {
-                    string? idd = parts?[part_ind + 1].GetDirect("http://fogid.net/o/partItem")?.Id;
-                    <a href="?id=@idd">след.</a>
-                }
-                else
-                {
-                    <span>след.</span>
-                }
-            </div>
-        }
 
-        
+        <p class="page-short-info">Подколлеций: @subcollections.Count()  |  Документов: @documents.Count() </p>
         <br />
 
-        <div><img src="photo?s=normal&u=@uri" border="0" /></div>
+        @* =============== Коллекции =============== *@
+
+        @if (subcollections.Count() > 0)
+        {
+            <ul class="coll-tree">
+                @foreach (Rec ite in subcollections)
+                {
+                    string? ite_id = ite.Id;
+                    var ite_name_el = ite.GetText("http://fogid.net/o/name");
+                    string ite_name = ite_name_el == null ? "noname" : ite_name_el;
+                    //if (collection_depth == 0 && ite_name.StartsWith("Исходные материалы")) { continue; }
+                    <li><a href="?id=@ite_id">@ite_name</a></li>
+                }
+            </ul>
+        }
+        <br /> 
+
+        @* =============== Документы =============== *@
+        @if (documents.Count() > 0)
+        {
+            <div class="heading3">
+                <h3>Коллекция содержит документы</h3>
+            </div>
+
+            <table cellpadding="0" cellspacing="0" border="0" width="100%" class="info-docs">
+                <tr>
+                    <th width="16%"><a href="sort">Дата</a></th>
+                    <th width="60%" class="th-document-name"><a href="sort">Название документа<img src="img/ico-sort-down.gif" alt="" /></a></th>
+                    <th width="25%"><a href="sort">Автор&nbsp;&nbsp;=>&nbsp;&nbsp;Адресат</a></th>
+                </tr>
+                @foreach (Rec ite in documents)
+                {
+                    var ite_name_el = ite.GetText("http://fogid.net/o/name");
+                    string ite_name = ite_name_el == null ? "noname" : ite_name_el;
+                    var fd_el = ite.GetStr("http://fogid.net/o/from-date");
+                    string fd = fd_el == null ? "" : fd_el;
+                    string? ite_id = ite.Id;
+                    var d_el = ite.GetText("http://fogid.net/o/description");
+                    string d = d_el == null ? "" : d_el;
+                    if (d.Length > 78) { d = d.Substring(0, 78); }
+                    var auth_receps = ite.GetInverse("http://fogis.net/o/adoc")
+                    .Where(au =>
+                    {
+                        var spec = au.GetStr("http://fogid.net/o/authority-specificator");
+                        if (spec != null && (spec == "author" || spec == "recipient" || spec == "out-org" || spec == "in-org")) return true;
+                        return false;
+                    }).Where(rec => rec != null);
+
+                    // Дополнение от Фурсенко: Добавлены Исх.организация в Авторы и Вх. организация в Адресаты
+
+                    var authors = auth_receps
+                        .Where(au => au.GetStr("http://fogid.net/o/authority-specificator") == "author"
+                                || au.GetStr("http://fogid.net/o/authority-specificator") == "out-org")
+                        .Select(au => au.GetDirect("http://fogid.net/o/author"))
+                        .Where(x => x != null)
+                        .Cast<Rec>();
+                    var recipients = auth_receps
+                    .Where(au => au.GetStr("http://fogid.net/o/authority-specificator") == "recipient"
+                        || au.GetStr("http://fogid.net/o/authority-specificator") == "in-org")
+                        .Select(au => au.GetDirect("http://fogid.net/o/author"))
+                        .Where(x => x != null)
+                        .Cast<Rec>();
+                    <tr valign="top">
+                        <td width="15%">@fd</td>
+                        <td width="60%" class="norma">
+                            <!--			<a href="Portrait.cshtml?id=@ite_id"><img src="img/icon-doc.png" class="icon-doc" alt="" />
+                            @ite_name</a><br />  Убрал А. Фурсенко-->
+                            <a href="?id=@ite_id">@ite_name</a><br />
+                            <span class="small">@d</span>
+                        </td>
+                        <!--td width="25%"><a href="author">И.О. Фамилия</a>, <a href="author">Ф.И. Отчество</a></td -->
+                        <!-- добавил class="norma" -->
+                        <td width="25%" class="norma">
+                            @{
+                                string sep = "";
+                                foreach (var au in authors)
+                                {
+                                    var nm_att = au.GetText("http://fogid.net/o/name");
+                                    string nm = nm_att ?? "noname";
+                                    string idd = au.Id ?? "noid";
+                                    @sep
+                                    ;
+                                    sep = ",";
+                                    <a href='?id=@idd'>@nm</a>
+                                    ;
+                                    //                   sep = ",";                        // разделитель
+                                }
+                                sep = "";
+                                //                @sep;
+                                <span>=></span>
+                                foreach (var au in recipients)
+                                {
+                                    string? nm = au.GetText("http://fogid.net/o/name");
+
+                                    @sep
+                                    ;
+                                    //                   <span>=></span> добавил class="icon-doc"
+                                    sep = ",";
+                                    <a href='?id=@au.Id'>@nm</a>
+                                    ;
+                                }
+                            }
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
 
     }
     else
