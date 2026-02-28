@@ -298,7 +298,7 @@
 
             @if (true)
             {
-                var pth = OpenA.App_Code.CollectionPath.PathToBase(id, m.bas_page, m.db);
+                var pth = OpenA.App_Code.CollectionPath.PathToBase(id, m.funds_id, m.db);
                 if (pth != null)
                 {
                     foreach (var cnode in pth.Take(pth.Count() - 1))
@@ -424,6 +424,65 @@
             }
         </table>
     }
+    else if (tree.Tp == "http://fogid.net/o/collection" && m.id == m.funds_id) // =========== Начальная страница (Фонды)
+    {
+        var colldocs = tree.GetInverse("http://fogid.net/o/in-collection")
+            .Select(dp => new
+            {
+                ele = dp.GetDirect("http://fogid.net/o/collection-item"),
+                page = dp.GetStr("http://fogid.net/o/pageNumbers")
+            })
+            .OrderBy(pair => pair.page)
+            .ThenBy(pair => pair.ele?.GetText("http://fogid.net/o/name"))
+            .Select(pair => pair.ele)
+            .Where(r => r != null)
+            .Cast<Rec>();
+
+        <p class="grad">
+            <a href="Default.cshtml" class="nov"><img src="img/ico-home.gif" class="ico-home" alt="" />Открытый архив</a>
+            &raquo;
+            <a href="Default.cshtml">Фонды</a>
+        </p>
+
+        <div class="heading1">
+            <h1>@(tree.GetText("http://fogid.net/o/name"))</h1>
+        </div>
+        @foreach (Rec r in colldocs)
+        {
+            string? nme = r.GetText("http://fogid.net/o/name");
+            string img_src = "img/fund89x89.jpg";
+            RRecord? rRecord = m.db.GetRRecord(r.Id, true);
+            if (rRecord == null) { continue; }
+            // Возьмем первую фотку, отражающую коллекцию (фонд)
+            var foto = rRecord.Props.Where(p => p is RInverseLink && p.Prop == "http://fogid.net/o/reflected")
+                .Cast<RInverseLink>()
+                .Select(ri => m.db.GetRRecord(ri.Source, false)?
+                    .GetDirect("http://fogid.net/o/in-doc"))
+                    .FirstOrDefault(d => d != null && d.Tp == "http://fogid.net/o/photo-doc");
+
+            if (foto != null)
+            {
+                string? uri = foto.GetField("http://fogid.net/o/uri"); 
+                img_src = "photo?s=small&u=" + uri;
+            }
+            
+            <div class="block-25 small">
+                <a href="?id=@(r.Id)">
+                    <img src="@img_src" class="fund-face" alt="" /><br /><img src="img/line-person.gif" class="line-face" alt="" /><br />
+                    <span>@(r.GetText("http://fogid.net/o/name"))</span>
+                </a>
+            </div>
+        }
+        <br clear="all" />
+
+
+@*         @RenderPage("PageParticipants.cshtml")
+        @section rightpanel {
+        @RenderPage("PageAboutSmall.cshtml")
+        @RenderPage("PageUseLinks.cshtml")
+ *@
+
+    }
     else if (m.db.ontology.DescendantsAndSelf("http://fogid.net/o/collection").Contains(tree.Tp))
     {
         // Предвычисления
@@ -454,7 +513,7 @@
             &raquo;
             @if (true)
             {
-                var pth = OpenA.App_Code.CollectionPath.PathToBase(id, m.bas_page, m.db);
+                var pth = OpenA.App_Code.CollectionPath.PathToBase(id, m.funds_id, m.db);
                 if (pth != null)
                 {
                     foreach (var cnode in pth.Take(pth.Count() - 1))

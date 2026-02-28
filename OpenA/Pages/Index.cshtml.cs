@@ -16,7 +16,7 @@ public class IndexModel : PageModel
     public Rec? tree { get; set; } = null;
     public string bas { get; set; } = "cassetterootcollection";
     public string? start_page { get; set; } = "cassetterootcollection";
-    public string? bas_page { get; set; } = "cassetterootcollection";
+    public string? funds_id { get; set; } = "cassetterootcollection";
 
     private readonly ILogger<IndexModel> _logger;
     public string TestMessage { get; set; } = "";
@@ -33,7 +33,11 @@ public class IndexModel : PageModel
         this.configuration = configuration;
 
         start_page = configuration.GetSection("App:start_page")?.Value ?? start_page;
-        bas_page = configuration.GetSection("App:bas_page")?.Value ?? bas_page;
+        var fid = db.SearchRRecords("Фонды", false)?.FirstOrDefault(r => r.GetName() == "Фонды")?.Id;
+        if (fid != null)
+        {
+            funds_id = fid;
+        }
     }
 
     // Модели для передачи в View
