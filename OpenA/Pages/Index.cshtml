@@ -295,6 +295,23 @@
             &raquo;
             Документы
             &raquo;
+
+            @if (true)
+            {
+                var pth = OpenA.App_Code.CollectionPath.PathToBase(id, m.bas_page, m.db);
+                if (pth != null)
+                {
+                    foreach (var cnode in pth.Take(pth.Count() - 1))
+                    {
+                        if (cnode == null) { continue; }
+                        //collection_depth++;
+                        string nm = cnode.GetName();
+                        <a href='?id=@cnode.Id'>@nm</a>
+                        <span>&raquo;</span>
+                    }
+                }
+            }
+
             @name
         </p>
         <div class="heading1"> <h1>@name</h1> </div>
@@ -435,6 +452,21 @@
             &raquo;
             Коллекции
             &raquo;
+            @if (true)
+            {
+                var pth = OpenA.App_Code.CollectionPath.PathToBase(id, m.bas_page, m.db);
+                if (pth != null)
+                {
+                    foreach (var cnode in pth.Take(pth.Count() - 1))
+                    {
+                        if (cnode == null) { continue; }
+                        //collection_depth++;
+                        string nm = cnode.GetName();
+                        <a href='?id=@cnode.Id'>@nm</a>
+                        <span>&raquo;</span>
+                    }
+                }
+            }
             @name
         </p>
         <div class="heading1"> <h1>@name</h1> </div>

@@ -14,18 +14,26 @@ public class IndexModel : PageModel
     public string? id { get; private set; } = null;
     public string? eid { get; set; } = null;
     public Rec? tree { get; set; } = null;
+    public string bas { get; set; } = "cassetterootcollection";
+    public string? start_page { get; set; } = "cassetterootcollection";
+    public string? bas_page { get; set; } = "cassetterootcollection";
 
     private readonly ILogger<IndexModel> _logger;
     public string TestMessage { get; set; } = "";
+    private IConfiguration configuration;
 
     public Factograph.Data.IFDataService db { get; set; }
 
-    public IndexModel(ILogger<IndexModel> logger, Factograph.Data.IFDataService db)
+    public IndexModel(ILogger<IndexModel> logger, Factograph.Data.IFDataService db, IConfiguration configuration)
     {
         _logger = logger;
         this.db = db;
         // «десь будут производитьс€ предвычислени€
         //if (this.db.percalculated == null) this.db.precalculated = что-то вычисленное;
+        this.configuration = configuration;
+
+        start_page = configuration.GetSection("App:start_page")?.Value ?? start_page;
+        bas_page = configuration.GetSection("App:bas_page")?.Value ?? bas_page;
     }
 
     // ћодели дл€ передачи в View
@@ -46,7 +54,7 @@ public class IndexModel : PageModel
         {
             this.id = Request.Query["id"].ToString();
             this.eid = Request.Query["eid"].ToString();
-            if (string.IsNullOrEmpty(this.id)) { this.id = "Cassette_20211014_tester_637763849054494762_1034"; }
+            if (string.IsNullOrEmpty(this.id)) { this.id = start_page; }
             RRecord? rr = db.GetRRecord(id, true);
             if (rr == null) return;
             string tp = rr.Tp;
