@@ -38,7 +38,7 @@
 
     string? name = tree?.GetText("http://fogid.net/o/name");
     string? dates = tree?.GetDates();
-    string? description = tree?.GetText("http://fogi.net/o/description");
+    string? description = tree?.GetText("http://fogid.net/o/description");
 
     if (tree == null)
     {
@@ -289,6 +289,34 @@
         }
 
         string? uri = tree.GetStr("http://fogid.net/o/uri");
+        string? doccontent =  tree.GetText("http://fogid.net/o/doc-content");
+
+        // Отражения
+        var reflections = tree.GetInverse("http://fogid.net/o/in-doc")
+            .Select(re => re.GetDirect("http://fogid.net/o/relected"));
+
+        // Авторы и получатели
+        var authorities = tree.GetInverse("http://fogid.net/o/adoc")
+            .Select(au => new
+            {
+                author = au.GetDirect("http://fogid.net/o/author"),
+                spec = au.GetStr("http://fogid.net/o/authority-specificator")
+            });
+        // Дополнения от Фурсенко
+        var authors = authorities.Where(pa => pa.spec == "author" || pa.spec == "out-org")
+            .Select(pa => pa.author);
+        var recipients = authorities.Where(pa => pa.spec == "recipient" || pa.spec == "in-org")
+            .Select(pa => pa.author);
+        // Геоинформация
+        var geoplaces = tree.GetInverse("http://fogid.net/o/something")
+            .Select(inv => inv.GetDirect("http://fogid.net/o/location-place"));
+        // Источник поступления
+        var infosource = tree.GetInverse("http://fogid.net/o/archive-item")
+            .Select(am => am.GetDirect("http://fogid.net/o/info-source")).FirstOrDefault();
+
+        // Элемент коллекций
+        var collections = tree.GetInverse("http://fogid.net/o/collection-item")
+            .Select(inv => inv.GetDirect("http://fogid.net/o/in-collection"));
 
         <p class="grad">
             <a href="" class="nov"><img src="img/ico-home.gif" class="ico-home" alt="" />Открытый архив</a>
@@ -422,6 +450,115 @@
                     </tr>
                 }
             }
+            @if (!string.IsNullOrEmpty(doccontent))
+            {
+                string[] lines = doccontent.Split('\n');
+                <tr valign="top">
+                    <td width="25%" class="line-name">Текст документа:</td>
+                    <td width="75%" class="line-info">
+                        @foreach (var line in lines)
+                        {
+                            <p>
+                                @line
+                            </p>
+                        }
+                    </td>
+                </tr>
+            }
+            @if (reflections.Count() > 0)
+            {
+                string sep = "";
+                <tr valign="top">
+                    <td width="25%" class="line-name">Отраженные персонажи:</td>
+                    <td width="75%" class="line-info">
+                        @foreach (var who in reflections)
+                        {
+                            if (who == null) { continue; }
+                            @sep
+                            ; sep = ",";
+                            <a href='?id=@(who.Id)'>@who.GetText("http://fogid.net/o/name")</a>
+                            ;
+
+                        }
+                    </td>
+                </tr>
+            }
+            @if (authors.Count() > 0)
+            {
+                string sep = "";
+                <tr valign="top">
+                    <td width="25%" class="line-name">Авторы документа:</td>
+                    <td width="75%" class="line-info">
+
+                        @foreach (var au in authors)
+                        {
+                            if (au == null) { continue; }
+                            @sep
+                            ; sep = ", ";  // Добавлен разделитель
+                            <a href='?id=@au.Id'>@au.GetText("http://fogid.net/o/name")</a>
+                            ;
+                        }
+                    </td>
+                </tr>
+            }
+            @if (recipients.Count() > 0)
+            {
+                string sep = "";
+                <tr valign="top">
+                    <td width="25%" class="line-name">Адресаты документа:</td>
+                    <td width="75%" class="line-info">
+                        @foreach (var au in recipients)
+                        {
+                            if (au == null) { continue; }
+                            @sep
+                            ; sep = ",";  // Добавлен разделитель
+                            <a href='?id=@au.Id'>@au.GetText("http://fogid.net/o/name")</a>
+                            ;
+                        }
+                    </td>
+                </tr>
+            }
+            @if (geoplaces.Count() > 0)
+            {
+                <tr valign="top">
+                    <td width="25%" class="line-name">Геоинформация:</td>
+                    <td width="75%" class="line-info">
+                        @foreach (var geo in geoplaces)
+                        {
+                            if (geo == null) { continue; }
+                            <a href='?id=@geo.Id'>@geo.GetText("http://fogid.net/o/name")</a>
+                        }
+                    </td>
+                </tr>
+            }
+            @if (infosource != null)
+            {
+                <tr valign="top">
+                    <td width="25%" class="line-name">Источник поступления:</td>
+                    <td width="75%" class="line-info">
+                        <a href='?id=@infosource.Id'>@infosource.GetText("http://fogid.net/o/name")</a>
+                        @*                         @if (descr_infosource != null)
+                        {
+                            <span>@descr_infosource.Value</span>
+                        } *@
+                    </td>
+                </tr>
+            }
+            @if (collections.Count() > 0)
+            {
+                <tr valign="top">
+                    <td width="25%" class="line-name">Документ входит в коллекции:</td>
+                    <td width="75%" class="line-info">
+                        @foreach (var coll in collections)
+                        {
+                            if (coll == null) { continue; }
+                            <a href='?id=@coll.Id'>@coll.GetText("http://fogid.net/o/name")</a>
+                            <br />
+                        }
+                    </td>
+                </tr>
+            }
+
         </table>
     }
     else if (tree.Tp == "http://fogid.net/o/collection" && m.id == m.funds_id) // =========== Начальная страница (Фонды)
@@ -441,7 +578,7 @@
         <p class="grad">
             <a href="Default.cshtml" class="nov"><img src="img/ico-home.gif" class="ico-home" alt="" />Открытый архив</a>
             &raquo;
-            <a href="Default.cshtml">Фонды</a>
+            Фонды
         </p>
 
         <div class="heading1">
@@ -465,10 +602,12 @@
                 string? uri = foto.GetField("http://fogid.net/o/uri"); 
                 img_src = "photo?s=small&u=" + uri;
             }
-            
+
             <div class="block-25 small">
                 <a href="?id=@(r.Id)">
-                    <img src="@img_src" class="fund-face" alt="" /><br /><img src="img/line-person.gif" class="line-face" alt="" /><br />
+                    <img class="fund-face" style="background: url('@(img_src)') center no-repeat;background-size:contain;" />
+                    <br />
+                    <img src="img/line-person.gif" class="line-face" alt="" /><br />
                     <span>@(r.GetText("http://fogid.net/o/name"))</span>
                 </a>
             </div>
@@ -476,7 +615,7 @@
         <br clear="all" />
 
 
-@*         @RenderPage("PageParticipants.cshtml")
+        @*         @RenderPage("PageParticipants.cshtml")
         @section rightpanel {
         @RenderPage("PageAboutSmall.cshtml")
         @RenderPage("PageUseLinks.cshtml")
@@ -575,28 +714,29 @@
                     var d_el = ite.GetText("http://fogid.net/o/description");
                     string d = d_el == null ? "" : d_el;
                     if (d.Length > 78) { d = d.Substring(0, 78); }
-                    var auth_receps = ite.GetInverse("http://fogis.net/o/adoc")
-                    .Where(au =>
-                    {
-                        var spec = au.GetStr("http://fogid.net/o/authority-specificator");
-                        if (spec != null && (spec == "author" || spec == "recipient" || spec == "out-org" || spec == "in-org")) return true;
-                        return false;
-                    }).Where(rec => rec != null);
-
-                    // Дополнение от Фурсенко: Добавлены Исх.организация в Авторы и Вх. организация в Адресаты
-
-                    var authors = auth_receps
-                        .Where(au => au.GetStr("http://fogid.net/o/authority-specificator") == "author"
-                                || au.GetStr("http://fogid.net/o/authority-specificator") == "out-org")
-                        .Select(au => au.GetDirect("http://fogid.net/o/author"))
+                    RRecord? rRecord = m.db.GetRRecord(ite_id, true);
+                    var au_receps = rRecord?.Props.Where(p => p is RInverseLink && p.Prop == "http://fogid.net/o/adoc")
+                        .Cast<RInverseLink>()
+                        .Select(ri => m.db.GetRRecord(ri.Source, false))
+                        .Where(rr => rr != null)
+                        .Cast<RRecord>()
+                        .Select(rr => new { aurec = rr.GetDirect("http://fogid.net/o/author"), 
+                            spec = rr.GetField("http://fogid.net/o/authority-specificator") })
+                    .ToArray();
+                    var authors = au_receps?
+                        .Where(pa => pa.spec == "author" || pa.spec == "out-org")
+                        .Select(pa => pa.aurec)
                         .Where(x => x != null)
-                        .Cast<Rec>();
-                    var recipients = auth_receps
-                    .Where(au => au.GetStr("http://fogid.net/o/authority-specificator") == "recipient"
-                        || au.GetStr("http://fogid.net/o/authority-specificator") == "in-org")
-                        .Select(au => au.GetDirect("http://fogid.net/o/author"))
+                        .Cast<RRecord>()
+                        .ToArray();
+
+                    var recipients = au_receps?
+                        .Where(pa => pa.spec == "recipient" || pa.spec == "in-org")
+                        .Select(pa => pa.aurec)
                         .Where(x => x != null)
-                        .Cast<Rec>();
+                        .Cast<RRecord>()
+                        .ToArray();
+
                     <tr valign="top">
                         <td width="15%">@fd</td>
                         <td width="60%" class="norma">
@@ -608,11 +748,11 @@
                         <!--td width="25%"><a href="author">И.О. Фамилия</a>, <a href="author">Ф.И. Отчество</a></td -->
                         <!-- добавил class="norma" -->
                         <td width="25%" class="norma">
-                            @{
+                            @if(authors != null && authors.Length > 0) {
                                 string sep = "";
                                 foreach (var au in authors)
                                 {
-                                    var nm_att = au.GetText("http://fogid.net/o/name");
+                                    var nm_att = au.GetName();
                                     string nm = nm_att ?? "noname";
                                     string idd = au.Id ?? "noid";
                                     @sep
@@ -625,9 +765,10 @@
                                 sep = "";
                                 //                @sep;
                                 <span>=></span>
+                                @if (recipients != null && recipients.Length > 0)
                                 foreach (var au in recipients)
                                 {
-                                    string? nm = au.GetText("http://fogid.net/o/name");
+                                    string? nm = au.GetName();
 
                                     @sep
                                     ;

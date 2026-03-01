@@ -58,7 +58,7 @@ public class IndexModel : PageModel
         {
             this.id = Request.Query["id"].ToString();
             this.eid = Request.Query["eid"].ToString();
-            if (string.IsNullOrEmpty(this.id)) { this.id = start_page; }
+            if (string.IsNullOrEmpty(this.id)) { this.id = funds_id; }
             RRecord? rr = db.GetRRecord(id, true);
             if (rr == null) return;
             string tp = rr.Tp;
