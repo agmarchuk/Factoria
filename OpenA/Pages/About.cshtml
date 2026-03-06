@@ -1,0 +1,22 @@
+﻿@page
+@{
+    
+}
+<p class="grad">
+	<a href="Default.cshtml" class="nov"><img src="img/ico-home.gif" class="ico-home" alt="" />Открытый архив</a>
+	&raquo;
+	О проекте
+</p>
+
+<partial name="PageAbout.cshtml" />
+
+@section rightpanel {
+    <partial name="../PageUseLinks.cshtml" />
+}
+
+@* @RenderPage("PageAbout.cshtml")
+
+@section rightpanel {
+@RenderPage("PageUseLinks.cshtml")
+}
+ *@

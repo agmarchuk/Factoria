@@ -790,3 +790,13 @@
         <div>Это запись типа @tree.Tp</div>
     }
 }
+
+@if (m.id == m.funds_id)
+{
+<partial name="PageParticipants.cshtml" />
+
+@section rightpanel {
+    <partial name="../PageAboutSmall.cshtml" />
+    <partial name="../PageUseLinks.cshtml" />
+}
+}
