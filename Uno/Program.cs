@@ -144,7 +144,7 @@ app.MapGet("~/view/{id?}", (HttpRequest request, string? id) =>
     string portr = "";
     if (rr != null)
     {
-        portr = RRecToHtml2(rr, null, 2);
+        portr = ""; // RRecToHtml2(rr, null, 2);
     }
 
     // Соберем страницу из поиска и портрета

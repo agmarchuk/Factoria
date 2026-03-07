@@ -40,7 +40,7 @@
 					<td class="block-content">
 						<div id="wrap">
 							<div class="fk-ie">
-								<form method="get" action="">
+								<form method="get" action="search">
 									<div class="bsearch-1">
 										<div class="bsearch-2">
 											<div class="bsearch-3">
@@ -100,21 +100,13 @@
 																	{
 																		<option value="document">Документы</option>
 																	}
-																	@if (tv == "city")
+																	@if (tv == "geosys")
 																	{
-																		<option selected value="city">Города</option>
+																		<option selected value="geosys">Города/Страны</option>
 																	}
 																	else
 																	{
-																		<option value="city">Города</option>
-																	}
-																	@if (tv == "country")
-																	{
-																		<option selected value="country">Страны</option>
-																	}
-																	else
-																	{
-																		<option value="country">Страны</option>
+																		<option value="geosys">Города/Страны</option>
 																	}
 																</select>
 															</div>

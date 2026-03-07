@@ -17,14 +17,17 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseStaticFiles();
 app.UseRouting();
-
 app.UseAuthorization();
 
-app.MapStaticAssets();
-app.MapRazorPages()
-   .WithStaticAssets();
+app.MapRazorPages();
+//app.MapStaticAssets();
+//app.MapRazorPages()
+//   .WithStaticAssets();
+
+//app.MapControllerRoute(name: "default",
+//         pattern: "{controller=Home}/{action=Index}");
 
 // Перезагрузка
 app.MapGet("~/room216", (Factograph.Data.IFDataService db) =>
