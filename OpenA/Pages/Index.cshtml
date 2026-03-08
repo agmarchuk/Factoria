@@ -364,17 +364,22 @@
                     <th class="th-document-name"><a href="sort">Название документа<img src="img/ico-sort-down.gif" alt="" /></a></th>
 
                 </tr>
-
-                @foreach (var refl in reflections)
+                @foreach (var aut in auth.OrderBy(au => au.GetDirect("http://fogid.net/o/adoc")?.GetStr("http://fogid.net/o/from-date")))
                 {
-                    string dt = refl.GetDates();
-                    string? ds = refl.GetText("http://fogid.net/o/description");
-
+                    var doc = aut.GetDirect("http://fogid.net/o/adoc");
+                    if (doc == null) continue;
+                    string dt = doc.GetDates();
+                    string? nm = doc.GetText("http://fogid.net/o/name");
+                    string? ds = doc.GetText("http://fogid.net/o/description");
+                    var auth_spec = aut.SayStr("http://fogid.net/o/authority-specificator");
                     <tr valign="top">
-                        <td>@dt</td>
-                        <td width="75%">
-                            <a href='?id=@refl.Id'>@refl.GetText("http://fogid.net/o/name")</a>
+                        <td width="15%">@dt</td>
+                        <td width="65%">
+                            <a href='?id=@doc.Id'>@nm</a><br />
                             <span class="small">@ds</span>
+                        </td>
+                        <td width="20%">
+                            @auth_spec
                         </td>
                     </tr>
                 }
