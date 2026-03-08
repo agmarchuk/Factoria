@@ -266,7 +266,7 @@
                     <td width="25%" class="line-name">@word:</td>
                     <td width="75%" class="line-info">
                         @foreach (var participant in participants.Where(pa => pa.GetStr("http://fogid.net/o/role-classification") == "director")
-                       .OrderBy(pa => pa.GetStr("http://fogid.net/o/from-date")))
+                      .OrderBy(pa => pa.GetStr("http://fogid.net/o/from-date")))
                         {
                             var personage = participant.GetDirect("http://fogid.net/o/participant");
                             string dts = participant.GetDates();
@@ -281,7 +281,7 @@
                         }
 
                         @foreach (var participant in participants.Where(pa => pa.GetStr("http://fogid.net/o/role-classification") != "director")
-                       .OrderBy(pa => pa.GetText("http://fogid.net/o/name")))
+                      .OrderBy(pa => pa.GetText("http://fogid.net/o/name")))
                         {
                             var personage = participant.GetDirect("http://fogid.net/o/participant");
                             string dts = participant.GetDates();
@@ -990,12 +990,13 @@
             @if (locations.Count() > 0)
             {
                 <tr valign="top">
-                    <td width="25%" class="line-name">Расположение:</td>
+                    <td width="25%" class="line-name">Место расположения для:</td>
                     <td width="75%" class="line-info">
                         @foreach (var ite in locations.Take(4000))
                         {
-                            string dts = ite.t == null ? "" : ite.t.GetDates();
                             string? nm = ite.nm;
+                            if (nm == null) continue;
+                            string dts = ite.t == null ? "" : ite.t.GetDates();
                             string? dc = ite.t?.GetText("http://fogid.net/o/description");
                             if (dc != null && dc.Length > 72) { dc = dc.Substring(0, 72); }
                             <a href='?id=@(ite.t?.Id)'>@nm</a>
