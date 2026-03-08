@@ -326,17 +326,17 @@
                     <th width="70%" class="th-document-name"><a href="sort">Название документа<img src="img/ico-sort-down.gif" alt="" /></a></th>
                     <th width="15%"><a href="sort">Исх./Вх. организация</a></th>
                 </tr>
-                @foreach (var au in auth)
+                @foreach (var au in auth.OrderBy(au => au.GetDirect("http://fogid.net/o/adoc")?.GetStr("http://fogid.net/o/from-date")))
                 {
+                    var doc = au.GetDirect("http://fogid.net/o/adoc");
+                    if (doc == null) continue;
+                    string dt = doc.GetDates();
+                    string? nm = doc.GetText("http://fogid.net/o/name");
+                    string? ds = doc.GetText("http://fogid.net/o/description");
 
-                    string dt = au.GetDates();
-                    string? nm = au.GetText("http://fogid.net/o/name");
-                    string? ds = au.GetText("http://fogid.net/o/description");
-                    var auth_spec = au.GetStr("http://fogid.net/o/authority-specificator");
-
+                    var auth_spec = au.GetStr("http://fogid.net/o/authority-specificator") ?? "";
                     string au_s = auth_spec == "out-org" ? "Исх. организация" :
                     (auth_spec == "in-org" ? "Вх. организация" : auth_spec);
-
 
                     <tr valign="top">
                         <td width="15%">@dt</td>
@@ -345,9 +345,31 @@
                             <span class="small">@ds</span>
                         </td>
                         <td width="15%">@au_s</td>
-
                     </tr>
                 }
+@*
+                @foreach (var aut in auth.OrderBy(au => au.GetDirect("http://fogid.net/o/adoc")?.GetStr("http://fogid.net/o/from-date")))
+                {
+                    var doc = aut.GetDirect("http://fogid.net/o/adoc");
+                    if (doc == null) continue;
+                    string dt = doc.GetDates();
+                    string? nm = doc.GetText("http://fogid.net/o/name");
+                    string? ds = doc.GetText("http://fogid.net/o/description");
+                    var auth_spec = aut.SayStr("http://fogid.net/o/authority-specificator");
+                    //string au_s = auth_spec == "author" ? "автор" :
+                    //(auth_spec == "recipient" ? "получатель" : auth_spec);
+                    <tr valign="top">
+                        <td width="15%">@dt</td>
+                        <td width="65%">
+                            <a href='?id=@doc.Id'>@nm</a><br />
+                            <span class="small">@ds</span>
+                        </td>
+                        <td width="20%">
+                            @auth_spec
+                        </td>
+                    </tr>
+                }
+*@
             </table>
         }
 
@@ -364,22 +386,17 @@
                     <th class="th-document-name"><a href="sort">Название документа<img src="img/ico-sort-down.gif" alt="" /></a></th>
 
                 </tr>
-                @foreach (var aut in auth.OrderBy(au => au.GetDirect("http://fogid.net/o/adoc")?.GetStr("http://fogid.net/o/from-date")))
+
+                @foreach (var refl in reflections)
                 {
-                    var doc = aut.GetDirect("http://fogid.net/o/adoc");
-                    if (doc == null) continue;
-                    string dt = doc.GetDates();
-                    string? nm = doc.GetText("http://fogid.net/o/name");
-                    string? ds = doc.GetText("http://fogid.net/o/description");
-                    var auth_spec = aut.SayStr("http://fogid.net/o/authority-specificator");
+                    string dt = refl.GetDates();
+                    string? ds = refl.GetText("http://fogid.net/o/description");
+
                     <tr valign="top">
-                        <td width="15%">@dt</td>
-                        <td width="65%">
-                            <a href='?id=@doc.Id'>@nm</a><br />
+                        <td>@dt</td>
+                        <td width="75%">
+                            <a href='?id=@refl.Id'>@(refl.GetText("http://fogid.net/o/name"))</a>
                             <span class="small">@ds</span>
-                        </td>
-                        <td width="20%">
-                            @auth_spec
                         </td>
                     </tr>
                 }
