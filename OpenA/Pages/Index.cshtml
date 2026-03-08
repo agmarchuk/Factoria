@@ -266,7 +266,7 @@
                     <td width="25%" class="line-name">@word:</td>
                     <td width="75%" class="line-info">
                         @foreach (var participant in participants.Where(pa => pa.GetStr("http://fogid.net/o/role-classification") == "director")
-                           .OrderBy(pa => pa.GetStr("http://fogid.net/o/from-date")))
+                       .OrderBy(pa => pa.GetStr("http://fogid.net/o/from-date")))
                         {
                             var personage = participant.GetDirect("http://fogid.net/o/participant");
                             string dts = participant.GetDates();
@@ -281,7 +281,7 @@
                         }
 
                         @foreach (var participant in participants.Where(pa => pa.GetStr("http://fogid.net/o/role-classification") != "director")
-                           .OrderBy(pa => pa.GetText("http://fogid.net/o/name")))
+                       .OrderBy(pa => pa.GetText("http://fogid.net/o/name")))
                         {
                             var personage = participant.GetDirect("http://fogid.net/o/participant");
                             string dts = participant.GetDates();
@@ -347,7 +347,7 @@
                         <td width="15%">@au_s</td>
                     </tr>
                 }
-@*
+                @*
                 @foreach (var aut in auth.OrderBy(au => au.GetDirect("http://fogid.net/o/adoc")?.GetStr("http://fogid.net/o/from-date")))
                 {
                     var doc = aut.GetDirect("http://fogid.net/o/adoc");
@@ -375,6 +375,13 @@
 
         @if (reflections.Count() > 0)
         {
+            // На базе множества отражений, создадим множество триплов и отсортируем его. Триплы: {doc, name, dates}
+            var sortedtriples = reflections.Select(re => re.GetDirect("http://fogid.net/o/in-doc"))
+                .Where(doc => doc != null)
+                .Cast<Rec>()
+                .Select(doc => new { doc = doc, name = doc.GetText("http://fogid.net/o/name"), dates = doc.GetDates() })
+                .OrderBy(t => t.dates)
+                .ThenBy(t => t.name);
             <br />
             <div class="heading3">
                 <h3>Отражена в документах</h3>
@@ -387,15 +394,15 @@
 
                 </tr>
 
-                @foreach (var refl in reflections)
+                @foreach (var tri in sortedtriples)
                 {
-                    string dt = refl.GetDates();
-                    string? ds = refl.GetText("http://fogid.net/o/description");
+                    string dt = tri.dates;
+                    string? ds = tri.doc.GetText("http://fogid.net/o/description");
 
                     <tr valign="top">
                         <td>@dt</td>
                         <td width="75%">
-                            <a href='?id=@refl.Id'>@(refl.GetText("http://fogid.net/o/name"))</a>
+                            <a href='?id=@tri.doc.Id'>@(tri.name)</a>
                             <span class="small">@ds</span>
                         </td>
                     </tr>
