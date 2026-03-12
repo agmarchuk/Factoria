@@ -166,7 +166,7 @@ namespace Factograph.Data.Adapters
                             }
                             return wrd;
                         });
-                    }).ToArray();
+                    }).Distinct().ToArray();
                 return query;
             };
             svwords = new UVecIndex(GenStream2, records, toWords,
