@@ -22,6 +22,7 @@ namespace Factograph.Data.Adapters
         public abstract object GetRecord(string id, bool addinverse);
         public abstract object? GetRecord(string id); // Простая запись формата RRecord
         public abstract IEnumerable<object> GetInverseRecords(string id); // Все записи, ссылающиеся на id
+        public abstract IEnumerable<Tuple<string, int, object>> SearchWordsWCR(string searchwords);
 
         // ============== Загрузка базы данных ===============
         public abstract void StartFillDb(Action<string> turlog);

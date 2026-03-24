@@ -17,7 +17,18 @@ partial class Program
     public static void Main()
     {
         Console.WriteLine("Main");
-        Main4();
+        Main10();
+    }
+    public static void Main10()
+    {
+        Console.WriteLine("Start FactographData inverse index.");
+        string wwwpath = "../../../wwwroot/"; // Это для запуска через dotnet
+        Factograph.Data.IFDataService db = new Factograph.Data.FDataService(wwwpath, wwwpath + "Ontology_iis-v14.xml", wwwpath + "zaliznyak_shortform.zip");
+        db.Reload(); // Это действие необходимо если меняется набор кассет
+
+        var query = db.SearchRRecords("марчук честь дяди", true)
+            .ToArray();
+        var qu2 = db.SearchWordsWCR("марчук честь дяди").ToArray();
     }
     private static void Main9()
     {

@@ -129,5 +129,7 @@ namespace Factograph.Data
                 yield return rr;
             }
         }
+        //virtual IEnumerable<Tuple<string, int, object>> SearchWords_WCR(string line) { return System.Linq.Enumerable.Empty<Tuple<string, int, object>>(); }
+        abstract IEnumerable<Tuple<string, int, object>> SearchWordsWCR(string line);
     }
 }

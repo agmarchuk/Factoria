@@ -586,6 +586,11 @@ namespace Factograph.Data.Adapters
             xall.Save(filename);
         }
 
+        public override IEnumerable<Tuple<string, int, object>> SearchWordsWCR(string searchwords)
+        {
+            throw new NotImplementedException();
+        }
+
         private class DirectPropComparer : IEqualityComparer<object>
         {
             public new bool Equals(object? x, object? y)

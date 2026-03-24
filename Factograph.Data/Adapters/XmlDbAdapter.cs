@@ -581,5 +581,10 @@ namespace Factograph.Data.Adapters
         {
             throw new NotImplementedException();
         }
+
+        public override IEnumerable<Tuple<string, int, object>> SearchWordsWCR(string searchwords)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

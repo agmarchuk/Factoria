@@ -310,12 +310,39 @@ namespace Factograph.Data.Adapters
                 .Select(gr => new { key = gr.Key, c = gr.Count(), o = gr.First() })
                 .OrderByDescending(tri => tri.c)
                 //.Take(20)
-                //.ToArray()
+                .ToArray()
                 ;
             var query = qqq.Select(tri => tri.o.obj)
                 .Distinct<object>(rSame);
             return query;
         }
+        // Поиск по словам с выдачей кортежа word, count, rect
+        public override IEnumerable<Tuple<string, int, object>> SearchWordsWCR(string line)
+        {
+            string[] wrds = line.ToUpper().Split(delimeters);
+            var qqq = wrds.SelectMany(w =>
+            {
+                string wrd = w;
+                if (Normalize != null)
+                {
+                    wrd = Normalize(w);
+                }
+                var qu = records.GetAllByValue(1, wrd, toWords, true).Select(r => new { obj = r, wrd = wrd })
+                    ; //.ToArray();
+                return qu;
+            })
+                .GroupBy(ow => (string)((object[])ow.obj)[0])
+                .Select(gr => new { key = gr.Key, c = gr.Count(), o = gr.First() })
+                .OrderByDescending(tri => tri.c)
+                //.Take(20)
+                //.ToArray()
+                .Select(tri => new Tuple<string, int, object>(tri.o.wrd, tri.c, tri.o.obj))
+                ;
+            //var query = qqq.Select(tri => tri.o.obj)
+            //    .Distinct<object>(rSame);
+            return qqq;
+        }
+
         public override object? GetRecord(string id)
         {
             var qu = records.GetByKey(id);

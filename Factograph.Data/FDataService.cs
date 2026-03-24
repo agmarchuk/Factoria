@@ -83,8 +83,10 @@ namespace Factograph.Data
                 bool zipped = dictionary.EndsWith(".zip") ? true : false;
                 if (zipped)
                 {
+                    if (File.Exists(path + "zaliznyak_shortform.txt")) { File.Delete(path + "zaliznyak_shortform.txt"); }
+
                     System.IO.Compression.ZipFile.ExtractToDirectory(dictionary, path);
-                    shortname = shortname.Substring(0, dictionary.Length - 4) + ".txt";
+                    shortname = shortname.Substring(0, shortname.Length - 4) + ".txt";
                 }
                 var reader = new StreamReader(path + shortname);
                 toNormalForm = new Dictionary<string, string>();
@@ -937,6 +939,11 @@ namespace Factograph.Data
         public DAdapter GetAdapter()
         {
             return adapter;
+        }
+
+        public IEnumerable<Tuple<string, int, object>> SearchWordsWCR(string line)
+        {
+            return adapter.SearchWordsWCR(line);
         }
     }
 }
