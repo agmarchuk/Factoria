@@ -501,6 +501,8 @@
             @name
         </p>
         <div class="heading1"> <h1>@name</h1> </div>
+
+        @* =============== Полоска пред. след. ============= *@
         @if (upparts != null && upparts.Length > 0)
         {
             <div>
@@ -551,6 +553,38 @@
                 <embed src="doc?u=@(uri)" width="1024" height="800" />
             }
         }
+
+        @* =============== Полоска пред. след. ============= *@
+        @if (upparts != null && upparts.Length > 0)
+        {
+            <div>
+                @if (part_ind != -1 && upparts != null)
+                {
+                    <a href="?id=@updoc?.Id">К документу</a>
+                    <span> | </span>
+                }
+                @if (part_ind > 0)
+                {
+                    string? idd = upparts?[part_ind - 1].Id;   //.GetDirect("http://fogid.net/o/partItem")?.Id;
+                                                               <a href="?id=@idd">пред.</a>
+                }
+                else
+                {
+                    <span>пред.</span>
+                }
+                <span> | </span>
+                @if (part_ind < upparts?.Length - 1)
+                {
+                    string? idd = upparts?[part_ind + 1].Id; //.GetDirect("http://fogid.net/o/partItem")?.Id;
+                                                             <a href="?id=@idd">след.</a>
+                }
+                else
+                {
+                    <span>след.</span>
+                }
+            </div>
+        }
+
         <table cellpadding="0" cellspacing="0" border="0" width="100%" class="info-document">
             @if (!string.IsNullOrEmpty(dates))
             {
