@@ -328,7 +328,7 @@ namespace Factograph.Data.Adapters
                     wrd = Normalize(w);
                 }
                 var qu = records.GetAllByValue(1, wrd, toWords, true).Select(r => new { obj = r, wrd = wrd })
-                    ; //.ToArray();
+                    .ToArray();
                 return qu;
             })
                 .GroupBy(ow => (string)((object[])ow.obj)[0])

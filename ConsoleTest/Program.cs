@@ -23,12 +23,16 @@ partial class Program
     {
         Console.WriteLine("Start FactographData inverse index.");
         string wwwpath = "../../../wwwroot/"; // Это для запуска через dotnet
-        Factograph.Data.IFDataService db = new Factograph.Data.FDataService(wwwpath, wwwpath + "Ontology_iis-v14.xml", wwwpath + "zaliznyak_shortform.zip");
-        db.Reload(); // Это действие необходимо если меняется набор кассет
+        Factograph.Data.IFDataService db = new Factograph.Data.FDataService(wwwpath, wwwpath + "Ontology_iis-v14.xml", null);// wwwpath + "zaliznyak_shortform.zip");
+        //db.Reload(); // Это действие необходимо если меняется набор кассет
 
-        var query = db.SearchRRecords("марчук честь дяди", true)
-            .ToArray();
-        var qu2 = db.SearchWordsWCR("марчук честь дяди").ToArray();
+        //var query = db.SearchRRecords("марчук честь дяди", true).ToArray();
+        //var qu2 = db.SearchWordsWCR("марчук честь дяди").ToArray();
+        var qu3 = db.SearchWordsWCR("река марчук").ToArray();
+        foreach (var tri in qu3) 
+        {
+            Console.WriteLine($"{tri.Item1} {tri.Item2}");
+        }
     }
     private static void Main9()
     {

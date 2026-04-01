@@ -175,7 +175,7 @@ namespace Factograph.Data
                 else if (pre == "uni") Load(); // Всегда загружать!
                 else if (pre == "upi")
                 {
-                    if (directreload || nodatabase) //Load
+                    if (true || directreload || nodatabase) //Load
                     {
                         Load();
                         // Надо сохранить точку записи, это делается в конце загрузки.

@@ -13,24 +13,32 @@
         <p class="grad">
             <a href="/" class="nov"><img src="img/ico-home.gif" class="ico-home" alt="" />Открытый архив</a>
             &raquo;
-            Результаты поиска
+            
         </p>
-        <ul class="links">
-            @foreach (RRecord rr in m.search_results)
-            {
-                string nm = rr.GetName();
-                string dt = rr.GetDates();
-                string? descr = rr.GetField("http://fogid.net/o/description");
-                <li>
-                    <a href='?id=@(rr.Id)' ).Value'>@nm</a>
-                    @if (!string.IsNullOrEmpty(dt))
-                    {
-                        <span>(@dt)</span>
-                    }
-                    @descr
-                </li>
-            }
-        </ul>
+            @{
+                var sresults = m.search_results
+                        .Select(r => new Tuple<RRecord, string>(r, r.GetName()))
+                        .OrderBy(rn => rn.Item2)
+                        .Select(rn => rn.Item1)
+                    .ToArray();
+            <span>Результаты поиска: @(sresults.Count())</span>
+            <ul class="links">
+                @foreach (RRecord rr in sresults)
+                {
+                    string nm = rr.GetName();
+                    string dt = rr.GetDates();
+                    string? descr = rr.GetField("http://fogid.net/o/description");
+                    <li>
+                        <a href='?id=@(rr.Id)' ).Value'>@nm</a>
+                        @if (!string.IsNullOrEmpty(dt))
+                        {
+                            <span>(@dt)</span>
+                        }
+                        @descr
+                    </li>
+                }
+            </ul>
+        }
     </div>
 }
 
