@@ -204,7 +204,7 @@ namespace Factograph.Data.Adapters
                 .Where(xel => propnames.Contains(xel.Name.NamespaceName + xel.Name.LocalName))
                 .SelectMany(xel =>
                 {
-                    string line = (string)xel.Value.ToLower();
+                    string line = (string)xel.Value.ToUpper();
                     var words = line.Split(delimeters, StringSplitOptions.RemoveEmptyEntries);
                     return words.Select(w =>
                     {

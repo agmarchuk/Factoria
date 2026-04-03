@@ -94,11 +94,12 @@ namespace Factograph.Data
                 string? normal = null;
                 while ((line = reader.ReadLine()) != null)
                 {
+                    line = line.ToUpper();
                     string[] parts = line.Split(' ');
                     normal = parts[0];
-                    foreach (string w in parts)
+                    foreach (string ww in parts)
                     {
-                        if (!toNormalForm.ContainsKey(w)) toNormalForm.Add(w, normal);
+                        if (!toNormalForm.ContainsKey(ww)) toNormalForm.Add(ww, normal);
                     }
                 }
                 reader.Close();

@@ -155,7 +155,7 @@ namespace Factograph.Data.Adapters
                     .SelectMany(f =>
                     {
                         string line = (string)f[1];
-                        var words = line.ToLower()
+                        var words = line.ToUpper()
                             .Split(delimeters, StringSplitOptions.RemoveEmptyEntries);
                         return words.Select(w =>
                         {
@@ -335,8 +335,8 @@ namespace Factograph.Data.Adapters
                 .Select(gr => new { key = gr.Key, c = gr.Count(), o = gr.First() })
                 .OrderByDescending(tri => tri.c)
                 //.Take(20)
-                //.ToArray()
                 .Select(tri => new Tuple<string, int, object>(tri.o.wrd, tri.c, tri.o.obj))
+                .ToArray()
                 ;
             //var query = qqq.Select(tri => tri.o.obj)
             //    .Distinct<object>(rSame);

@@ -151,7 +151,7 @@ namespace Factograph.Data.Adapters
                     .SelectMany(f =>
                     {
                         string line = (string)f[1];
-                        var words = line.ToLower()
+                        var words = line.ToUpper()
                             .Split(delimeters, StringSplitOptions.RemoveEmptyEntries);
                         return words.Select(w =>
                         {
