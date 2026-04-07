@@ -73,6 +73,8 @@ namespace Factograph.Data
         }
         private string configfilename = "config.xml";
         private Dictionary<string, string> toNormalForm = new Dictionary<string, string>();
+        private bool bigdictionary = false; // Чтобы оптимизировать словарь, когда он становится большим 
+        private HashSet<string> usedwords = new HashSet<string>(); // использованные слова
         public void Init()
         {
             // Создание словаря если есть файл zaliznyak_shortform.zip

@@ -1,15 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.13.36105.23
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11626.88 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleTest", "ConsoleTest\ConsoleTest.csproj", "{8DE2C4EE-133A-4F5C-A302-FCF05BA211BC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SypBlazor", "SypBlazor\SypBlazor.csproj", "{6953A2C4-42F7-4AC7-9D15-8821CF3BC312}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Factograph.Data", "Factograph.Data\Factograph.Data.csproj", "{1654E18D-FF37-4056-A90D-2563BB89A383}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polar.DB", "..\PolarDB\Polar.DB\Polar.DB.csproj", "{D5B1D608-9B95-4442-B9AD-AB5F261585C7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Publicuem2", "Publicuem2\Publicuem2.csproj", "{7452736D-B1FB-41A1-A041-B4F1DB562DBD}"
 EndProject
@@ -57,10 +55,6 @@ Global
 		{1654E18D-FF37-4056-A90D-2563BB89A383}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1654E18D-FF37-4056-A90D-2563BB89A383}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1654E18D-FF37-4056-A90D-2563BB89A383}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D5B1D608-9B95-4442-B9AD-AB5F261585C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D5B1D608-9B95-4442-B9AD-AB5F261585C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D5B1D608-9B95-4442-B9AD-AB5F261585C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D5B1D608-9B95-4442-B9AD-AB5F261585C7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7452736D-B1FB-41A1-A041-B4F1DB562DBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7452736D-B1FB-41A1-A041-B4F1DB562DBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7452736D-B1FB-41A1-A041-B4F1DB562DBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
