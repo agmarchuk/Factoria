@@ -16,7 +16,7 @@ partial class Program
 {
     public static void Main()
     {
-        Console.WriteLine("Main");
+        Console.WriteLine("Main выделенный");
         Main10();
     }
     public static void Main10()
